@@ -1,7 +1,7 @@
 Feature: Update a Task
 
-    As a User
-    I would like to change the details of a craeted task
+    As a User of mySchedule
+    I would like to change the details of a created task
     So that my calendar will always be up to date
 
     Background:
