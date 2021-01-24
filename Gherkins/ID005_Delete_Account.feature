@@ -13,11 +13,19 @@ Given user <Gordon Ramsay> with user id <GR001> is logged on to the application
 | Keanu Reeves  | KR001 | keanu.reeves@mail.mcgill.ca  | iamalegend    | non-partner  | null   | null      |
 
 When user requests to delete his account
+And user confirms the request
 Then user is logged out of the application
 And his account and information are deleted from the system
 
 | name          | id    | email                        | password      | type         | school | schoolID  |
 | Keanu Reeves  | KR001 | keanu.reeves@mail.mcgill.ca  | iamalegend    | non-partner  | null   | null      |
+
+Scenario: User does not wish to delete his account anymore (Alternative Flow)
+
+Given user <Keanu Reeves> with user id <KR001> is logged on to the application
+When user requests to delete his account 
+And user does not confirm the request
+Then the account is not deleted
 
 Scenario: Invalid account (Error Flow)
 
