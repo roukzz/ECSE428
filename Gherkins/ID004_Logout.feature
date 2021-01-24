@@ -10,7 +10,7 @@ Feature: Logout from an account
 
     Scenario Outline: Valid User with correct username and password (Normal Flow)
 
-        Given user <email> with password <password> is logged in
+        Given user with email <email> with password <password>
         When user <email> attempts to logout from the application
         Then the user will be logged out
 
@@ -24,7 +24,7 @@ Feature: Logout from an account
 
     Scenario Outline: User attempts to login into another account (Alternate Flow)
 
-        Given user <email> with password <password> is logged in
+        Given user with email <email> with password <password>
         When user <email2> attempts to login into the system from the same application with username <email2> and password <password2>
         Then user <email> is logged out of the application
         And the system is available to process the login request
