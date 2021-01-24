@@ -11,12 +11,12 @@ Feature: create a Task into a course
 
   Scenario Outline: The user successfully adds a task to a course without content and without location  (Normal Flow)
     Given No tasks exist for each course
-    When  I create a task with title "<title>" and deadline "<deadline>"
-    And   I add the task "<title>" to the "<course>" course
+    When  I create a task with title <title> and deadline <deadline>
+    And   I add the task <title> to the <course> course
     Then  I should receive a confirmation that my operation was successful
-    And   Task "<title>" should be in the "<course>" course
-    And   "<course>" course should contain task "<title>"
-    And   "<course>" course should contain 1 tasks
+    And   Task <title> should be in the <course> course
+    And   <course> course should contain task <title>
+    And   <course> course should contain 1 tasks
 
     Examples:
       | course    | tilte       | deadline            |
@@ -31,12 +31,12 @@ Feature: create a Task into a course
     | ECSE 429  | assignment1 | 2021-12-20 14:00:00 |
     | COMP 360  | lab5-2      | 2021-09-20 14:00:00 |
     | COMP 360  | review      | 2021-08-20 14:00:00 |
-    When  I create a task with title "<title>" and deadline "<deadline>"
-    And   I add the task with title"<title>" to the "<course>" course
+    When  I create a task with title <title> and deadline <deadline>
+    And   I add the task with title <title> to the <course> course
     Then  I should receive a confirmation that my operation was successful
-    And   Task "<title>" should be in the "<course>" course
-    And   "<course>" course should contain task "<title>"
-    And   "<course>" course should contain <course_task_count> tasks
+    And   Task <title> should be in the <course> course
+    And   <course> course should contain task <title>
+    And   <course> course should contain <course_task_count> tasks
 
     Examples:
       | course    | title         | course_task_count | deadline            |
@@ -50,11 +50,11 @@ Feature: create a Task into a course
     | ECSE 420  | lab5-2      | 2021-09-20 14:00:00 |
     | COMP 360  | review      | 2021-08-20 14:00:00 |
 
-    When  I create a task with title "<title>" and deadline "<deadline>"
-    And   I add the task with title "<title>" to the "<course>" course
+    When  I create a task with title <title> and deadline <deadline>
+    And   I add the task with title <title> to the <course> course
     Then  I should receive an error informing me that the requested resource was not found
-    And   Task "<title>" should not be in the "<course>" course
-    And   Course "<course>" should not exist in the system
+    And   Task <title> should not be in the <course> course
+    And   Course <course> should not exist in the system
 
     Examples:
     | course    | tilte       | deadline            |
