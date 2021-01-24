@@ -8,10 +8,10 @@ Feature: Delete an account
         Given The application is running
         And the following users are registered in the system:
 
-        | name          | id    | email                        | password      | type         | school | schoolID  | valid |
-        | Gordon Ramsay | GR001 | gordon.ramsay@mail.mcgill.ca | iloverawsteak | partner      | McGill | 260802075 | true  |
-        | Keanu Reeves  | KR001 | keanu.reeves@mail.mcgill.ca  | iamalegend    | non-partner  | null   | null      | true  |
-        | Oprah Winfrey | OW001 | oprah.winfrey@mail.mcgill.ca | icanthost     | non-partner  | null   | null      | false |
+            | name          | id    | email                        | password      | type        | school | schoolID  | valid |
+            | Gordon Ramsay | GR001 | gordon.ramsay@mail.mcgill.ca | iloverawsteak | partner     | McGill | 260802075 | true  |
+            | Keanu Reeves  | KR001 | keanu.reeves@mail.mcgill.ca  | iamalegend    | non-partner | null   | null      | true  |
+            | Oprah Winfrey | OW001 | oprah.winfrey@mail.mcgill.ca | icanthost     | non-partner | null   | null      | false |
 
     Scenario Outline: Delete an account (Normal Flow)
 
@@ -24,7 +24,7 @@ Feature: Delete an account
     Scenario Outline: User does not wish to delete his account anymore (Alternative Flow)
 
         Given user <name> with user id <id> is logged on to the application
-        When user requests to delete his account 
+        When user requests to delete his account
         And user does not confirm the request
         Then the account is not deleted
 
