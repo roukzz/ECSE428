@@ -1,5 +1,8 @@
 Feature: Delete a task from a course
-    As a student, I want to be able to delete a task from a course.
+
+    As a student
+    I want to be able to delete a task from a course
+    So that I can remove task I do not need anymore
 
     Background:
         Given The application is running
@@ -10,6 +13,7 @@ Feature: Delete a task from a course
             | COMP 360 | review      | 2021-08-20 14:00:00 |
 
     Scenario Outline: The user successfully delete a task from a course with content and with location  (Normal Flow)
+        
         Given A task exists for each course
         When  I select a task with title <title> and deadline <deadline>
         And   I delete the task <title> from the <course> course
@@ -26,6 +30,7 @@ Feature: Delete a task from a course
 
 
     Scenario Outline: The user successfully delete a task from a course without content and without location that already contains some tasks (Alternative Flow)
+        
         Given  The following tasks exist for their respective courses:
             | course   | title       | deadline            |
             | ECSE 429 | assignment1 | 2021-12-20 14:00:00 |
@@ -44,6 +49,7 @@ Feature: Delete a task from a course
             | COMP 360 | lab5-2 | 1                 | 2021-09-20 14:00:00 |
 
     Scenario Outline: The user attempts to delete a task from a given course when the course doesn't exist  (Error Flow)
+        
         Given The following tasks exist for their respective courses:
             | course   | tilte       | deadline            |
             | ECSE 429 | assignment1 | 2021-12-20 14:00:00 |
