@@ -2,7 +2,7 @@ Feature: Logout from an account
 
     As a mySchedule user with an account created
     I would like to logout from the mySchedule platform
-    So that I can safely exit the application.
+    So that I can safely exit the application
 
     Background:
         Given users <username> and <username2> have existing accounts that are in good standing

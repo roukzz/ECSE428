@@ -13,7 +13,7 @@ Feature: Delete an account
         | Keanu Reeves  | KR001 | keanu.reeves@mail.mcgill.ca  | iamalegend    | non-partner  | null   | null      | true  |
         | Oprah Winfrey | OW001 | oprah.winfrey@mail.mcgill.ca | icanthost     | non-partner  | null   | null      | false |
 
-    Scenario: Delete an account (Normal Flow)
+    Scenario Outline: Delete an account (Normal Flow)
 
         Given user <name> with user id <id> is logged on to the application
         When user requests to delete his account
@@ -21,14 +21,14 @@ Feature: Delete an account
         Then user is logged out of the application
         And his account and information are deleted from the system
 
-    Scenario: User does not wish to delete his account anymore (Alternative Flow)
+    Scenario Outline: User does not wish to delete his account anymore (Alternative Flow)
 
         Given user <name> with user id <id> is logged on to the application
         When user requests to delete his account 
         And user does not confirm the request
         Then the account is not deleted
 
-    Scenario: Invalid account (Error Flow)
+    Scenario Outline: Invalid account (Error Flow)
 
         Given user <name> with user id <id> is not registered in the system
         When user requests to delete his account

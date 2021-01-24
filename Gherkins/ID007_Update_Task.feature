@@ -9,7 +9,7 @@ Feature: Update a Task
             | task_name | task_id | date       | start_time | end_time | description |
             | test      | task001 | 2021-02-14 | 10:00:00   | 16:00:00 | Test task   |
 
-    Scenario: Authenticated User Update Their Task (Normal Flow)
+    Scenario Outline: Authenticated User Update Their Task (Normal Flow)
 
         Given that user "Test Subject" is logged into mySchedule
         When user "Test Subject" changes <task_name> of <test> to "Test"
@@ -17,7 +17,7 @@ Feature: Update a Task
             | task_name | task_id | date       | start_time | end_time | description |
             | Test      | task001 | 2021-02-14 | 10:00:00   | 16:00:00 | Test task   |
 
-    Scenario: Authenticated User Update Task End Time to be Earlier than Task Start Time (Error Flow)
+    Scenario Outline: Authenticated User Update Task End Time to be Earlier than Task Start Time (Error Flow)
 
         Given that user "Test Subject" is logged into mySchedule
         When user "Test Subject" changes <end_time> of task <test> to "09:00:00"
@@ -28,7 +28,7 @@ Feature: Update a Task
         | Test      | task001 | 2021-02-14 | 10:00:00   | 16:00:00 | Test task   |
 
 
-    Scenario: Authenticated User Update Task Date to an Invalid Date (Error Flow)
+    Scenario Outline: Authenticated User Update Task Date to an Invalid Date (Error Flow)
     
         Given that user "Test Subject" is logged into mySchedule
         When user "Test Subject" changes <date> of task <test> to "2021-02-30"
