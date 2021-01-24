@@ -1,7 +1,7 @@
 Feature: create a Task into a course
 
-  As a student
-  I add a task to a course
+  As a user of mySchedule
+  I want to create a task for a course
   So that I can remember it.
 
   Background:
