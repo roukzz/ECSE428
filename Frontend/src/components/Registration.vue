@@ -2,65 +2,121 @@
   <div>
     <h1>Sign Up</h1>
     <p>Please fill in this form to create an account.</p>
-    <span v-if="errorSignup" style="color: red">Error: {{ errorSignup }}</span>
-    <span v-if="signupSuccess" style="color: green">{{ signupSuccess }}</span>
-    <hr />
+    <div class="container">
+      <span v-if="errorSignup" style="color: red"
+        >Error: {{ errorSignup }}</span
+      >
+      <span v-if="signupSuccess" style="color: green">{{ signupSuccess }}</span>
+      <hr />
+      <div>
+        <input
+          type="radio"
+          name="userType"
+          value="nonPartner"
+          v-model="userType"
+          checked
+        />
+        <label for="nonPartner">Non-Partner-University Student</label>
+        <input
+          type="radio"
+          name="userType"
+          value="partner"
+          v-model="userType"
+        />
+        <label for="partner">Partner-University Student</label>
+        <br />
+        <div class="row">
+          <div class="col">
+            <label for="name">Name</label>
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              placeholder="Enter Name"
+              name="name"
+              v-model="name"
+            />
+          </div>
+          <div class="col">
+            <label for="email">Email</label>
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              placeholder="Enter Email"
+              name="email"
+              v-model="email"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="psw">Password</label>
+          </div>
+          <div class="col">
+            <input
+              type="password"
+              placeholder="Enter Password"
+              name="psw"
+              v-model="psw"
+            />
+          </div>
+          <div class="col">
+            <label for="pswRepeat">Repeat Password</label>
+          </div>
+          <div class="col">
+            <input
+              type="password"
+              placeholder="Repeat Password"
+              name="pswRepeat"
+              v-model="pswRepeat"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="school" v-if="userType == 'partner'"
+              >School (Partner Only)</label
+            >
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              placeholder="Enter School"
+              name="school"
+              v-model="school"
+              v-if="userType == 'partner'"
+            />
+          </div>
+          <div class="col">
+            <label for="studentID" v-if="userType == 'partner'"
+              >Student ID (Partner Only)</label
+            >
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              placeholder="Enter Student ID"
+              name="studentID"
+              v-model="studentID"
+              v-if="userType == 'partner'"
+            />
+          </div>
+        </div>
+        <hr />
 
-    <input type="radio" name="userType" value="nonPartner" checked />
-    <label for="nonPartner">Non-Partner-University Student</label>
-    <input type="radio" name="userType" value="partner" />
-    <label for="partner">Partner-University Student</label>
-    <br />
-
-    <label for="name">Name</label>
-    <input type="text" placeholder="Enter Name" name="name" v-model="name" />
-
-    <label for="email">Email</label>
-    <input type="text" placeholder="Enter Email" name="email" v-model="email" />
-    <br />
-
-    <label for="psw">Password</label>
-    <input
-      type="password"
-      placeholder="Enter Password"
-      name="psw"
-      v-model="psw"
-    />
-
-    <label for="pswRepeat">Repeat Password</label>
-    <input
-      type="password"
-      placeholder="Repeat Password"
-      name="pswRepeat"
-      v-model="pswRepeat"
-    />
-    <br />
-
-    <label for="school">School (Partner Only)</label>
-    <input
-      type="text"
-      placeholder="Enter School"
-      name="school"
-      v-model="school"
-    />
-
-    <label for="studentID">Student ID (Partner Only)</label>
-    <input
-      type="text"
-      placeholder="Enter Student ID"
-      name="studentID"
-      v-model="studentID"
-    />
-    <hr />
-
-    <button type="button" class="cancelbtn">Cancel</button>
-    <button
-      @click="signup(name, email, psw, pswRepeat, school, studentID)"
-      class="signupbtn"
-      v-bind:disabled="!name || !email || !psw || !pswRepeat"
-    >
-      Sign Up
-    </button>
+        <button type="button" class="cancelbtn">Cancel</button>
+        <button
+          @click="
+            signup(name, email, psw, pswRepeat, school, studentID, userType)
+          "
+          class="signupbtn"
+          v-bind:disabled="!name || !email || !psw || !pswRepeat"
+        >
+          Sign Up
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -96,6 +152,7 @@ export default {
       pswRepeat: "",
       school: "",
       studentID: "",
+      userType: "",
       errorSignup: "",
       signupSuccess: "",
       response: [],
@@ -104,7 +161,15 @@ export default {
   created: function () {},
 
   methods: {
-    signup: function (name, email, psw, pswRepeat, school, studentID) {
+    signup: function (
+      name,
+      email,
+      psw,
+      pswRepeat,
+      school,
+      studentID,
+      userType
+    ) {
       var letters = /^[0-9a-zA-Z]+$/;
       if (!name.match(letters)) {
         this.errorSignup = "The name must have alphanumeric characters";
@@ -127,14 +192,9 @@ export default {
         this.signupSuccess = "";
         return;
       }
-      var radioButtons = document.getElementsByName("userType");
-      var value;
-      for (var i = 0; i < radioButtons.length; i++) {
-        if (radioButtons[i].checked == true) {
-          value = radioButtons[i].value;
-        }
-      }
-      if (value == "nonPartner") {
+      if (userType == "nonPartner") {
+        school = "";
+        studentID = "";
         if (school || studentID) {
           this.errorSignup =
             "Must register as a non-partner university student";
@@ -159,4 +219,7 @@ export default {
 </script>
 
 <style>
+.container {
+  text-align: center;
+}
 </style>
