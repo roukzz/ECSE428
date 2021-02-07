@@ -1,7 +1,10 @@
 const express = require("express");
 const app = express();
 const port = 3000;
+const connectDB = require("./DBConnection/connection");
 require("dotenv").config();
+
+connectDB();
 
 const { auth } = require("express-openid-connect");
 app.use(
@@ -16,6 +19,8 @@ app.use(
   })
 );
 
+app.use(express.json({ extended: false }));
+
 app.get("/", (req, res) => {
   res.send(req.oidc.isAuthenticated() ? "Logged In" : "Logged out");
 });
@@ -23,3 +28,6 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
 });
+
+// User test route
+app.use("/api/createUser", require("./Routes/UserController"));
