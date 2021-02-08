@@ -43,7 +43,7 @@ const Task = mongoose.model("Task",taskSchema);
 
 
 
-
+//post new task
 app.post("/tasks",function (req,res){
 
   const newTask = new Task({
@@ -53,6 +53,30 @@ app.post("/tasks",function (req,res){
   newTask.save(function(err){
     if(!err){
       res.send("task successuly added")
+    }else {
+      res.send(err);
+    }
+  });
+});
+
+
+app.route ("/tasks/:taskTitle").
+// Get a specific task
+get(function(req,res){
+  Task.findOne({title:req.params.taskTitle},function(err,task){
+    if(!err){
+      res.send(task);
+    }else{
+      res.send(err);
+    }
+  });
+})
+
+// delete a specific task
+.delete(function(req,res){
+  Task.deleteOne({title:req.params.taskTitle},function(err){
+    if (!err){
+      res.send("successfly deleted task");
     }else {
       res.send(err);
     }
