@@ -81,6 +81,18 @@ get(function(req,res){
       res.send(err);
     }
   });
+})
+
+.patch(function(req,res){
+  Task.update({title:req.params.taskTitle},
+              {$set:req.body},
+              function(err){
+                if (!err){
+                  res.send("successfly updated task");
+                } else {
+                  res.send(err);
+                }
+              });
 });
 
 
