@@ -3,10 +3,10 @@
     <h1>Sign Up</h1>
     <p>Please fill in this form to create an account.</p>
     <div class="container">
-      <span v-if="errorSignup" style="color: red"
+      <span v-if="errorSignup" style="color: red" id="error"
         >Error: {{ errorSignup }}</span
       >
-      <span v-if="signupSuccess" style="color: green">{{ signupSuccess }}</span>
+      <span v-if="signupSuccess" style="color: green" id="success">{{ signupSuccess }}</span>
       <hr />
       <div>
         <input
@@ -15,6 +15,7 @@
           value="nonPartner"
           v-model="userType"
           checked
+          id="nonPartner"
         />
         <label for="nonPartner">Non-Partner-University Student</label>
         <input
@@ -22,6 +23,7 @@
           name="userType"
           value="partner"
           v-model="userType"
+          id="partner"
         />
         <label for="partner">Partner-University Student</label>
         <br />
@@ -35,6 +37,7 @@
               placeholder="Enter Name"
               name="name"
               v-model="name"
+              id="name"
             />
           </div>
           <div class="col">
@@ -46,6 +49,7 @@
               placeholder="Enter Email"
               name="email"
               v-model="email"
+              id="email"
             />
           </div>
         </div>
@@ -59,6 +63,7 @@
               placeholder="Enter Password"
               name="psw"
               v-model="psw"
+              id="psw"
             />
           </div>
           <div class="col">
@@ -70,6 +75,7 @@
               placeholder="Repeat Password"
               name="pswRepeat"
               v-model="pswRepeat"
+              id="pswRepeat"
             />
           </div>
         </div>
@@ -86,6 +92,7 @@
               name="school"
               v-model="school"
               v-if="userType == 'partner'"
+              id="school"
             />
           </div>
           <div class="col">
@@ -100,6 +107,7 @@
               name="studentID"
               v-model="studentID"
               v-if="userType == 'partner'"
+              id="studentID"
             />
           </div>
         </div>
@@ -112,6 +120,7 @@
           "
           class="signupbtn"
           v-bind:disabled="!name || !email || !psw || !pswRepeat"
+          id="signupbtn"
         >
           Sign Up
         </button>
@@ -170,7 +179,7 @@ export default {
       studentID,
       userType
     ) {
-      var letters = /^[0-9a-zA-Z]+$/;
+      var letters = /^[a-z\d\-_\s]+$/i;
       if (!name.match(letters)) {
         this.errorSignup = "The name must have alphanumeric characters";
         this.signupSuccess = "";
