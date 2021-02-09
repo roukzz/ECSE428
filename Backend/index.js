@@ -34,25 +34,35 @@ app.get("/", (req, res) => {
 });
 
 
+
+
 const taskSchema = {
   title: String,
   description: String
 };
 
+const studentSchema = {
+  name: String,
+  tasks:[taskSchema]
+};
+
+
+const Student = mongoose.model("Student",studentSchema);
 const Task = mongoose.model("Task",taskSchema);
 
 
 
-//post new task
-app.post("/tasks",function (req,res){
 
-  const newTask = new Task({
-    title: req.body.title,
-    description:req.body.description
+// add new students
+app.post("/students",function (req,res){
+  const newStudent = new Student({
+    name: req.body.name,
+    tasks:[]
   })
-  newTask.save(function(err){
+
+  newStudent.save(function(err){
     if(!err){
-      res.send("task successuly added")
+      res.send("student successuly added")
     }else {
       res.send(err);
     }
@@ -60,12 +70,70 @@ app.post("/tasks",function (req,res){
 });
 
 
-app.route ("/tasks/:taskTitle").
-// Get a specific task
+
+
+app.route("/students/:studentName").
+// set a specific student
 get(function(req,res){
-  Task.findOne({title:req.params.taskTitle},function(err,task){
+  Student.findOne({name:req.params.studentName},function(err,student){
     if(!err){
-      res.send(task);
+      res.send(student);
+    }else{
+      res.send(err);
+    }
+  });
+});
+
+
+
+
+
+
+//post new task to a specific student
+app.route("/students/:studentName/tasks")
+
+.post(function (req,res){
+
+  const newTask = new Task({
+    title: req.body.title,
+    description:req.body.description
+  });
+
+  const studentName = req.params.studentName;
+  //console.log("student Name is : "+ studentName);
+
+  Student.findOne({name:studentName},function(err,student){
+    //console.log("found student name  :" + student);
+
+    if(!err){
+      const studentTasks = student.tasks;
+
+      studentTasks.push(newTask);
+
+      Student.updateOne({name:studentName},{tasks:studentTasks},function(err){
+        if (err){
+          console.log(err)
+        }else{
+          console.log("tasks of student: "+ studentName+ " has been updated");
+        }
+      });
+      res.send("task successfuly added to student");
+    } else{
+      //console.log("student not found");
+      res.send(err);
+    }
+
+  });
+})
+
+
+// Get students tasks
+.get(function(req,res){
+
+  const studentName = req.params.studentName;
+  Student.findOne({name:studentName},function(err,student){
+    if(!err){
+      res.send(student.tasks);
     }else{
       res.send(err);
     }
@@ -74,26 +142,60 @@ get(function(req,res){
 
 // delete a specific task
 .delete(function(req,res){
-  Task.deleteOne({title:req.params.taskTitle},function(err){
-    if (!err){
-      res.send("successfly deleted task");
-    }else {
-      res.send(err);
-    }
-  });
-})
 
-.patch(function(req,res){
-  Task.update({title:req.params.taskTitle},
-              {$set:req.body},
-              function(err){
-                if (!err){
-                  res.send("successfly updated task");
-                } else {
+  const taskName = req.body.title;
+
+
+
+  const studentName = req.params.studentName;
+
+  Student.findOne({name:studentName},function(err,student){
+
+
+    if(!err){
+      const studentTasks = student.tasks;
+
+      const task = studentTasks.find(element => (element.title === taskName));
+
+      const index = studentTasks.indexOf(task);
+        console.log(index);
+        if(index>-1){
+          studentTasks.splice(index,1);
+
+              Student.updateOne({name:studentName},{tasks:studentTasks},function(err){
+                if (err){
                   res.send(err);
+                }else{
+                  res.send("task has been deleted");
                 }
               });
+        } else{
+          res.send("task doesn't exist");
+        }
+
+
+    }else{
+      res.send(err);
+    }
+
 });
+});
+
+
+
+//app.patch(function(req,res){
+
+
+//   Task.update({title:req.params.taskTitle},
+//               {$set:req.body},
+//               function(err){
+//                 if (!err){
+//                   res.send("successfly updated task");
+//                 } else {
+//                   res.send(err);
+//                 }
+//               });
+// });
 
 
 
