@@ -1,32 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Student = require("../Models/student");
-const Task = require("../Models/task")
+const Task = require("../Models/task");
 const route = express.Router();
-
+const verify = require("./VerifyToken");
 
 // return custom status: res.json({status : "ok"})
 
-// ===== create a new student =====
-// ================================
-route.post("/createStudent", async function (req, res) {
-  const newStudent = new Student({
-    username: req.body.username,
-    tasks: [],
-  });
-
-  await newStudent.save(function (err) {
-    if (!err) {
-      res.send("student successuly added");
-    } else {
-      res.send(err);
-    }
-  });
-});
-
 // ===== get a student by username =====
 // =====================================
-route.get("/getStudentByUsername", function (req, res) {
+route.get("/getStudentByUsername", verify, function (req, res) {
   Student.findOne({ username: req.body.username }, function (err, student) {
     if (!err) {
       res.send(student);
@@ -38,7 +21,7 @@ route.get("/getStudentByUsername", function (req, res) {
 
 // ===== add a task to an existing student =====
 // =============================================
-route.post("/addTaskToStudent", async function (req, res) {
+route.post("/addTaskToStudent", verify, async function (req, res) {
   const newTask = new Task({
     title: req.body.title,
     description: req.body.description,
@@ -76,12 +59,11 @@ route.post("/addTaskToStudent", async function (req, res) {
       res.send(err);
     }
   });
-})
-
+});
 
 // ===== get tasks of existing student =====
 // =========================================
-route.get("/getStudentTasks", function (req, res) {
+route.get("/getStudentTasks", verify, function (req, res) {
   const studentName = req.body.username;
   Student.findOne({ username: studentName }, function (err, student) {
     console.log("found student name  :" + student);
@@ -91,12 +73,11 @@ route.get("/getStudentTasks", function (req, res) {
       res.send(err);
     }
   });
-})
-
+});
 
 // ===== delete task of an existing student =====
 // ==============================================
-route.delete("/deleteStudentTask", function (req, res) {
+route.delete("/deleteStudentTask", verify, function (req, res) {
   const taskName = req.body.title;
   const studentName = req.body.username;
 
@@ -110,7 +91,7 @@ route.delete("/deleteStudentTask", function (req, res) {
       console.log(index);
       if (index > -1) {
         studentTasks.splice(index, 1);
-        console.log("Updated tasks" + studentTasks)
+        console.log("Updated tasks" + studentTasks);
         Student.updateOne(
           { username: studentName },
           { tasks: studentTasks },
