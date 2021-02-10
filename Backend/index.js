@@ -37,6 +37,7 @@ app.get("/", (req, res) => {
 
 
 const taskSchema = {
+  relatedStudent: String,
   title: String,
   description: String
 };
@@ -74,8 +75,10 @@ app.post("/students",function (req,res){
 
 app.route("/students/:studentName").
 // set a specific student
+
 get(function(req,res){
   Student.findOne({name:req.params.studentName},function(err,student){
+
     if(!err){
       res.send(student);
     }else{
@@ -95,10 +98,12 @@ app.route("/students/:studentName/tasks")
 .post(function (req,res){
 
   const newTask = new Task({
+    relatedStudent: req.params.studentName,
     title: req.body.title,
     description:req.body.description
   });
 
+  newTask.save();
   const studentName = req.params.studentName;
   //console.log("student Name is : "+ studentName);
 
@@ -156,7 +161,7 @@ app.route("/students/:studentName/tasks")
       const studentTasks = student.tasks;
 
       const task = studentTasks.find(element => (element.title === taskName));
-
+      const taskId = task._id;
       const index = studentTasks.indexOf(task);
         console.log(index);
         if(index>-1){
@@ -164,9 +169,12 @@ app.route("/students/:studentName/tasks")
 
               Student.updateOne({name:studentName},{tasks:studentTasks},function(err){
                 if (err){
+
                   res.send(err);
                 }else{
-                  res.send("task has been deleted");
+                  console.log("TASKIDD: ", taskId);
+                  Task.deleteOne({_id:taskId},function(err){if(!err){res.send("task has been deleted");}else{res.send(err)}});
+
                 }
               });
         } else{
@@ -183,19 +191,95 @@ app.route("/students/:studentName/tasks")
 
 
 
-//app.patch(function(req,res){
+//update task
+app.route("/students/:studentName/tasks/:taskTitle").patch(function(req,res){
+  let bool = true;
+  let taskId;
+  const studentName = req.params.studentName;
+  const taskTitle = req.params.taskTitle;
+
+  console.log(studentName);
+  console.log(taskTitle);
+
+  let updatedTask=  new Task() ;
 
 
-//   Task.update({title:req.params.taskTitle},
-//               {$set:req.body},
-//               function(err){
-//                 if (!err){
-//                   res.send("successfly updated task");
-//                 } else {
-//                   res.send(err);
-//                 }
-//               });
-// });
+
+ Task.findOne({relatedStudent:studentName,title:taskTitle},function(err,task){
+
+    if(!err && task != null){
+      //console.log("found Task: " + task);
+      taskId = task._id;
+      //console.log("ID: "+ taskId);
+
+      Task.update({_id:taskId},{$set:req.body},function(err){
+                            if (!err){
+                              Task.findOne({_id:taskId},function(err,task){
+                                    if(!err && task !=null){
+
+                                      updatedTask.relatedStudent =task.relatedStudent;
+                                      updatedTask.title = task.title;
+                                      updatedTask.description = task.description;
+                                      console.log("updated task is : "+ updatedTask);
+
+                                       Student.findOne({name:studentName},function(err,student){
+
+                                                  if(!err){
+                                                    const studentTasks = student.tasks;
+                                                    //console.log("//////////////////////////////////////////");
+                                                  //  console.log(studentTasks);
+                                                    //console.log("TASKID: ", taskId);
+                                                    const task = studentTasks.find(element => (element.title === taskTitle));
+
+                                                  //  console.log("//////////////////////////////////////////");
+                                                    //console.log(task);
+                                                    const index = studentTasks.indexOf(task);
+                                                      console.log(index);
+                                                      if(index>-1){
+                                                      studentTasks.splice(index,1,updatedTask);
+
+
+                                                      Student.updateOne({name:studentName},{tasks:studentTasks},function(err){
+                                                              if (err){
+                                                                res.send(err);
+                                                              }else{
+                                                                res.send("task has been UPDATED");
+                                                              }
+                                                            });
+                                                      } else{
+                                                        res.send("task doesn't exist");
+                                                      }
+
+
+                                                  }else{
+                                                    res.send(err);
+                                                  }
+
+                                              });
+
+
+                                    } else {
+                                      res.send(err);
+                                      }
+                                });
+
+
+
+      } else {
+        res.send(err);
+        }
+      });
+
+
+
+
+    } else {
+      res.send("task doesnt exist");
+    }
+
+  });
+
+});
 
 
 
