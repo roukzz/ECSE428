@@ -4,6 +4,9 @@ const Student = require("../Models/student");
 const Task = require("../Models/task")
 const route = express.Router();
 
+
+// return custom status: res.json({status : "ok"})
+
 // ===== create a new student =====
 // ================================
 route.post("/createStudent", async function (req, res) {
