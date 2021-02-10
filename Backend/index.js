@@ -16,6 +16,9 @@ connectDB();
 
 const port = 3000;
 require("dotenv").config();
+var cors = require('cors')
+
+app.use(cors()) // Use this after the variable declaration
 
 // ===== Authentication routes =====
 // =================================

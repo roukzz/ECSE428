@@ -104,7 +104,7 @@ module.exports = {
       .pause(config.time.pause)
       .click(config.id.signupbtn)
       .pause(config.time.pause)
-      .assert.containsText(config.id.success, "Registering...")
+      .assert.containsText(config.id.success, "Sucessfully Registered!")
     }
     client
       .end();

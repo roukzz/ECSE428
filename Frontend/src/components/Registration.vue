@@ -6,7 +6,9 @@
       <span v-if="errorSignup" style="color: red" id="error"
         >Error: {{ errorSignup }}</span
       >
-      <span v-if="signupSuccess" style="color: green" id="success">{{ signupSuccess }}</span>
+      <span v-if="signupSuccess" style="color: green" id="success">{{
+        signupSuccess
+      }}</span>
       <hr />
       <div>
         <input
@@ -119,7 +121,7 @@
             signup(name, email, psw, pswRepeat, school, studentID, userType)
           "
           class="signupbtn"
-          v-bind:disabled="!name || !email || !psw || !pswRepeat"
+          v-bind:disabled="!name || !email || !psw || !pswRepeat || !userType"
           id="signupbtn"
         >
           Sign Up
@@ -210,18 +212,46 @@ export default {
           this.signupSuccess = "";
           return;
         }
-        //To be added "The email already exists"
-        this.errorSignup = "";
+        let params = {
+          username: name,
+          password: psw,
+        };
+
+        AXIOS.post("/api/authentication/register", params)
+          .then((response) => {
+            this.errorSignup = "";
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorSignup = e;
+            this.signupSuccess = "";
+            console.log(e);
+            return;
+          });
       } else {
         if (!school || !studentID) {
           this.errorSignup = "Must register as a partner university student";
           this.signupSuccess = "";
           return;
         }
-        //To be added "The email already exists"
-        this.errorSignup = "";
+        let params = {
+          username: name,
+          password: psw,
+        };
+
+        AXIOS.post("/api/authentication/register", params)
+          .then((response) => {
+            this.errorSignup = "";
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorSignup = e;
+            this.signupSuccess = "";
+            console.log(e);
+            return;
+          });
       }
-      this.signupSuccess = "Registering...";
+      this.signupSuccess = "Sucessfully Registered!";
     },
   },
 };
