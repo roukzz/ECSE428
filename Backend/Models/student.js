@@ -6,7 +6,8 @@ const student = new mongoose.Schema({
     type: String,
   },
   tasks: {
-    type: [],
+    type: Array,
+    "default" : []
   },
 });
 
