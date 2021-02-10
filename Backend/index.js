@@ -32,8 +32,11 @@ app.get("/", (req, res) => {
   res.send(req.oidc.isAuthenticated() ? "Logged In" : "Logged out");
 });
 
-// Student routes
+// ===== Students / Student tasks routes =====
+// ===========================================
 app.use("/api/student", require("./Routes/StudentController"));
+
+
 
 //app.patch(function(req,res){
 

@@ -93,7 +93,6 @@ route.get("/getStudentTasks", function (req, res) {
 
 // ===== delete task of an existing student =====
 // ==============================================
-
 route.delete("/deleteStudentTask", function (req, res) {
   const taskName = req.body.title;
   const studentName = req.body.username;
