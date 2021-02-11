@@ -50,10 +50,60 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
             console.log(
               "tasks of student: " + studentName + " has been updated"
             );
+            res.send(student.tasks);
           }
         }
       );
-      res.send("task successfuly added to student");
+    } else {
+      //console.log("student not found");
+      res.send(err);
+    }
+  });
+});
+
+// ===== update existing student task =====
+// ========================================
+route.put("/updateStudentTask", verify, async function (req, res) {
+  const newTask = new Task({
+    title: req.body.title,
+    description: req.body.description,
+  });
+
+  const studentName = req.body.username;
+  const taskId = req.body.taskId;
+
+  Student.findOne({ username: studentName }, function (err, student) {
+    //console.log("found student name  :" + student);
+
+    if (!err) {
+      const studentTasks = student.tasks;
+      console.log("tasks" + studentTasks);
+
+      var taskToBeDeleted;
+      studentTasks.forEach((task) => {
+        if (task._id.toString() === taskId.toString()) {
+          taskToBeDeleted = task;
+        }
+      });
+      const index = studentTasks.indexOf(taskToBeDeleted);
+      console.log(index);
+      studentTasks.splice(index, 1, newTask);
+      console.log(studentTasks);
+
+      Student.updateOne(
+        { username: studentName },
+        { tasks: studentTasks },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(
+              "tasks of student: " + studentName + " has been updated"
+            );
+            res.send(student.tasks);
+          }
+        }
+      );
     } else {
       //console.log("student not found");
       res.send(err);

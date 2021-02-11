@@ -31,15 +31,8 @@ router.post("/register", async (req, res) => {
     return res.status(400).send("Student already exists");
   }
 
-  // hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
   // create new student
-  const student = new Student({
-    username: req.body.username,
-    password: hashedPassword,
-  });
+  const student = new Student(req.body);
 
   // save new student
   try {
