@@ -1,13 +1,13 @@
 #taskHolder{
     width: 60%;
     height: 150%;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
     margin-left: 30%;
     margin-top: 10%;
 }
 #buttonHolder {
     width: 100%;
-    border: 1px solid red;
+    /*border: 1px solid red;*/
     height: 100px;
     display: flex;
     align-items: center;
@@ -80,7 +80,22 @@
     background:#fff;
 }
 
-.inpbox {
+.inpbox, #taskType {
     width: 50%;
     margin-top: 3.3%;
 }
+
+#tasklistitems {
+    margin-top: 5%;
+}
+
+#tasklistitemholder {
+    float: left;
+}
+/*
+#editButton {
+    display: none;
+    float: right;
+    margin-left: 40px;
+}
+*/
