@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "test": "jest",
-    "behaviour test": "cucumber-js"
+    "behaviour-test": "cucumber-js"
   },
   "author": "",
   "license": "ISC",
