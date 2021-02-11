@@ -3,10 +3,12 @@
     <h1>Sign Up</h1>
     <p>Please fill in this form to create an account.</p>
     <div class="container">
-      <span v-if="errorSignup" style="color: red"
+      <span v-if="errorSignup" style="color: red" id="error"
         >Error: {{ errorSignup }}</span
       >
-      <span v-if="signupSuccess" style="color: green">{{ signupSuccess }}</span>
+      <span v-if="signupSuccess" style="color: green" id="success">{{
+        signupSuccess
+      }}</span>
       <hr />
       <div>
         <input
@@ -15,6 +17,7 @@
           value="nonPartner"
           v-model="userType"
           checked
+          id="nonPartner"
         />
         <label for="nonPartner">Non-Partner-University Student</label>
         <input
@@ -22,6 +25,7 @@
           name="userType"
           value="partner"
           v-model="userType"
+          id="partner"
         />
         <label for="partner">Partner-University Student</label>
         <br />
@@ -35,6 +39,7 @@
               placeholder="Enter Name"
               name="name"
               v-model="name"
+              id="name"
             />
           </div>
           <div class="col">
@@ -46,6 +51,7 @@
               placeholder="Enter Email"
               name="email"
               v-model="email"
+              id="email"
             />
           </div>
         </div>
@@ -59,6 +65,7 @@
               placeholder="Enter Password"
               name="psw"
               v-model="psw"
+              id="psw"
             />
           </div>
           <div class="col">
@@ -70,6 +77,7 @@
               placeholder="Repeat Password"
               name="pswRepeat"
               v-model="pswRepeat"
+              id="pswRepeat"
             />
           </div>
         </div>
@@ -86,6 +94,7 @@
               name="school"
               v-model="school"
               v-if="userType == 'partner'"
+              id="school"
             />
           </div>
           <div class="col">
@@ -100,6 +109,7 @@
               name="studentID"
               v-model="studentID"
               v-if="userType == 'partner'"
+              id="studentID"
             />
           </div>
         </div>
@@ -111,7 +121,8 @@
             signup(name, email, psw, pswRepeat, school, studentID, userType)
           "
           class="signupbtn"
-          v-bind:disabled="!name || !email || !psw || !pswRepeat"
+          v-bind:disabled="!name || !email || !psw || !pswRepeat || !userType"
+          id="signupbtn"
         >
           Sign Up
         </button>
@@ -170,7 +181,7 @@ export default {
       studentID,
       userType
     ) {
-      var letters = /^[0-9a-zA-Z]+$/;
+      var letters = /^[a-z\d\-_\s]+$/i;
       if (!name.match(letters)) {
         this.errorSignup = "The name must have alphanumeric characters";
         this.signupSuccess = "";
@@ -201,18 +212,46 @@ export default {
           this.signupSuccess = "";
           return;
         }
-        //To be added "The email already exists"
-        this.errorSignup = "";
+        let params = {
+          username: name,
+          password: psw,
+        };
+
+        AXIOS.post("/api/authentication/register", params)
+          .then((response) => {
+            this.errorSignup = "";
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorSignup = e;
+            this.signupSuccess = "";
+            console.log(e);
+            return;
+          });
       } else {
         if (!school || !studentID) {
           this.errorSignup = "Must register as a partner university student";
           this.signupSuccess = "";
           return;
         }
-        //To be added "The email already exists"
-        this.errorSignup = "";
+        let params = {
+          username: name,
+          password: psw,
+        };
+
+        AXIOS.post("/api/authentication/register", params)
+          .then((response) => {
+            this.errorSignup = "";
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorSignup = e;
+            this.signupSuccess = "";
+            console.log(e);
+            return;
+          });
       }
-      this.signupSuccess = "Registering...";
+      this.signupSuccess = "Sucessfully Registered!";
     },
   },
 };
