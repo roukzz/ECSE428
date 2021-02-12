@@ -4,6 +4,7 @@
     <ul>
       <li><a href="http://127.0.0.1:8087/#/Signup" target="_blank">Signup</a></li>
       <li><a href="http://127.0.0.1:8087/#/Login" target="_blank">Login</a></li>
+      <li><a href="http://127.0.0.1:8087/#/CreateTask" target="_blank">Create Task</a></li>
     </ul>
   </div>
 </template>
