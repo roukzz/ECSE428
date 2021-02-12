@@ -14,7 +14,8 @@
           with friends, get personalized schedule recommendations and much more!
         </span>
       </div>
-      <button onClick="window.open('http://127.0.0.1:8087/#/CreateTask')">Create</button>
+      
+      <!-- <button onClick="window.open('http://127.0.0.1:8087/#/CreateTask')">Create</button> -->
     </div>
 
     <!-- Form -->
