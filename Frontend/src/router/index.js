@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/pages/Hello'
 import Registration from '@/components/Registration'
 import Login from '@/pages/Login'
 import CreateTask from '@/components/CreateTask'
@@ -11,8 +10,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello
+      name: 'Login',
+      component: Login
     },{
       path: '/Signup',
       name: 'Registration',
