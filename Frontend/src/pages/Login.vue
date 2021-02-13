@@ -89,7 +89,7 @@ export default {
           .then((response) => {
             console.log("Logged in successfully.")
             this.auth_key = response.data;
-            //this.$router.push({name: 'Home', params: {uname: this.username, auth_key: this.auth_key}});
+            this.$router.push({name: 'Home', params: {uname: this.username, auth_key: this.auth_key}});
           })
           .catch((e) => {
             console.log("Log in failed.")

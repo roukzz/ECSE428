@@ -73,13 +73,10 @@ export default {
     }
   }
 
-
 };
 </script>
 
 <style scoped>
-
-
 
 #create_form {
   margin: 0 auto;
