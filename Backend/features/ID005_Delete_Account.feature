@@ -5,12 +5,9 @@ Feature: Delete an account
     So that I can remove my personal information from the application when I am done using it
 
     Background:
-        Given the following users with username "<username>" and password "<password>" are registered in the system
-
-            | username     | password      |
-            | GordonRamsay | iloverawsteak |
-            | KeanuReeves  | iamalegend    |
-            | OprahWinfrey | icanthost     |
+        Given the following users with username "GordonRamsay" and password "iloverawsteak" are registered in the system
+        Given the following users with username "KeanuReeves" and password "iamalegend" are registered in the system
+        Given the following users with username "OprahWinfrey" and password "icanthost" are registered in the system
 
     Scenario Outline: Delete an account of an existing user (Normal Flow)
 
