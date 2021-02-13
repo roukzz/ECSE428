@@ -27,10 +27,11 @@
 
       <!-- Fields -->
       <div id="login_fields">
-        <input type="text" id="field_uname" placeholder="username">
-        <input type="text" id="field_password" placeholder="password">
+        <div id="error_msg">{{ error_msg }}</div>
+        <input type="text" id="field_uname" placeholder="username" v-model="username">
+        <input type="password" id="field_password" placeholder="password" v-model="password">
         <div id="password_recovery">Forgot password?</div>
-        <button type="button">Log in</button>
+        <button type="button" v-on:click="login();">Log in</button>
         <div id="create_account" v-on:click="toRegistration();">Not registered? Create account</div>
       </div>
     </div>
@@ -38,13 +39,72 @@
 </template>
 
 <script>
+import axios from "axios";
+let config = require("../../config");
+
+let backendConfigurer = function () {
+  switch (process.env.NODE_ENV) {
+    case "testing":
+    case "development":
+      return "http://" + config.dev.backendHost + ":" + config.dev.backendPort;
+    case "production":
+      return (
+        "https://" + config.build.backendHost + ":" + config.build.backendPort
+      );
+  }
+};
+
+let backendUrl = backendConfigurer();
+
+let AXIOS = axios.create({
+  baseURL: backendUrl,
+  // headers: {'Access-Control-Allow-Origin': frontendUrl}
+});
+
 export default {
   name: "Login",
-  components: {
+  data () {
+    return {
+      username: "",
+      password: "",
+      error_msg: "",
+      auth_key: ""
+    }
   },
   methods: {
     toRegistration() {
       this.$router.push('Signup');
+    },
+    login () {
+      
+      // Call backend to see if user credentials are valid
+        // True -> navigate to home page with parameters (loginSuccess)
+        // False -> display error message and stay on current page (loginFailure)
+        var params = {
+          username: this.username,
+          password: this.password
+        }
+
+        AXIOS.post("/api/authentication/login", params)
+          .then((response) => {
+            console.log("Logged in successfully.")
+            this.auth_key = response.data;
+            //this.$router.push({name: 'Home', params: {uname: this.username, auth_key: this.auth_key}});
+          })
+          .catch((e) => {
+            console.log("Log in failed.")
+            e = e.response.data ? e.response.data : e;
+            if (e == "Invalid username" ||
+                  e == '"username" length must be at least 3 characters long') {
+              this.error_msg = "Invalid username";
+            }
+            else if (e == "Invalid password" ||
+                      e == '"password" length must be at least 6 characters long') {
+              this.error_msg = "Invalid password";
+            }
+            console.log(e)
+            return;
+          });
     }
   }
 };
@@ -76,7 +136,6 @@ export default {
 
 #login_fields {
   margin: 0 auto;
-  margin-top: 10px;
   width: 220px;
   height: fit-content;
 }
@@ -87,18 +146,26 @@ export default {
 }
 
 #login_fields div {
-  width: calc(100% - 20px);
   text-align: center;
-  color: #42bff5;
   font-size: 14px;
 }
 
+#error_msg {
+  width: 100%;
+  height: 21px;
+  color: red;
+}
+
 #password_recovery {
+  width: calc(100% - 20px);
+  color: #42bff5;
   margin-top: -5px;
 }
 
 #create_account {
-  margin-top: 20px;
+  width: calc(100% - 20px);
+  color: #42bff5;
+  margin-top: 10px;
 }
 
 #password_recovery:hover, #create_account:hover {
