@@ -1,39 +1,36 @@
 const request = require('supertest');
-const mongoose = require('mongoose');
 
 const Student = require("../Models/student");
 const app = require('../server');
-const { mongoUri } = require('../globalConfig.json');
+const { connect, closeDatabase, clearDatabase } = require('../testdb');
 
 // setup mock database connection before each test case
 // create a student before each test case
-beforeEach((done) => {
-    mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }, async () => {
-
-        // add student to the database
-        let student = new Student({
-            username: "student",
-            password: "password"
-        });
-        await student.save();
-        done();
+beforeEach(async (done) => {
+    await connect();
+    let student = Student({
+        username: 'student',
+        password: 'password'
     });
+    await student.save();
+    done();
 });
 
 // drop the database after each test case
 // close the mock database connection after each test
-afterEach((done) => {
-    mongoose.connection.db.dropDatabase(() => {
-        mongoose.connection.close(() => done());
-    });
+afterEach(async (done) => {
+    await clearDatabase();
+    done();
+});
+
+afterAll(async (done) => {
+    await closeDatabase();
+    done();
 });
 
 describe("User Login Test", () => {
 
-    // Registered user unsucessful login attempt - failed username validation
+    // Registered user unsuccessful login attempt - failed username validation
     it("should fail login due to username validation", async () => {
 
         // login with invalid username but right password
