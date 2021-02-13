@@ -1,27 +1,55 @@
-const supertest = require('supertest');
+const request = require('supertest');
 const assert = require('assert');
-const mongoose = require('mongoose');
 const { Given, When, Then, And } = require('@cucumber/cucumber');
 
 const app = require('../../server');
 const Student = require("../../Models/student");
-const { mongoUri } = require('../../globalConfig.json')
+const { connect, clearDatabase, closeDatabase } = require('../../testdb');
 
-// connect to mock test server
-mongoose.connect(mongoUri);
-
-async function login(username, password) {
-
-    // try logging in
-    const res = await request(app).post('/api/authentication/login').send({
-        username: username,
-        password: password
+Given('user with email {string} with password {string}', async function (username, password) {
+    await connect();
+    let student = Student({
+        username,
+        password
     });
+    await student.save();
+});
 
-    // if success
-    if (res.statusCode === 200) {
-        return True;
-    } else {
-        return False;
-    }
-}
+When('user attempts to login into the system with email {string} and password {string}', async function (username, password) {
+    const res = await request(app).post('/api/authentication/login').send({
+        username,
+        password
+    });
+    this.answer = res.statusCode;
+    this.error = res.text;
+});
+
+Then('the user will receive a status code {string}', async function (statusCode) {
+    assert.strictEqual(this.answer, parseInt(statusCode));
+    await clearDatabase();
+    await closeDatabase();
+});
+
+Then('an error for password {string} message is displayed', async function (error) {
+    assert.strictEqual(this.error, error);
+    await clearDatabase();
+    await closeDatabase();
+});
+
+Then('an error for email {string} message is displayed', async function (error) {
+    assert.strictEqual(this.error, error);
+    await clearDatabase();
+    await closeDatabase();
+});
+
+Then('a password validation error {string} message is displayed', async function (error) {
+    assert.strictEqual(this.error, error);
+    await clearDatabase();
+    await closeDatabase();
+});
+
+Then('an email validation error {string} message is displayed', async function (error) {
+    assert.strictEqual(this.error, error);
+    await clearDatabase();
+    await closeDatabase();
+});
