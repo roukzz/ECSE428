@@ -5,32 +5,30 @@ Feature: Delete an account
     So that I can remove my personal information from the application when I am done using it
 
     Background:
-        Given The application is running
-        And the following users are registered in the system:
+        Given the following users with username "GordonRamsay" and password "iloverawsteak" are registered in the system
+        Given the following users with username "KeanuReeves" and password "iamalegend" are registered in the system
+        Given the following users with username "OprahWinfrey" and password "icanthost" are registered in the system
 
-            | name          | id    | email                        | password      | type        | school | schoolID  | valid |
-            | Gordon Ramsay | GR001 | gordon.ramsay@mail.mcgill.ca | iloverawsteak | partner     | McGill | 260802075 | true  |
-            | Keanu Reeves  | KR001 | keanu.reeves@mail.mcgill.ca  | iamalegend    | non-partner | null   | null      | true  |
-            | Oprah Winfrey | OW001 | oprah.winfrey@mail.mcgill.ca | icanthost     | non-partner | null   | null      | false |
+    Scenario Outline: Delete an account of an existing user (Normal Flow)
 
-    Scenario Outline: Delete an account (Normal Flow)
+        Given user with an username "<username>" with a password "<password>" is logged in
+        When user attempts to delete his account with username "<username>"
+        Then the user will receive a success status code "200"
 
-        Given user <name> with user id <id> is logged on to the application
-        When user requests to delete his account
-        And user confirms the request
-        Then user is logged out of the application
-        And his account and information are deleted from the system
+        Examples:
+            | username     | password      |
+            | GordonRamsay | iloverawsteak |
+            | KeanuReeves  | iamalegend    |
+            | OprahWinfrey | icanthost     |
 
-    Scenario Outline: User does not wish to delete his account anymore (Alternative Flow)
+    Scenario Outline: Delete an account of without being logged in (Error Flow)
 
-        Given user <name> with user id <id> is logged on to the application
-        When user requests to delete his account
-        And user does not confirm the request
-        Then the account is not deleted
+        Given user with username "<username>" with password "<password>" is not logged in
+        When user attempts to delete his account with username "<username>"
+        Then the user will receive a status code "401"
 
-    Scenario Outline: Invalid account (Error Flow)
-
-        Given user <name> with user id <id> is not registered in the system
-        When user requests to delete his account
-        Then the account is not deleted
-        And the system indicates a "account not found" error
+        Examples:
+            | username     | password      |
+            | GordonRamsay | iloverawsteak |
+            | KeanuReeves  | iamalegend    |
+            | OprahWinfrey | icanthost     |
