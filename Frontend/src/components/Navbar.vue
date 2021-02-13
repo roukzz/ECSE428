@@ -48,8 +48,8 @@ export default {
     helpClick() {
       document.getElementById("helpSupport").classList.toggle("active");
     },
-    signOut() {
-      
+    async signOut() {
+      localStorage.clear();
       this.$router.push('/Login');
     }
   }

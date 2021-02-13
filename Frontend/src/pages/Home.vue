@@ -165,6 +165,28 @@
 
 import NavBar from "@/components/NavBar";
 
+import axios from "axios";
+let config = require("../../config");
+
+let backendConfigurer = function () {
+  switch (process.env.NODE_ENV) {
+    case "testing":
+    case "development":
+      return "http://" + config.dev.backendHost + ":" + config.dev.backendPort;
+    case "production":
+      return (
+        "https://" + config.build.backendHost + ":" + config.build.backendPort
+      );
+  }
+};
+
+let backendUrl = backendConfigurer();
+
+let AXIOS = axios.create({
+  baseURL: backendUrl,
+  // headers: {'Access-Control-Allow-Origin': frontendUrl}
+});
+
 export default {
   name: "Home",
   components: {
@@ -200,7 +222,18 @@ export default {
       this.togglePopup();
     },
     deleteAccount() {
-        
+      let params = {
+          username: localStorage.getItem("username")
+        };
+        AXIOS.delete("/deleteStudentAccount", params)
+          .then((response) => {
+            console.log("Account deleted succesfully: " + params.username)
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            console.log(e);
+            return;
+          });
         this.$router.push('/Login');
     },
     removeTask(index) {
