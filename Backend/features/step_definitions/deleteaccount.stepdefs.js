@@ -26,7 +26,17 @@ Given(
       password,
     });
     this.authToken = res.text;
-    console.log(this.authToken);
+  }
+);
+
+Given(
+  "user with username {string} with password {string} is not logged in",
+  async function (username, password) {
+    const res = await request(app).post("/api/authentication/login").send({
+      username: "invalidUser",
+      password: "invalidPassword",
+    });
+    this.authToken = "";
   }
 );
 

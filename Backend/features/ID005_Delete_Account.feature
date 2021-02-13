@@ -23,10 +23,12 @@ Feature: Delete an account
 
     Scenario Outline: Delete an account of without being logged in (Error Flow)
 
-        Given user with username "username" with password "password" is not logged in
-        When user attempts to delete his account with username "username"
+        Given user with username "<username>" with password "<password>" is not logged in
+        When user attempts to delete his account with username "<username>"
         Then the user will receive a status code "401"
 
         Examples:
-            | username     | password   |
-            | Keanu Reeves | iamalegend |
+            | username     | password      |
+            | GordonRamsay | iloverawsteak |
+            | KeanuReeves  | iamalegend    |
+            | OprahWinfrey | icanthost     |
