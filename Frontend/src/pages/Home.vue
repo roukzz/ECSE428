@@ -116,13 +116,19 @@
       <div class="overlay"></div>
       <div class="content">
         <div class="close-btn" @click="togglePopupProfile()">&times;</div>
-            Profile
-            <br><br>
-            Name
-            <br><br>
-            Non-Partner University Student
-            <br><br><br><br>
-        <button type="button" class="btn btn-danger" v-on:click="deleteAccount()">Delete Account</button>
+        Profile
+        <br /><br />
+        Name
+        <br /><br />
+        Non-Partner University Student
+        <br /><br /><br /><br />
+        <button
+          type="button"
+          class="btn btn-danger"
+          v-on:click="deleteAccount()"
+        >
+          Delete Account
+        </button>
       </div>
     </div>
 
@@ -130,14 +136,14 @@
       <div class="overlay"></div>
       <div class="content">
         <div class="close-btn" @click="togglePopupSettings()">&times;</div>
-            Settings & Privacy
-            <br><br>
-            Mute Notifications
-            <br>
-            View Settings
-            <br>
-            View Privacy Guidelines
-            <br><br><br><br>
+        Settings & Privacy
+        <br /><br />
+        Mute Notifications
+        <br />
+        View Settings
+        <br />
+        View Privacy Guidelines
+        <br /><br /><br /><br />
       </div>
     </div>
 
@@ -145,15 +151,14 @@
       <div class="overlay"></div>
       <div class="content">
         <div class="close-btn" @click="togglePopupHelp()">&times;</div>
-            Profile
-            <br><br>
-            Name
-            <br><br>
-            Non-Partner University Student
-            <br><br><br><br>
+        Profile
+        <br /><br />
+        Name
+        <br /><br />
+        Non-Partner University Student
+        <br /><br /><br /><br />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -223,18 +228,18 @@ export default {
     },
     deleteAccount() {
       let params = {
-          username: localStorage.getItem("username")
-        };
-        AXIOS.delete("/deleteStudentAccount", params)
-          .then((response) => {
-            console.log("Account deleted succesfully: " + params.username)
-          })
-          .catch((e) => {
-            e = e.response.data ? e.response.data : e;
-            console.log(e);
-            return;
-          });
-        this.$router.push('/Login');
+        username: localStorage.getItem("username"),
+      };
+      AXIOS.delete("/deleteStudentAccount", params)
+        .then((response) => {
+          console.log("Account deleted succesfully: " + params.username);
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          console.log(e);
+          return;
+        });
+      this.$router.push("/Login");
     },
     removeTask(index) {
       this.tasklist.splice(index, 1);
