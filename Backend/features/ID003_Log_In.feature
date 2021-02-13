@@ -25,12 +25,12 @@ Feature: Log In
     Then an error for password "Invalid password" message is displayed
 
     Examples:
-      | email                            | password      | attemptedEmail                  | attemptedPassword |
-      | jason.fitz@mail.mcgill.ca        | qxt54237568   | jason.fitz@mail.mcgill.ca       | qzt54237568       |
-      | alphonse.tremblay@mail.mcgill.ca | kgw124003952  | alphonse.tremblay@mail.mcgill.ca| kgw12403952       |
-      | zao.xu@mail.mcgill.ca            | cbfdre3457    | zao.xu@mail.mcgill.ca           | cbfdre345         |
-      | raphael.desjardins@gmail.com     | jtrqa21074    | raphael.desjardins@gmail.com    | Jtraqa21074       |
-      | john.smith@outlook.com           | ydgrr5d658458 | john.smith@outlook.com          | ydgr5d658458      |
+      | email                            | password      | attemptedEmail                   | attemptedPassword |
+      | jason.fitz@mail.mcgill.ca        | qxt54237568   | jason.fitz@mail.mcgill.ca        | qzt54237568       |
+      | alphonse.tremblay@mail.mcgill.ca | kgw124003952  | alphonse.tremblay@mail.mcgill.ca | kgw12403952       |
+      | zao.xu@mail.mcgill.ca            | cbfdre3457    | zao.xu@mail.mcgill.ca            | cbfdre345         |
+      | raphael.desjardins@gmail.com     | jtrqa21074    | raphael.desjardins@gmail.com     | Jtraqa21074       |
+      | john.smith@outlook.com           | ydgrr5d658458 | john.smith@outlook.com           | ydgr5d658458      |
 
   Scenario Outline: User attempts to log in with Invalid Email (Error Flow)
 
@@ -53,12 +53,12 @@ Feature: Log In
     Then a password validation error "\"password\" length must be at least 6 characters long" message is displayed
 
     Examples:
-      | email                            | password      | attemptedEmail                  | attemptedPassword |
-      | jason.fitz@mail.mcgill.ca        | qxt54237568   | jason.fitz@mail.mcgill.ca       | a                 |
-      | alphonse.tremblay@mail.mcgill.ca | kgw124003952  | alphonse.tremblay@mail.mcgill.ca| k                 |
-      | zao.xu@mail.mcgill.ca            | cbfdre3457    | zao.xu@mail.mcgill.ca           | b                 |
-      | raphael.desjardins@gmail.com     | jtrqa21074    | raphael.desjardins@gmail.com    | c                 |
-      | john.smith@outlook.com           | ydgrr5d658458 | john.smith@outlook.com          | y                 |
+      | email                            | password      | attemptedEmail                   | attemptedPassword |
+      | jason.fitz@mail.mcgill.ca        | qxt54237568   | jason.fitz@mail.mcgill.ca        | a                 |
+      | alphonse.tremblay@mail.mcgill.ca | kgw124003952  | alphonse.tremblay@mail.mcgill.ca | k                 |
+      | zao.xu@mail.mcgill.ca            | cbfdre3457    | zao.xu@mail.mcgill.ca            | b                 |
+      | raphael.desjardins@gmail.com     | jtrqa21074    | raphael.desjardins@gmail.com     | c                 |
+      | john.smith@outlook.com           | ydgrr5d658458 | john.smith@outlook.com           | y                 |
 
   Scenario Outline: User attempts to log in with unaccepted username (Error Flow)
 

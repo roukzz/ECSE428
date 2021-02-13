@@ -19,6 +19,26 @@ route.get("/getStudentByUsername", verify, function (req, res) {
   });
 });
 
+// ===== delete an existing student =====
+// ======================================
+route.delete("/deleteStudentAccount", verify, async function (req, res) {
+  const studentName = req.body.username;
+
+  // checking if student is already in the database
+  const studentExist = await Student.findOne({ username: req.body.username });
+  if (!studentExist) {
+    return res.status(400).send("Student does not exist");
+  }
+
+  Student.deleteOne({ username: studentName }, function (err, student) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send("student account has been deleted");
+    }
+  });
+});
+
 // ===== add a task to an existing student =====
 // =============================================
 route.post("/addTaskToStudent", verify, async function (req, res) {
