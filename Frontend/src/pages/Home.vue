@@ -19,9 +19,25 @@
     <div class="popup" id="popup-1">
 
         <div class="overlay"></div>
-        <div class="content">
-                
-            <div class="close-btn" onclick="togglePopup()">&times;</div>
+        <div class="content" style="text-align: center">
+            <div class="close-btn" @click="togglePopup()">&times;</div>
+            <div style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px">
+                Create a new task
+            </div>
+            <!-- Messages -->
+            <div id="messages">
+                <div v-if="errorCreateTask" style="width:100%; color: red; text-align:center; margin: 0 auto" id="error"> {{ errorCreateTask }}</div>
+                <div v-if="successCreateTask" style="width:100%;color: green; text-align:center; margin: 0 auto" id="success"> {{ successCreateTask }}</div>
+            </div>
+            <!-- Fields -->
+            <div id="create_fields">
+                <div v-if="errorCreateTask && !title" style="color: red">* Required</div>
+                <input class="inpbox" type="text" id="title" placeholder="Task Title" v-model="title">
+                <div v-if="errorCreateTask && !description" style="color: red">* Required</div>
+                <input class="inpbox" type="text" id="description" placeholder="Description" v-model="description">
+                <button class="inpbox" type="button" @click="addNewTask()">Create Task</button>
+            </div>    
+            <!-- <div class="close-btn" onclick="togglePopup()">&times;</div>
         
             <input class="inpbox" type="text" v-model="newNewTask" placeholder="Task Title"> 
             <br>
@@ -37,7 +53,7 @@
             <input class="inpbox" type="text" v-model="deadline" placeholder="Deadline"> 
             <br>
             <br>
-            <button v-on:click="addNewTask()">Click to Add</button> 
+            <button v-on:click="addNewTask()">Click to Add</button>  -->
         </div>
   </div>
 
@@ -49,7 +65,7 @@
               
           <div class="close-btn" onclick="togglePopup2()">&times;</div>
       
-          <input class="inpbox" type="text" v-model="newNewTask" placeholder="Task Title"> 
+          <input class="inpbox" type="text" v-model="title" placeholder="Task Title"> 
           <br>
           <select id="taskType" v-model="tasktype">
               <option value="currentSelected">Current Selected Type</option>
@@ -58,7 +74,7 @@
               <option value="typeThree">Type Three</option>
           </select>
           <br>
-          <input class="inpbox" type="text" v-model="detail" placeholder="Task Details"> 
+          <input class="inpbox" type="text" v-model="description" placeholder="Task Details"> 
           <input class="inpbox" type="text" v-model="location" placeholder="Location"> 
           <input class="inpbox" type="text" v-model="deadline" placeholder="Deadline"> 
           <br>
@@ -72,39 +88,86 @@
 
 <script>
 
-/*function togglePopup2 () {
-    document.getElementById("popup-2").classList.toggle("active");
-}*/
+import axios from "axios";
+let config = require("../../config");
+
+let backendConfigurer = function () {
+  switch (process.env.NODE_ENV) {
+    case "testing":
+    case "development":
+      return "http://" + config.dev.backendHost + ":" + config.dev.backendPort;
+    case "production":
+      return (
+        "https://" + config.build.backendHost + ":" + config.build.backendPort
+      );
+  }
+};
+
+let backendUrl = backendConfigurer();
+
+let AXIOS = axios.create({
+  baseURL: backendUrl,
+  headers: {'auth-token': localStorage.getItem("auth_key")}
+  // headers: {'Access-Control-Allow-Origin': frontendUrl}
+});
 
 export default {
   name: "Home",
   data () {
     return {
-      newNewTask: '',
+      title: '',
       tasklist: [],
       tasktype:'',
-      detail: '',
+      description: '',
       location: '',
       deadline: '',
-      index: ''
+      index: '', 
+      errorCreateTask: '',
+      successCreateTask: ''
     }
   },
   methods: {
     
     addNewTask() {
-        this.tasklist.push ( {
-          title: this.newNewTask,
-          tasktype: this.tasktype,
-          detail: this.detail,
-          location: this.location,
-          deadline: this.deadline
-        });
+        if(!this.title || !this.description) {
+            this.errorCreateTask="Missing fields. Please fill in all required fields";
+            this.successCreateTask="";
+            return;
+        } 
+        
+        let params = {
+            username: localStorage.getItem("username"),
+            title: this.title,
+            description: this.description
+        }
 
-        this.newNewTask = '';
-        this.tasktype = '';
-        this.detail = '';
-        this.location = '';
-        this.deadline = '';
+        AXIOS.post("/api/student/addTaskToStudent", params)
+            .then((response) => {
+                this.errorCreateTask = "";
+                this.successCreateTask = "Successful new task";
+                console.log("Worked");
+                
+                this.tasklist.push ( {
+                    title: this.title,
+                    tasktype: this.tasktype,
+                    detail: this.description,
+                    location: this.location,
+                    deadline: this.deadline
+                });
+                
+                this.newNewTask = '';
+                this.tasktype = '';
+                this.detail = '';
+                this.location = '';
+                this.deadline = '';
+            })
+            .catch((e) => {
+                e = e.response.data ? e.response.data : e;
+                this.errorCreateTask = e;
+                this.successCreateTask = "";
+                console.log(e);
+                return;
+            });
         
         this.togglePopup();
     },
@@ -112,7 +175,9 @@ export default {
         this.tasklist.splice(index, 1);
     },
     togglePopup () {
-      document.getElementById("popup-1").classList.toggle("active");
+        this.errorCreateTask = "";
+        this.successCreateTask = "";
+        document.getElementById("popup-1").classList.toggle("active");
     }
   }
 };
@@ -157,7 +222,7 @@ export default {
     transform:translate(-50%,-50%) scale(0);
     background:#fff;
     width:500px;
-    height:250px;
+    height:300px;
     z-index:2;
     text-align:center;
     padding:20px;
@@ -169,8 +234,8 @@ export default {
     position:absolute;
     right:20px;
     top:20px;
-    width:30px;
-    height:30px;
+    width:35px;
+    height:35px;
     background:#222;
     color:#fff;
     font-size:25px;
@@ -204,8 +269,10 @@ export default {
 }
 
 .inpbox, #taskType {
+    text-align: center;
     width: 50%;
     margin-top: 3.3%;
+    border:2px solid #222;
 }
 
 #tasklistitems {
