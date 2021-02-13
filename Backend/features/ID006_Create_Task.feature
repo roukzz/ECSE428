@@ -34,15 +34,3 @@ Feature: create a Task into a course
       | assignment1 |             |
       | lab5-2      |             |
       | review      |             |
-
-  Scenario Outline: The user attempts to create a task with the same name as another task that was already created (Error Flow)
-
-    Given I have a task named <title> with description <initialDescription> already created
-    When  I create a task with title <title> and description <secondDescription>
-    Then I should be notified that another task with the same name already exists
-
-    Examples:
-      | title       | initialDescription              | secondDescription |
-      | assignment1 | Assignment for my Math Class    | ECSE assignemnt   |
-      | lab5-2      | Must attend this lab. Do PreLab | circuits TODO     |
-      | review      | Review for the exam             | Sleep well        |
