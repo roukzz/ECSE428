@@ -5,33 +5,32 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
+    <!-- <ul class="navbar-nav">
       <li class="nav-item active">
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
-      <!-- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link" href="#">Features</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Pricing</a>
-      </li> -->
-    </ul>
+      </li>
+    </ul> -->
   </div>
   <div class="dropdown">
     <b-dropdown id="dropdown-1" text="Account & Settings" class="m-md-2">
-      <b-dropdown-item-button @click="profileClick"><center>Profile</center></b-dropdown-item-button>
+      <b-dropdown-item-button @click="profileClick()"><center>Profile</center></b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
-      <b-dropdown-item-button @click="settingsClick"><center>Settings & Privacy</center></b-dropdown-item-button>
-      <b-dropdown-item-button @click="helpClick"><center>Help & Support</center></b-dropdown-item-button>
+      <b-dropdown-item-button @click="settingsClick()"><center>Settings & Privacy</center></b-dropdown-item-button>
+      <b-dropdown-item-button @click="helpClick()"><center>Help & Support</center></b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
       <div class="signout">
-        <b-button variant="primary" size="sm"  @click="signOut">Sign Out</b-button>
+        <b-button variant="primary" size="sm"  @click="signOut()">Sign Out</b-button>
       </div>
       <!-- <b-dropdown-item active>Active action</b-dropdown-item>
       <b-dropdown-item disabled>Disabled action</b-dropdown-item> -->
     </b-dropdown>
   </div>
-
 </nav>
 </template>
 
@@ -41,17 +40,16 @@ export default {
 
   methods: {
     profileClick() {
-      console.log("shdfjbsjdhbf");
-      this.$router.push('/Login');
+      document.getElementById("profile").classList.toggle("active");
     },
     settingsClick() {
-      console.log("hello");
+      document.getElementById("settingsPrivacy").classList.toggle("active");
     },
     helpClick() {
-      console.log("hi");
+      document.getElementById("helpSupport").classList.toggle("active");
     },
     signOut() {
-      // console.log("sup");
+      
       this.$router.push('/Login');
     }
   }
