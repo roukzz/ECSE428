@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/pages/Hello'
-import Registration from '@/components/Registration'
 import Login from '@/pages/Login'
+import Home from '@/pages/Home'
+import CreateTask from '@/components/CreateTask'
+import Registration from '@/components/Registration'
 
 Vue.use(Router)
 
@@ -10,8 +11,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello
+      name: 'Login',
+      component: Login
     },{
       path: '/Signup',
       name: 'Registration',
@@ -20,6 +21,14 @@ export default new Router({
       path: '/Login',
       name: 'Login',
       component: Login
+    },{
+      path: '/CreateTask',
+      name: 'CreateTask',
+      component: CreateTask
+    },{
+      path: '/Home',
+      name: 'Home',
+      component: Home
     }
   ]
 })
