@@ -19,7 +19,7 @@
   </div>
   <div class="dropdown">
     <b-dropdown id="dropdown-1" text="Account & Settings" class="m-md-2">
-      <b-dropdown-item-button @click="profileClick()"><center>Profile</center></b-dropdown-item-button>
+      <b-dropdown-item-button @click="profileClick()" id="profileButton"><center>Profile</center></b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
       <b-dropdown-item-button @click="settingsClick()"><center>Settings & Privacy</center></b-dropdown-item-button>
       <b-dropdown-item-button @click="helpClick()"><center>Help & Support</center></b-dropdown-item-button>
