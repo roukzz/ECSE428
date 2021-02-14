@@ -26,23 +26,23 @@ Feature: Create an account
         Then the user will receive a success status code "400" with error message "<error>"
 
         Examples:
-            | username     | password      | error |
-            | a            | iloverawsteak | gg    | 
-            | $            | iamalegend    | gg    |
-            | cd           | icanthost     | gg    |
+            | username     | password      | error                                                |
+            | a            | iloverawsteak | "username" length must be at least 3 characters long | 
+            | $            | iamalegend    | "username" length must be at least 3 characters long |
+            | cd           | icanthost     | "username" length must be at least 3 characters long |
 
 
 
-    Scenario Outline: Create an account with an existing username (Error Flow)
+    Scenario Outline: Create an account with an incorrect password (Error Flow)
 
         When a new user attempts to create an account with username "<username>" and password "<password>"
         Then the user will receive a success status code "400" with error message "<error>"
 
         Examples:
-            | username     | password      | error |
-            | afasfsafas   | Mamadou       | gg    |
-            | $asffddff    | comeonbrod    | gg    |
-            | cdsdasddd    | Nothing       | gg    |
+            | username     | password      | error                                                |
+            | afasfsafas   | dada          | "password" length must be at least 6 characters long |
+            | $asffddff    | vfvfg         | "password" length must be at least 6 characters long |
+            | cdsdasddd    | a             | "password" length must be at least 6 characters long |
 
 
 
