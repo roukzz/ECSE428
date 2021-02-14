@@ -19,7 +19,6 @@ beforeEach(async (done) => {
     password: "password",
   });
   authToken = res.text;
-  console.log(authToken);
   done();
 });
 
@@ -49,6 +48,7 @@ describe("Add Task Login Test", () => {
       .set("auth-token", authToken);
 
     expect(res.statusCode).toEqual(200);
+    expect(JSON.parse(res.text).pop().title).toEqual("TaskTitle");
   });
 
   //Empty description it should succeed

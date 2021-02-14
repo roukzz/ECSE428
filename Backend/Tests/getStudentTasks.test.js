@@ -11,6 +11,10 @@ beforeEach(async (done) => {
   let student = Student({
     username: "student",
     password: "password",
+    tasks: {
+      title: "TitleTask",
+      description: "DescriptionTask",
+    },
   });
   await student.save();
 
@@ -19,7 +23,6 @@ beforeEach(async (done) => {
     password: "password",
   });
   authToken = res.text;
-  console.log(authToken);
   done();
 });
 
@@ -39,12 +42,11 @@ describe("Add Task Login Test", () => {
   it("should succeed to get the tasks", async () => {
     // login with invalid username but right password
     const res = await request(app)
-      .post("/api/student/getStudentTasks")
+      .get("/api/student/getStudentTasks")
       .send({
         username: "student",
       })
       .set("auth-token", authToken);
-
     expect(res.statusCode).toEqual(200);
   });
 
@@ -53,7 +55,7 @@ describe("Add Task Login Test", () => {
   it("should fail to get the tasks", async () => {
     // login with invalid username but right password
     const res = await request(app)
-      .post("/api/student/getStudentTasks")
+      .get("/api/student/getStudentTasks")
       .send({
         username: "st",
       })
