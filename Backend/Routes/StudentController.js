@@ -91,7 +91,9 @@ route.put("/updateStudentTask", verify, async function (req, res) {
 
   const studentName = req.body.username;
   const taskId = req.body.taskId;
-
+  if (!taskId) {
+    return res.status(400).send("Student does not exist");
+  }
   Student.findOne({ username: studentName }, function (err, student) {
     //console.log("found student name  :" + student);
 
@@ -100,6 +102,7 @@ route.put("/updateStudentTask", verify, async function (req, res) {
       console.log("tasks" + studentTasks);
 
       var taskToBeDeleted;
+
       studentTasks.forEach((task) => {
         if (task._id.toString() === taskId.toString()) {
           taskToBeDeleted = task;

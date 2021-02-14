@@ -1,6 +1,6 @@
 const request = require("supertest");
 const assert = require("assert");
-const { Given, When, Then, And } = require("@cucumber/cucumber");
+const { Given, When, Then, And, DataTable } = require("@cucumber/cucumber");
 
 const app = require("../../server");
 const Student = require("../../Models/student");
@@ -8,6 +8,8 @@ const { connect, clearDatabase, closeDatabase } = require("../../testdb");
 
 let authToken;
 let message;
+let taskIDMap = new Map();
+let status;
 
 Given("The application is running", async function () {
   await connect();
@@ -44,12 +46,12 @@ When(
       .post("/api/student/addTaskToStudent")
       .send({
         username: "Bobby",
-        title: "Task Title",
-        description: "Task Description",
+        title: title,
+        description: description,
       })
       .set("auth-token", this.authToken);
     assert.strictEqual(res.statusCode, 200);
-    this.message = res.message;
+    status = res.statusCode;
   }
 );
 
@@ -60,12 +62,82 @@ Then("I should have a task associated to me", async function () {
       username: "Bobby",
     })
     .set("auth-token", this.authToken);
-  assert.strictEqual(res.body[0].title, "Task Title");
+  assert.ok(res.body[0].title);
 });
 
 Then(
   "I should receive a confirmation that my operation was successful",
   function () {
-    assert.ifError(this.message);
+    assert.strictEqual(status, 200);
+  }
+);
+
+//Update Task Section
+Given(
+  "that we have the following task in our database:",
+  async function (dataTable) {
+    // Write code here that turns the phrase above into concrete actions
+    for (let i = 0; i < dataTable.rows().length; i++) {
+      const res = await request(app)
+        .post("/api/student/addTaskToStudent")
+        .send({
+          username: "Bobby",
+          title: dataTable.rows()[i][0],
+          description: dataTable.rows()[i][1],
+        })
+        .set("auth-token", this.authToken);
+      taskIDMap.set(dataTable.rows()[i][0], [
+        JSON.parse(res.text).pop()._id,
+        dataTable.rows()[i][1],
+      ]);
+    }
+  }
+);
+
+When("I select a task with title {}", function (title) {
+  //Nothing to do here
+});
+
+When("I change the title of task {} to {}", async function (title, newTitle) {
+  let taskId = taskIDMap.get(title)[0];
+  let description = taskIDMap.get(title)[1];
+  const res = await request(app)
+    .put("/api/student/updateStudentTask")
+    .send({
+      username: "Bobby",
+      title: newTitle,
+      taskId: taskId,
+      description: description,
+    })
+    .set("auth-token", this.authToken);
+
+  status = res.statusCode;
+});
+
+When(
+  "I change the description of task {} to {}",
+  async function (title, newDescription) {
+    let taskId = taskIDMap.get(title) ? taskIDMap.get(title) : null;
+    if (taskId) {
+      taskId = taskId[0];
+    }
+    const res = await request(app)
+      .put("/api/student/updateStudentTask")
+      .send({
+        username: "Bobby",
+        title: title,
+        description: newDescription,
+        taskId: taskId,
+      })
+      .set("auth-token", this.authToken);
+    taskIDMap.set(title, [taskId, newDescription]);
+    status = res.statusCode;
+  }
+);
+
+Then(
+  "I should receive an error informing me that the requested resource was not found",
+  function () {
+    assert.strictEqual(status, 400);
   }
 );
