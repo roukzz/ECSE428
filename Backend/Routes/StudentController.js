@@ -67,9 +67,9 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
           if (err) {
             console.log(err);
           } else {
-            console.log(
-              "tasks of student: " + studentName + " has been updated"
-            );
+            // console.log(
+            //   "tasks of student: " + studentName + " has been updated"
+            // );
             res.send(student.tasks);
           }
         }
@@ -83,7 +83,7 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
 
 // ===== update existing student task =====
 // ========================================
-route.put("/updateStudentTask", verify, async function (req, res) {
+route.post("/updateStudentTask", verify, async function (req, res) {
   const newTask = new Task({
     title: req.body.title,
     description: req.body.description,
@@ -91,6 +91,7 @@ route.put("/updateStudentTask", verify, async function (req, res) {
 
   const studentName = req.body.username;
   const taskId = req.body.taskId;
+  // TODO fix
   if (!taskId) {
     return res.status(400).send("Student does not exist");
   }
@@ -99,7 +100,7 @@ route.put("/updateStudentTask", verify, async function (req, res) {
 
     if (!err) {
       const studentTasks = student.tasks;
-      console.log("tasks" + studentTasks);
+      // console.log("tasks" + studentTasks);
 
       var taskToBeDeleted;
 
@@ -109,9 +110,9 @@ route.put("/updateStudentTask", verify, async function (req, res) {
         }
       });
       const index = studentTasks.indexOf(taskToBeDeleted);
-      console.log(index);
+      // console.log(index);
       studentTasks.splice(index, 1, newTask);
-      console.log(studentTasks);
+      // console.log(studentTasks);
 
       Student.updateOne(
         { username: studentName },
@@ -120,9 +121,6 @@ route.put("/updateStudentTask", verify, async function (req, res) {
           if (err) {
             console.log(err);
           } else {
-            console.log(
-              "tasks of student: " + studentName + " has been updated"
-            );
             res.send(student.tasks);
           }
         }
