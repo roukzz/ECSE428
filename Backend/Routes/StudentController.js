@@ -148,27 +148,40 @@ route.get("/getStudentTasks", verify, function (req, res) {
 
 // ===== delete task of an existing student =====
 // ==============================================
-route.delete("/deleteStudentTask", verify, function (req, res) {
+route.post("/deleteStudentTask", verify, function (req, res) {
   const studentName = req.body.username;
   const taskId = req.body.taskId;
 
+  if (!studentName) {
+    return res.status(400).send("Please provide a username")
+  }
+  if (!taskId){
+    return res.status(400).send("Please provide a taskId")
+  }
+
   Student.findOne({ username: studentName }, function (err, student) {
     //console.log("found student name  :" + student);
-
+    if (!student){
+      return res.status(400).send("Student does not exist")
+    }
     if (!err) {
       const studentTasks = student.tasks;
-      console.log("tasks" + studentTasks);
+      //console.log("tasks" + studentTasks);
 
-      var taskToBeDeleted;
+      var taskToBeDeleted = null;
       studentTasks.forEach((task) => {
         if (task._id.toString() === taskId.toString()) {
           taskToBeDeleted = task;
         }
       });
+
+      if (!taskToBeDeleted){
+        return res.status(400).send("Task does not exist")
+      }
       const index = studentTasks.indexOf(taskToBeDeleted);
-      console.log(index);
+      //console.log(index);
       studentTasks.splice(index, 1);
-      console.log(studentTasks);
+      // console.log(studentTasks);
 
       Student.updateOne(
         { username: studentName },
@@ -177,9 +190,9 @@ route.delete("/deleteStudentTask", verify, function (req, res) {
           if (err) {
             console.log(err);
           } else {
-            console.log(
-              "tasks of student: " + studentName + " has been updated"
-            );
+            // console.log(
+            //   "tasks of student: " + studentName + " has been updated"
+            // );
             res.send(student.tasks);
           }
         }

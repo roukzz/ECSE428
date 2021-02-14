@@ -5,7 +5,6 @@ Feature: Update a Task
   So that my calendar will always be up to date
 
   Background:
-  Background:
     Given the following users with username "GordonRamsay" and password "iloverawsteak" are registered in the system
     Given the following users with username "GordonRamsay" and password "iloverawsteak" is logged in in the system
     Then the user with username "GordonRamsay" has a task with title "assignment1" and description "Do!"
