@@ -44,7 +44,7 @@ When(
   "user attempts to delete his account with username {string}",
   async function (username) {
     const res = await request(app)
-      .delete("/api/student/deleteStudentAccount")
+      .post("/api/student/deleteStudentAccount")
       .send({
         username,
       })
