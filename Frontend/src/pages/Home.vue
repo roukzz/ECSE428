@@ -222,11 +222,14 @@ export default {
         
         this.togglePopup();
     },
+
     deleteAccount() {
+      console.log(localStorage.getItem("username"));
       let params = {
         username: localStorage.getItem("username"),
       };
-      AXIOS.delete("/deleteStudentAccount", params)
+      console.log(params.username),
+      AXIOS.delete("/api/student/deleteStudentAccount", params)
         .then((response) => {
           console.log("Account deleted succesfully: " + params.username);
         })
@@ -235,6 +238,7 @@ export default {
           console.log(e);
           return;
         });
+      localStorage.clear();
       this.$router.push("/Login");
     },
     removeTask(index) {
