@@ -21,7 +21,7 @@ route.get("/getStudentByUsername", verify, function (req, res) {
 
 // ===== delete an existing student =====
 // ======================================
-route.delete("/deleteStudentAccount", verify, async function (req, res) {
+route.post("/deleteStudentAccount", verify, async function (req, res) {
   const studentName = req.body.username;
 
   // checking if student is already in the database

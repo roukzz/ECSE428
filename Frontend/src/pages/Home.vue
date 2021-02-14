@@ -1,26 +1,34 @@
 <template>
-
-<div id="wrapper">
-
-    <div id="taskHolder">     
-        <ul id="tasklistitemholder">
-            <li id="tasklistitems" v-for="(task, index) in tasklist">
-              {{ task.title }}
-              <button type="button" id="editButton" onclick="togglePopup2()">Edit Task</button>
-              <button type="button" class="btn btn-danger" @click="removeTask(index)">Delete</button>
-            </li>
-        </ul>
+  <div id="wrapper">
+    <NavBar></NavBar>
+    <div id="taskHolder">
+      <ul id="tasklistitemholder">
+        <li id="tasklistitems" v-for="(task, index) in tasklist">
+          {{ task.title }}
+          <button type="button" id="editButton" onclick="togglePopup2()">
+            Edit Task
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            @click="removeTask(index)"
+          >
+            Delete
+          </button>
+        </li>
+      </ul>
     </div>
 
     <div id="buttonHolder">
-        <button id="createTaskButton" v-on:click="togglePopup()">Create Task</button>
+      <button id="createTaskButton" v-on:click="togglePopup()">
+        Create Task
+      </button>
     </div>
-    
-    <div class="popup" id="popup-1">
 
-        <div class="overlay"></div>
-        <div class="content" style="text-align: center">
-            <div class="close-btn" @click="togglePopup()">&times;</div>
+    <div class="popup" id="popup-1">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+          <div class="close-btn" @click="togglePopup()">&times;</div>
             <div style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px">
                 Create a new task
             </div>
@@ -57,13 +65,55 @@
         </div>
   </div>
 
-    <div class="popup" id="popup-2">
-      
+    <div class="popup" id="profile">
       <div class="overlay"></div>
-      
       <div class="content">
-              
-          <div class="close-btn" onclick="togglePopup2()">&times;</div>
+        <div class="close-btn" @click="togglePopupProfile()">&times;</div>
+        Profile
+        <br /><br />
+        Name
+        <br /><br />
+        Non-Partner University Student
+        <br /><br /><br /><br />
+        <button
+          type="button"
+          class="btn btn-danger"
+          v-on:click="deleteAccount()"
+        >
+          Delete Account
+        </button>
+      </div>
+    </div>
+
+    <div class="popup" id="settingsPrivacy">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupSettings()">&times;</div>
+        Settings & Privacy
+        <br /><br />
+        Mute Notifications
+        <br />
+        View Settings
+        <br />
+        View Privacy Guidelines
+        <br /><br /><br /><br />
+      </div>
+    </div>
+
+    <div class="popup" id="helpSupport">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupHelp()">&times;</div>
+        Profile
+        <br /><br />
+        Name
+        <br /><br />
+        Non-Partner University Student
+        <br /><br /><br /><br />
+      </div>
+    </div>
+
+    <!-- <div class="close-btn" onclick="togglePopup2()">&times;</div>
       
           <input class="inpbox" type="text" v-model="title" placeholder="Task Title"> 
           <br>
@@ -79,16 +129,15 @@
           <input class="inpbox" type="text" v-model="deadline" placeholder="Deadline"> 
           <br>
           <br>
-          <button>Save</button> 
-      </div>
+          <button>Save</button> -->
   </div>
-</div>
 </template>
 
 
 <script>
-
+import NavBar from "@/components/NavBar";
 import axios from "axios";
+
 let config = require("../../config");
 
 let backendConfigurer = function () {
@@ -113,7 +162,10 @@ let AXIOS = axios.create({
 
 export default {
   name: "Home",
-  data () {
+  components: {
+    NavBar,
+  },
+  data() {
     return {
       title: '',
       tasklist: [],
@@ -127,9 +179,8 @@ export default {
     }
   },
   methods: {
-    
     addNewTask() {
-        if(!this.title || !this.description) {
+              if(!this.title || !this.description) {
             this.errorCreateTask="Missing fields. Please fill in all required fields";
             this.successCreateTask="";
             return;
@@ -171,14 +222,42 @@ export default {
         
         this.togglePopup();
     },
+
+    deleteAccount() {
+      console.log(localStorage.getItem("username"));
+      let params = {
+        username: localStorage.getItem("username"),
+      };
+      console.log(params.username),
+      AXIOS.post("/api/student/deleteStudentAccount", params)
+        .then((response) => {
+          console.log("Account deleted succesfully: " + params.username);
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          console.log(e);
+          return;
+        });
+      localStorage.clear();
+      this.$router.push("/Login");
+    },
     removeTask(index) {
-        this.tasklist.splice(index, 1);
+      this.tasklist.splice(index, 1);
     },
     togglePopup () {
         this.errorCreateTask = "";
         this.successCreateTask = "";
         document.getElementById("popup-1").classList.toggle("active");
-    }
+    },
+    togglePopupProfile() {
+      document.getElementById("profile").classList.toggle("active");
+    },
+    togglePopupSettings() {
+      document.getElementById("settingsPrivacy").classList.toggle("active");
+    },
+    togglePopupHelp() {
+      document.getElementById("helpSupport").classList.toggle("active");
+    },
   }
 };
 </script>
@@ -186,34 +265,34 @@ export default {
 
 
 <style scoped>
-#taskHolder{
-    width: 60%;
-    height: 150%;
-    /*border: 1px solid black;*/
-    margin-left: 30%;
-    margin-top: 10%;
+#taskHolder {
+  width: 60%;
+  height: 150%;
+  /*border: 1px solid black;*/
+  margin-left: 30%;
+  margin-top: 10%;
 }
 #buttonHolder {
-    width: 100%;
-    /*border: 1px solid red;*/
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+  width: 100%;
+  /*border: 1px solid red;*/
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
 .popup .overlay {
-    position:fixed;
-    top:0px;
-    left:0px;
-    width:100vw;
-    height:100vh;
-    background:rgba(0,0,0,0.7);
-    z-index:1;
-    display:none;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+  display: none;
 }
 .popup .content {
     position:absolute;
@@ -244,28 +323,28 @@ export default {
     text-align:center;
     border-radius:50%;
 }
-   
+
 .popup.active .overlay {
-    display:block;
+  display: block;
 }
-   
+
 .popup.active .content {
-    transition:all 300ms ease-in-out;
-    transform:translate(-50%,-50%) scale(1);
+  transition: all 300ms ease-in-out;
+  transform: translate(-50%, -50%) scale(1);
 }
-   
+
 .class-btn {
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    padding:15px;
-    font-size:18px;
-    border:2px solid #222;
-    color:#222;
-    text-transform:uppercase;
-    font-weight:600;
-    background:#fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px;
+  font-size: 18px;
+  border: 2px solid #222;
+  color: #222;
+  text-transform: uppercase;
+  font-weight: 600;
+  background: #fff;
 }
 
 .inpbox, #taskType {
@@ -276,11 +355,11 @@ export default {
 }
 
 #tasklistitems {
-    margin-top: 5%;
+  margin-top: 5%;
 }
 
 #tasklistitemholder {
-    float: left;
+  float: left;
 }
 /*
 #editButton {
