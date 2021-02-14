@@ -10,12 +10,12 @@ const verify = require("./VerifyToken");
 // ===== get a student by username =====
 // =====================================
 route.post("/getStudentByUsername", verify, function (req, res) {
-  if (!req.body.username){
-    return res.status(400).send("Please provide an username")
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
   }
   Student.findOne({ username: req.body.username }, function (err, student) {
-    if (!student){
-      return res.status(400).send("Student does not exist")
+    if (!student) {
+      return res.status(400).send("Student does not exist");
     }
     if (!err) {
       res.send(student);
@@ -28,8 +28,8 @@ route.post("/getStudentByUsername", verify, function (req, res) {
 // ===== delete an existing student =====
 // ======================================
 route.post("/deleteStudentAccount", verify, async function (req, res) {
-  if (!req.body.username){
-    return res.status(400).send("Please provide an username")
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
   }
   const studentName = req.body.username;
 
@@ -55,8 +55,8 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
     description: req.body.description,
   });
 
-  if (!req.body.username){
-    return res.status(400).send("Please provide an username")
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
   }
 
   const studentName = req.body.username;
@@ -64,8 +64,8 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
 
   Student.findOne({ username: studentName }, function (err, student) {
     //console.log("found student name  :" + student);
-    if (!student){
-      return res.status(400).send("Student does not exist")
+    if (!student) {
+      return res.status(400).send("Student does not exist");
     }
 
     if (!err) {
@@ -103,19 +103,19 @@ route.post("/updateStudentTask", verify, async function (req, res) {
     title: req.body.title,
     description: req.body.description,
   });
-  if (!req.body.username){
-    return res.status(400).send("Please provide an username")
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
   }
-  if (!req.body.taskId){
-    return res.status(400).send("Please provide an taskId")
+  if (!req.body.taskId) {
+    return res.status(400).send("Please provide an taskId");
   }
   const studentName = req.body.username;
   const taskId = req.body.taskId;
-  
+
   Student.findOne({ username: studentName }, function (err, student) {
     //console.log("found student name  :" + student);
-    if (!student){
-      return res.status(400).send("Student does not exists")
+    if (!student) {
+      return res.status(400).send("Student does not exists");
     }
 
     if (!err) {
@@ -130,8 +130,8 @@ route.post("/updateStudentTask", verify, async function (req, res) {
         }
       });
 
-      if (!taskToBeDeleted){
-        return res.status(400).send("Task does not exists")
+      if (!taskToBeDeleted) {
+        return res.status(400).send("Task does not exists");
       }
       const index = studentTasks.indexOf(taskToBeDeleted);
       // console.log(index);
@@ -159,15 +159,15 @@ route.post("/updateStudentTask", verify, async function (req, res) {
 // ===== get tasks of existing student =====
 // =========================================
 route.get("/getStudentTasks", verify, function (req, res) {
-  if (!req.body.username){
-    return res.status(400).send("Please provide an username")
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
   }
   const studentName = req.body.username;
   Student.findOne({ username: studentName }, function (err, student) {
-    if (!student){
-      return res.status(400).send("Student does not exists")
+    if (!student) {
+      return res.status(400).send("Student does not exists");
     }
-    console.log("found student name  :" + student);
+    // console.log("found student name  :" + student);
     if (!err) {
       res.send(student.tasks);
     } else {
@@ -183,16 +183,16 @@ route.post("/deleteStudentTask", verify, function (req, res) {
   const taskId = req.body.taskId;
 
   if (!studentName) {
-    return res.status(400).send("Please provide a username")
+    return res.status(400).send("Please provide a username");
   }
-  if (!taskId){
-    return res.status(400).send("Please provide a taskId")
+  if (!taskId) {
+    return res.status(400).send("Please provide a taskId");
   }
 
   Student.findOne({ username: studentName }, function (err, student) {
     //console.log("found student name  :" + student);
-    if (!student){
-      return res.status(400).send("Student does not exist")
+    if (!student) {
+      return res.status(400).send("Student does not exist");
     }
     if (!err) {
       const studentTasks = student.tasks;
@@ -205,8 +205,8 @@ route.post("/deleteStudentTask", verify, function (req, res) {
         }
       });
 
-      if (!taskToBeDeleted){
-        return res.status(400).send("Task does not exist")
+      if (!taskToBeDeleted) {
+        return res.status(400).send("Task does not exist");
       }
       const index = studentTasks.indexOf(taskToBeDeleted);
       //console.log(index);

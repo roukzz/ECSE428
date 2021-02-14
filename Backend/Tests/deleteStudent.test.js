@@ -39,15 +39,16 @@ describe("Delete Account", () => {
       .set("auth-token", res1.headers["auth-token"])
       .send({
         username: "student",
-        taskId: this.task._id.toString(),
       });
     expect(res2.statusCode).toEqual(200);
   });
 
   it("should not delete a task of an unauthenticated user", async () => {
-    const res = await request(app).post("/api/student/deleteStudentAccount").send({
-      username: "student",
-    });
+    const res = await request(app)
+      .post("/api/student/deleteStudentAccount")
+      .send({
+        username: "student",
+      });
     expect(res.statusCode).toEqual(401);
   });
 });
