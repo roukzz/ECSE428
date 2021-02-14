@@ -63,12 +63,16 @@ Then("I should have a task associated to me", async function () {
     })
     .set("auth-token", this.authToken);
   assert.ok(res.body[0].title);
+  await clearDatabase();
+  await closeDatabase();
 });
 
 Then(
   "I should receive a confirmation that my operation was successful",
-  function () {
+  async function () {
     assert.strictEqual(status, 200);
+    await clearDatabase();
+    await closeDatabase();
   }
 );
 
@@ -137,7 +141,9 @@ When(
 
 Then(
   "I should receive an error informing me that the requested resource was not found",
-  function () {
+  async function () {
     assert.strictEqual(status, 400);
+    await clearDatabase();
+    await closeDatabase();
   }
 );
