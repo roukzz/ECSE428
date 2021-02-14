@@ -9,7 +9,7 @@ const verify = require("./VerifyToken");
 
 // ===== get a student by username =====
 // =====================================
-route.get("/getStudentByUsername", verify, function (req, res) {
+route.post("/getStudentByUsername", verify, function (req, res) {
   Student.findOne({ username: req.body.username }, function (err, student) {
     if (!err) {
       res.send(student);
