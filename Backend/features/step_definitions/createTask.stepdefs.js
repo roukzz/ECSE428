@@ -13,6 +13,7 @@ let status;
 
 Given("The application is running", async function () {
   await connect();
+  await clearDatabase();
 });
 
 Given("that the user is registered", async function () {
