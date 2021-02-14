@@ -19,6 +19,8 @@ module.exports = {
       studentID: null
     }];
 
+    client.windowMaximize()
+
     for (var i = 0; i < registrations.length; i++) {
       client
         .url(config.url)
@@ -82,6 +84,8 @@ module.exports = {
       school: null,
       studentID: null
     }];
+
+    client.windowMaximize()
 
     for (var i = 0; i < registrations.length; i++) {
       client
@@ -185,6 +189,8 @@ module.exports = {
       studentID: null,
       error: "The name must have alphanumeric characters"
     }];
+
+    client.windowMaximize()
 
     for (var i = 0; i < registrations.length; i++) {
       client

@@ -24,7 +24,8 @@ module.exports = {
       silent: true,
       globals: {
         devServerURL: 'http://localhost:' + (process.env.PORT || config.dev.port) + '/#/app'
-      }
+      },
+      webStorageEnabled : true
     },
 
     chrome: {
