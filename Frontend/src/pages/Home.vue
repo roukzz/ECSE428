@@ -229,7 +229,7 @@ export default {
         username: localStorage.getItem("username"),
       };
       console.log(params.username),
-      AXIOS.delete("/api/student/deleteStudentAccount", params)
+      AXIOS.post("/api/student/deleteStudentAccount", params)
         .then((response) => {
           console.log("Account deleted succesfully: " + params.username);
         })
