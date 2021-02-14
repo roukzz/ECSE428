@@ -20,7 +20,6 @@ When(
 
 
 Then('the error message is error {string}', function (error) {
-  // Write code here that turns the phrase above into concrete actions
   assert.strictEqual(this.text, error)
 });
 
