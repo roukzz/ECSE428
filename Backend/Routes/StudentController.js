@@ -83,7 +83,7 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
 
 // ===== update existing student task =====
 // ========================================
-route.put("/updateStudentTask", verify, async function (req, res) {
+route.post("/updateStudentTask", verify, async function (req, res) {
   const newTask = new Task({
     title: req.body.title,
     description: req.body.description,
