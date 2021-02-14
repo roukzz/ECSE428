@@ -2,32 +2,30 @@
   <div id="wrapper">
     <NavBar></NavBar>
     <div id="taskHolder">
-      <ul id="tasklistitemholder">
-        <tr id="tasklistitems" v-for="(task, index) in tasklist">
-            <td>
-                {{ task.title }}
-            </td>
-            <td>
-                {{task.description}}
-            </td>
-            <td> 
-              <button type="button" id="editButton" onclick="togglePopup2()">
-                Edit Task
-              </button>
-            </td>
-            <td>
-               <button
-                    type="button"
-                    class="btn btn-danger"
-                    @click="removeTask(index)"
-                >
-                     Delete
-                </button> 
-            </td>
-         
-          
-        </tr>
-      </ul>
+        <table>
+            <tr class="tasklistitems" v-for="(task, index) in tasklist">
+                <td>
+                    {{ task.title }}
+                </td>
+                <td>
+                    {{task.description}}
+                </td>
+                <td> 
+                <button type="button" class="editbutton" @click="togglePopupEdit(task, index)">
+                    Edit Task
+                </button>
+                </td>
+                <td>
+                <button
+                        type="button"
+                        class="btn btn-danger"
+                        @click="removeTask(task)"
+                    >
+                        Delete
+                    </button> 
+                </td>            
+            </tr>
+        </table>
     </div>
 
     <div id="buttonHolder">
@@ -36,10 +34,10 @@
       </button>
     </div>
 
-    <div class="popup" id="popup-1">
+    <div class="popup" id="popup-create">
       <div class="overlay"></div>
       <div class="content" style="text-align: center">
-        <div class="close-btn" @click="togglePopup()">&times;</div>
+        <div class="close-btn" @click="togglePopupCreate()">&times;</div>
         <div
           style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px"
         >
@@ -156,23 +154,60 @@
       </div>
     </div>
 
-    <!-- <div class="close-btn" onclick="togglePopup2()">&times;</div>
-      
-          <input class="inpbox" type="text" v-model="title" placeholder="Task Title"> 
-          <br>
-          <select id="taskType" v-model="tasktype">
-              <option value="currentSelected">Current Selected Type</option>
-              <option value="defaultType">Default Type</option>
-              <option value="typeTwo">Type Two</option>
-              <option value="typeThree">Type Three</option>
-          </select>
-          <br>
-          <input class="inpbox" type="text" v-model="description" placeholder="Task Details"> 
-          <input class="inpbox" type="text" v-model="location" placeholder="Location"> 
-          <input class="inpbox" type="text" v-model="deadline" placeholder="Deadline"> 
-          <br>
-          <br>
-          <button>Save</button> -->
+    <div class="popup" id="popup-edit">
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="close-btn" @click="togglePopupEdit()">&times;</div>
+            <div
+                style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px"
+            >
+                Edit task
+            </div>
+            <!-- Messages -->
+            <div id="messages">
+                <div
+                    v-if="errorCreateTask"
+                    style="width:100%; color: red; text-align:center; margin: 0 auto"
+                    id="error"
+                >
+                    {{ errorCreateTask }}
+                </div>
+                <div
+                    v-if="successCreateTask"
+                    style="width:100%;color: green; text-align:center; margin: 0 auto"
+                    id="success"
+                >
+                    {{ successCreateTask }}
+                </div>
+            </div>
+            <!-- Fields -->
+            <div id="create_fields">
+                <div v-if="errorCreateTask && !title" style="color: red">
+                    * Required
+                </div>
+                <input
+                    class="inpbox"
+                    type="text"
+                    id="title"
+                    :placeholder="[[title]]"
+                    v-model="title"
+                />
+                <div v-if="errorCreateTask && !description" style="color: red">
+                    * Required
+                </div>
+                <input
+                    class="inpbox"
+                    type="text"
+                    id="description"
+                    :placeholder="[[description]]"
+                    v-model="description"
+                />
+                <button class="inpbox" type="button" @click="editTask()">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -215,9 +250,10 @@ export default {
       description: "",
       location: "",
       deadline: "",
-      index: "",
+      index: -1,
       errorCreateTask: "",
-      successCreateTask: ""
+      successCreateTask: "", 
+      currenttask: null
     };
   },
 
@@ -259,14 +295,14 @@ export default {
           this.tasklist.push({
             title: this.title,
             tasktype: this.tasktype,
-            detail: this.description,
+            description: this.description,
             location: this.location,
             deadline: this.deadline
           });
 
-          this.newNewTask = "";
+          this.title = "";
           this.tasktype = "";
-          this.detail = "";
+          this.description = "";
           this.location = "";
           this.deadline = "";
         })
@@ -278,7 +314,7 @@ export default {
           return;
         });
 
-      this.togglePopup();
+      this.togglePopupCreate();
     },
 
     editTask() {
@@ -288,31 +324,37 @@ export default {
         this.successCreateTask = "";
         return;
       }
+
       let params = {
         username: localStorage.getItem("username"),
-        taskid: this.taskid, //TOBEADDED
+        taskId: this.currenttask._id,
         title: this.title,
         description: this.description
       };
+      //console.log(this.currenttask);
+      //console.log(this.currenttask._id);
       AXIOS.post("/api/student/updateStudentTask", params)
         .then(response => {
           this.errorCreateTask = "";
-          this.successCreateTask = "Successful new task";
-          console.log("Worked");
+          this.successCreateTask = "Successful edit of new task";
+          console.log("Edit successful");
+        
+           // console.log(this.tasklist);
 
-          this.tasklist.push({
-            title: this.title,
-            tasktype: this.tasktype,
-            detail: this.description,
-            location: this.location,
-            deadline: this.deadline
-          });
-
-          this.newNewTask = "";
-          this.tasktype = "";
-          this.detail = "";
-          this.location = "";
-          this.deadline = "";
+          //console.log(this.index);
+          //console.log(this.tasklist[this.index]);
+         
+         this.tasklist[this.index].title = this.title;
+         this.tasklist[this.index].description = this.description;
+          
+          this.title = "";
+         // this.tasktype = "";
+          this.description = "";
+          //this.location = "";
+          //this.deadline = "";
+          this.index = -1;
+          this.currenttask = null;
+          
         })
         .catch(e => {
           e = e.response.data ? e.response.data : e;
@@ -321,8 +363,8 @@ export default {
           console.log(e);
           return;
         });
-
-      this.togglePopupEdit();
+        
+        this.togglePopupEdit();
     },
 
     deleteAccount() {
@@ -346,10 +388,10 @@ export default {
     removeTask(index) {
       this.tasklist.splice(index, 1);
     },
-    togglePopup() {
+    togglePopupCreate() {
       this.errorCreateTask = "";
       this.successCreateTask = "";
-      document.getElementById("popup-1").classList.toggle("active");
+      document.getElementById("popup-create").classList.toggle("active");
     },
     togglePopupProfile() {
       document.getElementById("profile").classList.toggle("active");
@@ -359,6 +401,22 @@ export default {
     },
     togglePopupHelp() {
       document.getElementById("helpSupport").classList.toggle("active");
+    },
+    togglePopupEdit(task, index) {
+      this.errorCreateTask = "";
+      this.successCreateTask = "";
+      //console.log(task);
+      //console.log(this.title);
+      if(!this.title) {
+          this.title = task.title;
+          this.currenttask = task;
+          this.index = index;
+      } 
+      if(!this.description) {
+          this.description = task.description;
+      } 
+      //console.log(this.title);
+      document.getElementById("popup-edit").classList.toggle("active");
     }
   }
 };
@@ -455,12 +513,7 @@ export default {
   border: 2px solid #222;
 }
 
-#tasklistitems {
-  margin: 5%;
-  padding: 5%;
-}
-
-#tasklistitems td {
+.tasklistitems td {
     padding: 5%;
 }
 
