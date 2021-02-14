@@ -3,19 +3,30 @@
     <NavBar></NavBar>
     <div id="taskHolder">
       <ul id="tasklistitemholder">
-        <li id="tasklistitems" v-for="(task, index) in tasklist">
-          {{ task.title }}
-          <button type="button" id="editButton" onclick="togglePopup2()">
-            Edit Task
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger"
-            @click="removeTask(index)"
-          >
-            Delete
-          </button>
-        </li>
+        <tr id="tasklistitems" v-for="(task, index) in tasklist">
+            <td>
+                {{ task.title }}
+            </td>
+            <td>
+                {{task.description}}
+            </td>
+            <td> 
+              <button type="button" id="editButton" onclick="togglePopup2()">
+                Edit Task
+              </button>
+            </td>
+            <td>
+               <button
+                    type="button"
+                    class="btn btn-danger"
+                    @click="removeTask(index)"
+                >
+                     Delete
+                </button> 
+            </td>
+         
+          
+        </tr>
       </ul>
     </div>
 
@@ -445,7 +456,12 @@ export default {
 }
 
 #tasklistitems {
-  margin-top: 5%;
+  margin: 5%;
+  padding: 5%;
+}
+
+#tasklistitems td {
+    padding: 5%;
 }
 
 #tasklistitemholder {
