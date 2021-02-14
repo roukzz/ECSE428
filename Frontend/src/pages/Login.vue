@@ -4,7 +4,7 @@
     <!-- Intro -->
     <div>
       <!-- Name -->
-      <img src="../assets/logo.jpg" width="500px" height="auto" alt="mySchedule" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">
+      <img src="../assets/logo.jpg" id="logo" width="500px" height="auto" alt="mySchedule" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">
 
       <!-- Description -->
       <div id="login_intro_text">
@@ -31,7 +31,7 @@
         <input type="text" id="field_uname" placeholder="username" v-model="username">
         <input type="password" id="field_password" placeholder="password" v-model="password">
         <div id="password_recovery">Forgot password?</div>
-        <button type="button" v-on:click="login();">Log in</button>
+        <button id="login_button" type="button" v-on:click="login();">Log in</button>
         <div id="create_account" v-on:click="toRegistration();">Not registered? Create account</div>
       </div>
     </div>
@@ -98,11 +98,13 @@ export default {
             console.log("Log in failed.")
             e = e.response.data ? e.response.data : e;
             if (e == "Invalid username" ||
-                  e == '"username" length must be at least 3 characters long') {
+                  e == '"username" length must be at least 3 characters long' ||
+                    e == '"username" is not allowed to be empty') {
               this.error_msg = "Invalid username";
             }
             else if (e == "Invalid password" ||
-                      e == '"password" length must be at least 6 characters long') {
+                      e == '"password" length must be at least 6 characters long' ||
+                        e == '"password" is not allowed to be empty') {
               this.error_msg = "Invalid password";
             }
             console.log(e)
