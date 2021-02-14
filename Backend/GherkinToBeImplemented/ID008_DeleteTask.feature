@@ -40,7 +40,7 @@ Feature: Delete a task of an existing student
             | assignment3 |              |
 
         When  the user attempts to delete the task with title <title>
-        Then  he user will receive a failure status code {string}
+        Then  he user will receive a failure status code 
 
         Examples:
                 |    title    |
