@@ -147,3 +147,70 @@ Then(
     await closeDatabase();
   }
 );
+
+
+//Delete Task Section
+Given(
+  "that we have the following task in our database:",
+  async function (dataTable) {
+    // Write code here that turns the phrase above into concrete actions
+    for (let i = 0; i < dataTable.rows().length; i++) {
+      const res = await request(app)
+        .post("/api/student/addTaskToStudent")
+        .send({
+          username: "Bobby",
+          title: dataTable.rows()[i][0],
+          description: dataTable.rows()[i][1],
+        })
+        .set("auth-token", this.authToken);
+      taskIDMap.set(dataTable.rows()[i][0], [
+        JSON.parse(res.text).pop()._id,
+        dataTable.rows()[i][1],
+      ]);
+    }
+  }
+);
+
+When("I select a task with title {}", function (title) {
+  //Nothing to do here
+});
+
+When("I delete the task {} ", async function (title) {
+  let taskId = taskIDMap.get(title)[0];
+
+  const res = await request(app)
+    .post("/api/student/deleteStudentTask")
+    .send({
+      username: "Bobby",
+      taskId: taskId,
+  })
+    .set("auth-token", this.authToken);
+  status = res.statusCode;
+});
+
+When(
+  "I delete a task that doesn't exist",
+  async function (title) {
+    let taskId = taskIDMap.get(title) ? taskIDMap.get(title) : null;
+    if (taskId) {
+      taskId = taskId[0];
+    }
+    const res = await request(app)
+      .post("/api/student/deleteStudentTask")
+      .send({
+        username: "Bobby",
+        taskId: taskId,
+      })
+      .set("auth-token", this.authToken);
+    taskIDMap.set(title, [taskId, newDescription]);
+    status = res.statusCode;
+  }
+);
+
+Then(
+  "I should receive an error informing me that the requested resource was not found",
+  function () {
+    assert.strictEqual(status, 400);
+  }
+);
+
