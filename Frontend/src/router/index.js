@@ -10,17 +10,17 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: "/",
+      redirect: "/Login"
+    },
+    {
+      path: '/Login',
       name: 'Login',
       component: Login
     },{
       path: '/Signup',
       name: 'Registration',
       component: Registration
-    },{
-      path: '/Login',
-      name: 'Login',
-      component: Login
     },{
       path: '/CreateTask',
       name: 'CreateTask',

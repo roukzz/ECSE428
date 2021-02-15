@@ -120,6 +120,7 @@
           type="button"
           class="btn btn-danger"
           v-on:click="deleteAccount()"
+          id="deleteAccount"
         >
           Delete Account
         </button>

@@ -115,7 +115,7 @@
         </div>
         <hr />
 
-        <button type="button" class="cancelbtn">Cancel</button>
+        <button @click="toLogin()" class="cancelbtn">Cancel</button>
         <button
           @click="
             signup(name, email, psw, pswRepeat, school, studentID, userType)
@@ -182,12 +182,17 @@ export default {
       userType
     ) {
       var letters = /^[a-z\d\-_\s]+$/i;
+      var lettersEmail = /^[a-z\d\-_\s@.]+$/i;
       if (!name.match(letters)) {
         this.errorSignup = "The name must have alphanumeric characters";
         this.signupSuccess = "";
         return;
       } else if (!email.includes("@")) {
         this.errorSignup = "The email is incorrect";
+        this.signupSuccess = "";
+        return;
+      } else if (!email.match(lettersEmail)) {
+        this.errorSignup = "The email must have alphanumeric characters";
         this.signupSuccess = "";
         return;
       } else if (psw.length < 4 || psw.length > 14) {
@@ -283,6 +288,9 @@ export default {
             return;
           });
       }
+    },
+    toLogin: function () {
+      this.$router.push("Login");
     },
   },
 };

@@ -1,14 +1,17 @@
-const request = require('supertest');
-const assert = require('assert');
-const { Given, When, Then, And } = require('@cucumber/cucumber');
+const request = require("supertest");
+const assert = require("assert");
+const { Given, When, Then, And } = require("@cucumber/cucumber");
 
-const app = require('../../server');
+const app = require("../../server");
 const Student = require("../../Models/student");
-const { connect, clearDatabase, closeDatabase } = require('../../testdb');
+const { connect, clearDatabase, closeDatabase } = require("../../testdb");
 
+// ===== Step definitions for Create Account =====
+// ===============================================
 
 When(
-  "a new user attempts to create an account with username {string} and password {string}", async function (username, password) {
+  "a new user attempts to create an account with username {string} and password {string}",
+  async function (username, password) {
     const res = await request(app).post("/api/authentication/register").send({
       username,
       password,
@@ -18,12 +21,10 @@ When(
   }
 );
 
-
-Then('the error message is error {string}', function (error) {
+Then("the error message is error {string}", function (error) {
   // test
-  assert.strictEqual(this.text, error)
+  assert.strictEqual(this.text, error);
 });
-
 
 Then(
   "the user will receive an invalid status code {string}",
