@@ -29,7 +29,7 @@
     </div>
 
     <div id="buttonHolder">
-      <button id="createTaskButton" v-on:click="togglePopup()">
+      <button id="createTaskButton" v-on:click="togglePopupCreate()">
         Create Task
       </button>
     </div>
@@ -209,7 +209,7 @@
             </div>
         </div>
     </div>
-        <div class="popup" id="popup-delete">
+    <div class="popup" id="popup-delete">
         <div class="overlay"></div>
         <div class="content">
             <div class="close-btn" @click="togglePopupDelete()">&times;</div>
@@ -369,7 +369,7 @@ export default {
         description: this.description
       };
       //console.log(this.currenttask);
-      //console.log(this.currenttask._id);
+      console.log(this.currenttask._id);
       AXIOS.post("/api/student/updateStudentTask", params)
         .then(response => {
           this.errorCreateTask = "";
@@ -380,9 +380,11 @@ export default {
 
           //console.log(this.index);
           //console.log(this.tasklist[this.index]);
-         
-         this.tasklist[this.index].title = this.title;
-         this.tasklist[this.index].description = this.description;
+          // ID of task is modified when deleted
+        var tasks = response.data;
+        //console.log(tasks);
+        //  console.log(this.title);
+         this.tasklist = tasks;
           
           this.title = "";
          // this.tasktype = "";
@@ -473,14 +475,18 @@ export default {
       this.successCreateTask = "";
       //console.log(task);
       //console.log(this.title);
-      if(!this.title) {
+      if(task != null) {
           this.title = task.title;
           this.currenttask = task;
           this.index = index;
-      } 
-      if(!this.description) {
           this.description = task.description;
       } 
+    //   else {
+    //       this.title = "";
+    //       this.description = "";
+    //       this.index = -1;
+    //       this.currenttask = null;
+    //   }
       //console.log(this.title);
       document.getElementById("popup-edit").classList.toggle("active");
     },
@@ -489,12 +495,17 @@ export default {
       this.successCreateTask = "";
       //console.log(task);
       //console.log(this.title);
-      if(!this.title) {
+      if(task != null) {
           this.title = task.title;
           this.currenttask = task;
           this.index = index;
       } 
-
+        // else {
+        //   this.title = "";
+        //   this.description = "";
+        //   this.index = -1;
+        //   this.currenttask = null;
+        // }
       //console.log(this.title);
       document.getElementById("popup-delete").classList.toggle("active");
     }
