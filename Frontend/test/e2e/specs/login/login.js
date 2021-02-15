@@ -27,6 +27,7 @@ module.exports = {
     for (var i = 0; i < users.length; i++) {
       client
         .url(config.url)
+        .windowMaximize()
         .waitForElementVisible('body', config.time.visible)
         .setValue(config.id.username, users[i].username)
         .pause(config.time.pause)
@@ -35,7 +36,13 @@ module.exports = {
         .click(config.id.login)
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
-        .assert.urlEquals(config.destinationUrl_Home);
+        .assert.urlEquals(config.destinationUrl_Home)
+        .execute(function(data) {
+          return {storage: window.localStorage.getItem('username'), username: data};
+        }, [users[i].username], 
+          function (result) {
+            this.assert.equal(result.value.storage,result.value.username);
+        })
     }
     client.end();
   },
@@ -61,6 +68,7 @@ module.exports = {
     for (var i=0; i<users.length; i++) {
       client
         .url(config.url)
+        .windowMaximize()
         .waitForElementVisible('body', config.time.visible)
         .setValue(config.id.username, users[i].username)
         .pause(config.time.pause)
@@ -95,6 +103,7 @@ module.exports = {
     for (var i=0; i<users.length; i++) {
       client
         .url(config.url)
+        .windowMaximize()
         .waitForElementVisible('body', config.time.visible)
         .setValue(config.id.username, users[i].username)
         .pause(config.time.pause)
@@ -110,9 +119,12 @@ module.exports = {
   'Test registration navigation': function (client) {
     client
         .url(config.url)
+        .windowMaximize()
         .waitForElementVisible('body', config.time.visible)
         .click(config.id.signup)
+        .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
-        .assert.urlEquals(config.destinationUrl_Signup);
+        .assert.urlEquals(config.destinationUrl_Signup)
+        .end();
   }
 }

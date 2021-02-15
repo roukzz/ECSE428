@@ -25,7 +25,7 @@
       <b-dropdown-item-button @click="helpClick()"><center>Help & Support</center></b-dropdown-item-button>
       <b-dropdown-divider></b-dropdown-divider>
       <div class="signout">
-        <b-button variant="primary" size="sm"  @click="signOut()">Sign Out</b-button>
+        <b-button id="signout-button" variant="primary" size="sm"  @click="signOut()">Sign Out</b-button>
       </div>
       <!-- <b-dropdown-item active>Active action</b-dropdown-item>
       <b-dropdown-item disabled>Disabled action</b-dropdown-item> -->
