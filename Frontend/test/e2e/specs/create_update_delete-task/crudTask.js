@@ -36,6 +36,9 @@ module.exports = {
     //     description: "TASK3"
     //   }
     ];
+
+    client.windowMaximize()
+
     // Login before creating tasks
       client
         .url(config.url)

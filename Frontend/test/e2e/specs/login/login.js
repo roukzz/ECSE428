@@ -2,6 +2,9 @@ const config = require('./config.js');
 
 module.exports = {
   'Test for HTML elements': function (client) {
+
+    client.windowMaximize()
+
     client
         .url(config.url)
         .waitForElementVisible('body', config.time.visible)

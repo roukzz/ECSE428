@@ -8,6 +8,9 @@ module.exports = {
         password: "Maxime"
       }
     ]
+
+    client.windowMaximize()
+
     client
         .url(config.urls.login)
         .waitForElementVisible('body', config.time.visible)

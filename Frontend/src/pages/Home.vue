@@ -2,30 +2,40 @@
   <div id="wrapper">
     <NavBar></NavBar>
     <div id="taskHolder">
-        <table>
-            <tr class="tasklistitems" v-for="(task, index) in tasklist" v-bind:id="task._id">
-                <td>
-                    {{ task.title }}
-                </td>
-                <td>
-                    {{task.description}}
-                </td>
-                <td> 
-                <button id="editTaskButton" type="button" class="editbutton" @click="togglePopupEdit(task, index)">
-                    Edit Task
-                </button>
-                </td>
-                <td>
-                <button id="deleteTaskButton"
-                        type="button"
-                        class="btn btn-danger"
-                        @click="togglePopupDelete(task, index)"
-                    >
-                        Delete
-                    </button> 
-                </td>            
-            </tr>
-        </table>
+      <table>
+        <tr
+          class="tasklistitems"
+          v-for="(task, index) in tasklist"
+          v-bind:id="task._id"
+        >
+          <td>
+            {{ task.title }}
+          </td>
+          <td>
+            {{ task.description }}
+          </td>
+          <td>
+            <button
+              id="editTaskButton"
+              type="button"
+              class="editbutton"
+              @click="togglePopupEdit(task, index)"
+            >
+              Edit Task
+            </button>
+          </td>
+          <td>
+            <button
+              id="deleteTaskButton"
+              type="button"
+              class="btn btn-danger"
+              @click="togglePopupDelete(task, index)"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </table>
     </div>
 
     <div id="buttonHolder">
@@ -39,7 +49,13 @@
       <div class="content" style="text-align: center">
         <div class="close-btn" @click="togglePopupCreate()">&times;</div>
         <div
-          style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px"
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
         >
           Create a new task
         </div>
@@ -47,14 +63,19 @@
         <div id="messages">
           <div
             v-if="errorCreateTask"
-            style="width:100%; color: red; text-align:center; margin: 0 auto"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
             id="error"
           >
             {{ errorCreateTask }}
           </div>
           <div
             v-if="successCreateTask"
-            style="width:100%;color: green; text-align:center; margin: 0 auto"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
             id="success"
           >
             {{ successCreateTask }}
@@ -82,7 +103,12 @@
             placeholder="Description"
             v-model="description"
           />
-          <button class="inpbox" id="createbtn" type="button" @click="addNewTask()">
+          <button
+            class="inpbox"
+            id="createbtn"
+            type="button"
+            @click="addNewTask()"
+          >
             Create Task
           </button>
         </div>
@@ -156,94 +182,126 @@
     </div>
 
     <div class="popup" id="popup-edit">
-        <div class="overlay"></div>
-        <div class="content">
-            <div class="close-btn" @click="togglePopupEdit()">&times;</div>
-            <div
-                style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px"
-            >
-                Edit task
-            </div>
-            <!-- Messages -->
-            <div id="messages">
-                <div
-                    v-if="errorCreateTask"
-                    style="width:100%; color: red; text-align:center; margin: 0 auto"
-                    id="error"
-                >
-                    {{ errorCreateTask }}
-                </div>
-                <div
-                    v-if="successCreateTask"
-                    style="width:100%;color: green; text-align:center; margin: 0 auto"
-                    id="success"
-                >
-                    {{ successCreateTask }}
-                </div>
-            </div>
-            <!-- Fields -->
-            <div id="create_fields">
-                <div v-if="errorCreateTask && !title" style="color: red">
-                    * Required
-                </div>
-                <input
-                    class="inpbox"
-                    type="text"
-                    id="titleEdit"
-                    :placeholder="[[title]]"
-                    v-model="title"
-                />
-                <div v-if="errorCreateTask && !description" style="color: red">
-                    * Required
-                </div>
-                <input
-                    class="inpbox"
-                    type="text"
-                    id="descriptionEdit"
-                    :placeholder="[[description]]"
-                    v-model="description"
-                />
-                <button id="updateChanges" class="inpbox" type="button" @click="editTask()">
-                    Save Changes
-                </button>
-            </div>
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupEdit()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Edit task
         </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateTask"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateTask }}
+          </div>
+          <div
+            v-if="successCreateTask"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateTask }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <div v-if="errorCreateTask && !title" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="titleEdit"
+            :placeholder="[[title]]"
+            v-model="title"
+          />
+          <div v-if="errorCreateTask && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="descriptionEdit"
+            :placeholder="[[description]]"
+            v-model="description"
+          />
+          <button
+            id="updateChanges"
+            class="inpbox"
+            type="button"
+            @click="editTask()"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
     </div>
     <div class="popup" id="popup-delete">
-        <div class="overlay"></div>
-        <div class="content">
-            <div class="close-btn" @click="togglePopupDelete()">&times;</div>
-            <div
-                style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px"
-            >
-                You are about to delete the task: {{title}}. 
-                <br>
-                Please confirm.
-            </div>
-            <!-- Messages -->
-            <div id="messages">
-                <div
-                    v-if="errorCreateTask"
-                    style="width:100%; color: red; text-align:center; margin: 0 auto"
-                    id="error"
-                >
-                    {{ errorCreateTask }}
-                </div>
-                <div
-                    v-if="successCreateTask"
-                    style="width:100%;color: green; text-align:center; margin: 0 auto"
-                    id="success"
-                >
-                    {{ successCreateTask }}
-                </div>
-            </div>
-            <!-- Fields -->
-            <div id="create_fields">
-                <button class="inpbox" type="button" id="btndelete" @click="deleteTask()">
-                    Confirm Delete
-                </button>
-            </div>
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupDelete()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          You are about to delete the task: {{ title }}.
+          <br />
+          Please confirm.
         </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateTask"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateTask }}
+          </div>
+          <div
+            v-if="successCreateTask"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateTask }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <button
+            class="inpbox"
+            type="button"
+            id="btndelete"
+            @click="deleteTask()"
+          >
+            Confirm Delete
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -254,7 +312,7 @@ import axios from "axios";
 
 let config = require("../../config");
 
-let backendConfigurer = function() {
+let backendConfigurer = function () {
   switch (process.env.NODE_ENV) {
     case "testing":
     case "development":
@@ -268,16 +326,10 @@ let backendConfigurer = function() {
 
 let backendUrl = backendConfigurer();
 
-let AXIOS = axios.create({
-  baseURL: backendUrl,
-  headers: { "auth-token": localStorage.getItem("auth_key") }
-  // headers: {'Access-Control-Allow-Origin': frontendUrl}
-});
-
 export default {
   name: "Home",
   components: {
-    NavBar
+    NavBar,
   },
   data() {
     return {
@@ -289,20 +341,25 @@ export default {
       deadline: "",
       index: -1,
       errorCreateTask: "",
-      successCreateTask: "", 
-      currenttask: null
+      successCreateTask: "",
+      currenttask: null,
     };
   },
 
   beforeCreate() {
+    let AXIOS = axios.create({
+      baseURL: backendUrl,
+      headers: { "auth-token": localStorage.getItem("auth_key") },
+      // headers: {'Access-Control-Allow-Origin': frontendUrl}
+    });
     let params = {
-      username: localStorage.getItem("username")
+      username: localStorage.getItem("username"),
     };
     AXIOS.post("/api/student/getStudentByUsername", params)
-      .then(response => {
+      .then((response) => {
         this.tasklist = response.data.tasks;
       })
-      .catch(e => {
+      .catch((e) => {
         e = e.response.data ? e.response.data : e;
         console.log(e);
         return;
@@ -316,26 +373,30 @@ export default {
         this.successCreateTask = "";
         return;
       }
-
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
       let params = {
         username: localStorage.getItem("username"),
         title: this.title,
-        description: this.description
+        description: this.description,
       };
 
       AXIOS.post("/api/student/addTaskToStudent", params)
-        .then(response => {
+        .then((response) => {
           this.errorCreateTask = "";
           this.successCreateTask = "Successful new task";
           console.log("Worked");
 
-            // Updated tasklist is returned
+          // Updated tasklist is returned
           this.tasklist = response.data;
 
           this.title = "";
           this.description = "";
         })
-        .catch(e => {
+        .catch((e) => {
           e = e.response.data ? e.response.data : e;
           this.errorCreateTask = e;
           this.successCreateTask = "";
@@ -353,94 +414,106 @@ export default {
         this.successCreateTask = "";
         return;
       }
-
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
       let params = {
         username: localStorage.getItem("username"),
         taskId: this.currenttask._id,
         title: this.title,
-        description: this.description
+        description: this.description,
       };
       //console.log(this.currenttask);
       console.log(this.currenttask._id);
       AXIOS.post("/api/student/updateStudentTask", params)
-        .then(response => {
+        .then((response) => {
           this.errorCreateTask = "";
           this.successCreateTask = "Successful edit of task";
           console.log("Edit successful");
-        
-           // console.log(this.tasklist);
+
+          // console.log(this.tasklist);
 
           //console.log(this.index);
           //console.log(this.tasklist[this.index]);
           // ID of task is modified when deleted
-        var tasks = response.data;
-        //console.log(tasks);
-        //  console.log(this.title);
-         this.tasklist = tasks;
-          
+          var tasks = response.data;
+          //console.log(tasks);
+          //  console.log(this.title);
+          this.tasklist = tasks;
+
           this.title = "";
-         // this.tasktype = "";
+          // this.tasktype = "";
           this.description = "";
           //this.location = "";
           //this.deadline = "";
           this.index = -1;
           this.currenttask = null;
-          
         })
-        .catch(e => {
+        .catch((e) => {
           e = e.response.data ? e.response.data : e;
           this.errorCreateTask = e;
           this.successCreateTask = "";
           console.log(e);
           return;
         });
-        
-        this.togglePopupEdit();
+
+      this.togglePopupEdit();
     },
 
     deleteTask() {
-        let params = {
-            username: localStorage.getItem("username"),
-            taskId: this.currenttask._id
-        }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        taskId: this.currenttask._id,
+      };
 
-        AXIOS.post("/api/student/deleteStudentTask", params)
-            .then((response) => {
-                this.errorCreateTask = "";
-                this.successCreateTask = "Successful deletion of task";
-                console.log("Delete successful");
+      AXIOS.post("/api/student/deleteStudentTask", params)
+        .then((response) => {
+          this.errorCreateTask = "";
+          this.successCreateTask = "Successful deletion of task";
+          console.log("Delete successful");
 
-                // Remove element at this.index
-                this.tasklist.splice(this.index,1);
+          // Remove element at this.index
+          this.tasklist.splice(this.index, 1);
 
-                this.title = "";
-                this.description = "";
-                this.index = -1;
-                this.currenttask = null;
+          this.title = "";
+          this.description = "";
+          this.index = -1;
+          this.currenttask = null;
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateTask = e;
+          this.successCreateTask = "";
+          console.log(e);
+          return;
+        });
 
-            })
-            .catch(e => {
-                e = e.response.data ? e.response.data : e;
-                this.errorCreateTask = e;
-                this.successCreateTask = "";
-                console.log(e);
-                return;
-            });
-
-            this.togglePopupDelete();
+      this.togglePopupDelete();
     },
 
     deleteAccount() {
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
       console.log(localStorage.getItem("username"));
       let params = {
-        username: localStorage.getItem("username")
+        username: localStorage.getItem("username"),
       };
       console.log(params.username),
         AXIOS.post("/api/student/deleteStudentAccount", params)
-          .then(response => {
+          .then((response) => {
             console.log("Account deleted succesfully: " + params.username);
           })
-          .catch(e => {
+          .catch((e) => {
             e = e.response.data ? e.response.data : e;
             console.log(e);
             return;
@@ -467,18 +540,18 @@ export default {
       this.successCreateTask = "";
       //console.log(task);
       //console.log(this.title);
-      if(task != null) {
-          this.title = task.title;
-          this.currenttask = task;
-          this.index = index;
-          this.description = task.description;
-      } 
-    //   else {
-    //       this.title = "";
-    //       this.description = "";
-    //       this.index = -1;
-    //       this.currenttask = null;
-    //   }
+      if (task != null) {
+        this.title = task.title;
+        this.currenttask = task;
+        this.index = index;
+        this.description = task.description;
+      }
+      //   else {
+      //       this.title = "";
+      //       this.description = "";
+      //       this.index = -1;
+      //       this.currenttask = null;
+      //   }
       //console.log(this.title);
       document.getElementById("popup-edit").classList.toggle("active");
     },
@@ -487,21 +560,21 @@ export default {
       this.successCreateTask = "";
       //console.log(task);
       //console.log(this.title);
-      if(task != null) {
-          this.title = task.title;
-          this.currenttask = task;
-          this.index = index;
-      } 
-        // else {
-        //   this.title = "";
-        //   this.description = "";
-        //   this.index = -1;
-        //   this.currenttask = null;
-        // }
+      if (task != null) {
+        this.title = task.title;
+        this.currenttask = task;
+        this.index = index;
+      }
+      // else {
+      //   this.title = "";
+      //   this.description = "";
+      //   this.index = -1;
+      //   this.currenttask = null;
+      // }
       //console.log(this.title);
       document.getElementById("popup-delete").classList.toggle("active");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -597,11 +670,11 @@ export default {
 }
 
 .tasklistitems td {
-    padding: 5%;
+  padding: 5%;
 }
 
 .btndelete {
-    color: red;
+  color: red;
 }
 
 #tasklistitemholder {
