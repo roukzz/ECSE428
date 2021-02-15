@@ -19,7 +19,7 @@
                 <button
                         type="button"
                         class="btn btn-danger"
-                        @click="removeTask(task)"
+                        @click="togglePopupDelete(task, index)"
                     >
                         Delete
                     </button> 
@@ -208,6 +208,42 @@
             </div>
         </div>
     </div>
+        <div class="popup" id="popup-delete">
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="close-btn" @click="togglePopupDelete()">&times;</div>
+            <div
+                style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px"
+            >
+                You are about to delete the task: {{title}}. 
+                <br>
+                Please confirm.
+            </div>
+            <!-- Messages -->
+            <div id="messages">
+                <div
+                    v-if="errorCreateTask"
+                    style="width:100%; color: red; text-align:center; margin: 0 auto"
+                    id="error"
+                >
+                    {{ errorCreateTask }}
+                </div>
+                <div
+                    v-if="successCreateTask"
+                    style="width:100%;color: green; text-align:center; margin: 0 auto"
+                    id="success"
+                >
+                    {{ successCreateTask }}
+                </div>
+            </div>
+            <!-- Fields -->
+            <div id="create_fields">
+                <button class="inpbox" type="button" id="btndelete" @click="deleteTask()">
+                    Confirm Delete
+                </button>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -336,7 +372,7 @@ export default {
       AXIOS.post("/api/student/updateStudentTask", params)
         .then(response => {
           this.errorCreateTask = "";
-          this.successCreateTask = "Successful edit of new task";
+          this.successCreateTask = "Successful edit of task";
           console.log("Edit successful");
         
            // console.log(this.tasklist);
@@ -367,6 +403,38 @@ export default {
         this.togglePopupEdit();
     },
 
+    deleteTask() {
+        let params = {
+            username: localStorage.getItem("username"),
+            taskId: this.currenttask._id
+        }
+
+        AXIOS.post("/api/student/deleteStudentTask", params)
+            .then((response) => {
+                this.errorCreateTask = "";
+                this.successCreateTask = "Successful deletion of task";
+                console.log("Delete successful");
+
+                // Remove element at this.index
+                this.tasklist.splice(this.index,1);
+
+                this.title = "";
+                this.description = "";
+                this.index = -1;
+                this.currenttask = null;
+
+            })
+            .catch(e => {
+                e = e.response.data ? e.response.data : e;
+                this.errorCreateTask = e;
+                this.successCreateTask = "";
+                console.log(e);
+                return;
+            });
+
+            this.togglePopupDelete();
+    },
+
     deleteAccount() {
       console.log(localStorage.getItem("username"));
       let params = {
@@ -384,9 +452,6 @@ export default {
           });
       localStorage.clear();
       this.$router.push("/Login");
-    },
-    removeTask(index) {
-      this.tasklist.splice(index, 1);
     },
     togglePopupCreate() {
       this.errorCreateTask = "";
@@ -417,6 +482,20 @@ export default {
       } 
       //console.log(this.title);
       document.getElementById("popup-edit").classList.toggle("active");
+    },
+    togglePopupDelete(task, index) {
+      this.errorCreateTask = "";
+      this.successCreateTask = "";
+      //console.log(task);
+      //console.log(this.title);
+      if(!this.title) {
+          this.title = task.title;
+          this.currenttask = task;
+          this.index = index;
+      } 
+
+      //console.log(this.title);
+      document.getElementById("popup-delete").classList.toggle("active");
     }
   }
 };
@@ -515,6 +594,10 @@ export default {
 
 .tasklistitems td {
     padding: 5%;
+}
+
+.btndelete {
+    color: red;
 }
 
 #tasklistitemholder {
