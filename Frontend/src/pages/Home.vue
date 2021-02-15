@@ -329,19 +329,11 @@ export default {
           this.successCreateTask = "Successful new task";
           console.log("Worked");
 
-          this.tasklist.push({
-            title: this.title,
-            tasktype: this.tasktype,
-            description: this.description,
-            location: this.location,
-            deadline: this.deadline
-          });
+            // Updated tasklist is returned
+          this.tasklist = response.data;
 
           this.title = "";
-          this.tasktype = "";
           this.description = "";
-          this.location = "";
-          this.deadline = "";
         })
         .catch(e => {
           e = e.response.data ? e.response.data : e;
