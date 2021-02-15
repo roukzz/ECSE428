@@ -53,7 +53,7 @@ describe("Get student by username test", () => {
 
   //wrong username
 
-  it("should fail to get the tasks", async () => {
+  it("should fail to get the tasks because of invalid username", async () => {
     // login with invalid username but right password
     const res = await request(app)
       .post("/api/student/getStudentByUsername")

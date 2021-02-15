@@ -68,7 +68,7 @@ describe("Add Task Login Test", () => {
   });
 
   // Wrong username- Should fail
-  it("should fail to add task", async () => {
+  it("should fail to add task because of invalid username", async () => {
     // login with invalid username but right password
     try {
       const res = await request(app)
