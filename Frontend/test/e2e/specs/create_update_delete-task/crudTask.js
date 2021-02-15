@@ -76,12 +76,24 @@ module.exports = {
         .pause(config.time.pause)
         .setValue(config.id.descriptionEdit, tasks[i].description)
         .pause(config.time.pause)
-        .click(config.id.create)
+        .click(config.id.update)
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
         // .assert.urlEquals(config.destinationUrl_Home);
         // .assert.visible(config.newTask)
+    }
     // Delete tasks
+    for (var i = 0; i < tasks.length; i++) {
+      client
+        // .url(config.url)
+        // .waitForElementVisible('body', config.time.visible)
+        .click(config.id.deleteTask)
+        .pause(config.time.pause)
+        .click(config.id.delete)
+        .pause(config.time.pause)
+        .waitForElementVisible('body', config.time.visible)
+        // .assert.urlEquals(config.destinationUrl_Home);
+        // .assert.visible(config.newTask)
     }
     client.end();
   },

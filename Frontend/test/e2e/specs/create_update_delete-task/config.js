@@ -24,6 +24,8 @@ const config = {
       titleEdit: "#titleEdit",
       descriptionEdit: "#descriptionEdit",
       create: "#createbtn",
+      update: "#updateChanges",
+      delete: "#btndelete",
       newTask: "#task._id"
     },
     time: {
