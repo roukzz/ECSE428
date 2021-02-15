@@ -18,12 +18,14 @@ const config = {
     name: "Home",
     id: {
       createTask: "#createTaskButton",
-      updateTask: "",
-      deleteTask: "",
+      updateTask: "#",
+      deleteTask: "#",
       title: "#title",
       description: "#description",
-      create: "#",                  //TO BE ENTERED!!!!!
-      newTask: "#",                 //TO BE ENTERED!!!!!
+      titleEdit: "#titleEdit",
+      descriptionEdit: "#descriptionEdit",
+      create: "#createbtn",
+      newTask: "#arbitrarytitle",
 
     },
     time: {

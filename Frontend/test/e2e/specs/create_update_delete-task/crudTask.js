@@ -13,28 +13,28 @@ module.exports = {
         title: "aTask",
         description: "task1"
       },
-      {
-        title: "anotherTask",
-        description: "task2"
-      },
-      {
-        title: "lastTask",
-        description: "task3"
-      }
+      // {
+      //   title: "anotherTask",
+      //   description: "task2"
+      // },
+      // {
+      //   title: "lastTask",
+      //   description: "task3"
+      // }
     ];
     const updatedTasks = [
       {
         title: "myTask",
         description: "TASK1"
       },
-      {
-        title: "anotherTask",
-        description: "TASK2"
-      },
-      {
-        title: "finalTask",
-        description: "TASK3"
-      }
+    //   {
+    //     title: "anotherTask",
+    //     description: "TASK2"
+    //   },
+    //   {
+    //     title: "finalTask",
+    //     description: "TASK3"
+    //   }
     ];
     // Login before creating tasks
     client
@@ -71,15 +71,15 @@ module.exports = {
         // .waitForElementVisible('body', config.time.visible)
         .click(config.id.updateTask)
         .pause(config.time.pause)
-        .setValue(config.id.title, tasks[i].title)
+        .setValue(config.id.titleEdit, tasks[i].title)
         .pause(config.time.pause)
-        .setValue(config.id.description, tasks[i].description)
+        .setValue(config.id.descriptionEdit, tasks[i].description)
         .pause(config.time.pause)
         .click(config.id.create)
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
         // .assert.urlEquals(config.destinationUrl_Home);
-        .assert.visible(config.newTask)
+        // .assert.visible(config.newTask)
     // Delete tasks
     }
     client.end();
