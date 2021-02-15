@@ -13,23 +13,23 @@ const config = {
       password: "#field_password",
       recovery: "#password_recovery",
       login: "#login_button",
-      signup: "#create_account"
-    },
-    name: "Home",
-    id: {
+      signup: "#create_account",
+    // },
+    // id: {
       createTask: "#createTaskButton",
-      updateTask: "#",
-      deleteTask: "#",
+      updateTask: "#editTaskButton",
+      deleteTask: "#deleteTaskButton",
       title: "#title",
       description: "#description",
       titleEdit: "#titleEdit",
       descriptionEdit: "#descriptionEdit",
       create: "#createbtn",
-      newTask: "#arbitrarytitle",
-
+      update: "#updateChanges",
+      delete: "#btndelete",
+      newTask: "#task._id"
     },
     time: {
-      pause: 1500,
+      pause: 4500,
       visible: 1500
     }
   }

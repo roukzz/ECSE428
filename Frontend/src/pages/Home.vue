@@ -11,12 +11,12 @@
                     {{task.description}}
                 </td>
                 <td> 
-                <button type="button" class="editbutton" @click="togglePopupEdit(task, index)">
+                <button id="editTaskButton" type="button" class="editbutton" @click="togglePopupEdit(task, index)">
                     Edit Task
                 </button>
                 </td>
                 <td>
-                <button
+                <button id="deleteTaskButton"
                         type="button"
                         class="btn btn-danger"
                         @click="togglePopupDelete(task, index)"
@@ -82,7 +82,7 @@
             placeholder="Description"
             v-model="description"
           />
-          <button class="inpbox" type="button" @click="addNewTask()">
+          <button class="inpbox" id="createbtn" type="button" @click="addNewTask()">
             Create Task
           </button>
         </div>
@@ -203,7 +203,7 @@
                     :placeholder="[[description]]"
                     v-model="description"
                 />
-                <button class="inpbox" type="button" @click="editTask()">
+                <button id="updateChanges" class="inpbox" type="button" @click="editTask()">
                     Save Changes
                 </button>
             </div>

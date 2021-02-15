@@ -37,22 +37,21 @@ module.exports = {
     //   }
     ];
     // Login before creating tasks
-    client
+      client
         .url(config.url)
         .waitForElementVisible('body', config.time.visible)
-        .setValue(config.id.username, users[i].username)
+        .setValue(config.id.username, users[0].username)
         .pause(config.time.pause)
-        .setValue(config.id.password, users[i].password)
+        .setValue(config.id.password, users[0].password)
         .pause(config.time.pause)
         .click(config.id.login)
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
-        .assert.urlEquals(config.destinationUrl_Home);
+        .assert.urlEquals(config.destinationUrl_Home)
     // Create tasks
     for (var i = 0; i < tasks.length; i++) {
       client
         // .url(config.url)
-        // .waitForElementVisible('body', config.time.visible)
         .click(config.id.createTask)
         .pause(config.time.pause)
         .setValue(config.id.title, tasks[i].title)
@@ -63,7 +62,9 @@ module.exports = {
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
         // .assert.urlEquals(config.destinationUrl_Home);
-        .assert.visible(config.newTask)
+        .pause(config.time.pause)
+        // .assert.visible(config.newTask)
+    }
     // Update tasks
     for (var i = 0; i < tasks.length; i++) {
       client
@@ -75,127 +76,25 @@ module.exports = {
         .pause(config.time.pause)
         .setValue(config.id.descriptionEdit, tasks[i].description)
         .pause(config.time.pause)
-        .click(config.id.create)
+        .click(config.id.update)
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
         // .assert.urlEquals(config.destinationUrl_Home);
         // .assert.visible(config.newTask)
+    }
     // Delete tasks
-    }
-    client.end();
-  },
-  'Test for HTML elements': function (client) {
-    client
-        .url(config.url)
-        .waitForElementVisible('body', config.time.visible)
-        .assert.visible(config.id.logo)
-        .assert.visible(config.id.intro_text)
-        .assert.visible(config.id.form)
-        .assert.visible(config.id.fields)
-        .assert.visible(config.id.username)
-        .assert.visible(config.id.password)
-        .assert.visible(config.id.recovery)
-        .assert.visible(config.id.login)
-        .assert.visible(config.id.signup)
-        .end();
-  },
-  'Test login valid user': function (client) {
-    const users = [
-      {
-        username: "Maxime",
-        password: "Maxime"
-      }
-      // Need more accounts to test
-    ];
-    for (var i = 0; i < users.length; i++) {
+    for (var i = 0; i < tasks.length; i++) {
       client
-        .url(config.url)
-        .waitForElementVisible('body', config.time.visible)
-        .setValue(config.id.username, users[i].username)
+        // .url(config.url)
+        // .waitForElementVisible('body', config.time.visible)
+        .click(config.id.deleteTask)
         .pause(config.time.pause)
-        .setValue(config.id.password, users[i].password)
-        .pause(config.time.pause)
-        .click(config.id.login)
+        .click(config.id.delete)
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
-        .assert.urlEquals(config.destinationUrl_Home);
+        // .assert.urlEquals(config.destinationUrl_Home);
+        // .assert.visible(config.newTask)
     }
     client.end();
   },
-  'Test login invalid username': function (client) {
-    const users = [
-      {
-        username: "A",
-        password: "abcdef"
-      },
-      {
-        username: "wwwwwwwwwwwwwwwwwww",
-        password: "abcdef"
-      },
-      {
-        username: "",
-        password: "abcdef"
-      },
-      {
-        username: "山田先生",
-        password: "abcdef"
-      }
-    ];
-    for (var i=0; i<users.length; i++) {
-      client
-        .url(config.url)
-        .waitForElementVisible('body', config.time.visible)
-        .setValue(config.id.username, users[i].username)
-        .pause(config.time.pause)
-        .setValue(config.id.password, users[i].password)
-        .pause(config.time.pause)
-        .click(config.id.login)
-        .pause(config.time.pause)
-        .assert.urlEquals(config.url)
-        .assert.containsText(config.id.error, "Invalid username");
-    }
-    client.end();
-  },
-  'Test login invalid password': function (client) {
-    const users = [
-      {
-        username: "Maxime",
-        password: "a"
-      },
-      {
-        username: "Maxime",
-        password: "wwwwwwwwwwwwwwwwwww"
-      },
-      {
-        username: "Maxime",
-        password: ""
-      },
-      {
-        username: "Maxime",
-        password: "ラーメンは最高だよ"
-      }
-    ];
-    for (var i=0; i<users.length; i++) {
-      client
-        .url(config.url)
-        .waitForElementVisible('body', config.time.visible)
-        .setValue(config.id.username, users[i].username)
-        .pause(config.time.pause)
-        .setValue(config.id.password, users[i].password)
-        .pause(config.time.pause)
-        .click(config.id.login)
-        .pause(config.time.pause)
-        .assert.urlEquals(config.url)
-        .assert.containsText(config.id.error, "Invalid password");
-    }
-    client.end();
-  },
-  'Test registration navigation': function (client) {
-    client
-        .url(config.url)
-        .waitForElementVisible('body', config.time.visible)
-        .click(config.id.signup)
-        .waitForElementVisible('body', config.time.visible)
-        .assert.urlEquals(config.destinationUrl_Signup);
-  }
 }
