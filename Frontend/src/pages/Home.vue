@@ -4,7 +4,7 @@
     <div id="taskHolder">
         <table>
             <tr class="tasklistitems" v-for="(task, index) in tasklist">
-                <td>
+                <td id="arbitrarytitle">
                     {{ task.title }}
                 </td>
                 <td>
@@ -82,7 +82,7 @@
             placeholder="Description"
             v-model="description"
           />
-          <button class="inpbox" type="button" @click="addNewTask()">
+          <button class="inpbox" id="createbtn" type="button" @click="addNewTask()">
             Create Task
           </button>
         </div>
@@ -189,7 +189,7 @@
                 <input
                     class="inpbox"
                     type="text"
-                    id="title"
+                    id="titleEdit"
                     :placeholder="[[title]]"
                     v-model="title"
                 />
@@ -199,7 +199,7 @@
                 <input
                     class="inpbox"
                     type="text"
-                    id="description"
+                    id="descriptionEdit"
                     :placeholder="[[description]]"
                     v-model="description"
                 />
