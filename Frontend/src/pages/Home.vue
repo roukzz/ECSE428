@@ -3,7 +3,7 @@
     <NavBar></NavBar>
     <div id="taskHolder">
         <table>
-            <tr class="tasklistitems" v-for="(task, index) in tasklist">
+            <tr class="tasklistitems" v-for="(task, index) in tasklist" v-bind:id="task._id">
                 <td>
                     {{ task.title }}
                 </td>
@@ -189,7 +189,7 @@
                 <input
                     class="inpbox"
                     type="text"
-                    id="title"
+                    id="titleEdit"
                     :placeholder="[[title]]"
                     v-model="title"
                 />
@@ -199,7 +199,7 @@
                 <input
                     class="inpbox"
                     type="text"
-                    id="description"
+                    id="descriptionEdit"
                     :placeholder="[[description]]"
                     v-model="description"
                 />
