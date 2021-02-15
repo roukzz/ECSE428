@@ -43,7 +43,7 @@ describe("Update Task Test", () => {
             username: 'student',
             password: 'password'
         });
-        const res2 = await request(app).put('/api/student/updateStudentTask').set("auth-token", res1.headers["auth-token"])
+        const res2 = await request(app).post('/api/student/updateStudentTask').set("auth-token", res1.headers["auth-token"])
         .send({
             username: 'student',
             taskId: this.task._id.toString(),
@@ -55,7 +55,7 @@ describe("Update Task Test", () => {
     });
 
     it("should not update a task of an unauthenticated user", async () => {
-        const res = await request(app).put('/api/student/updateStudentTask').send({
+        const res = await request(app).post('/api/student/updateStudentTask').send({
             username: 'student',
             taskId: this.task._id.toString(),
             title: "New Title",
