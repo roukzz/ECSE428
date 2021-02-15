@@ -251,7 +251,9 @@
 <script>
 import NavBar from "@/components/NavBar";
 import axios from "axios";
+
 let config = require("../../config");
+
 let backendConfigurer = function() {
   switch (process.env.NODE_ENV) {
     case "testing":
@@ -263,12 +265,15 @@ let backendConfigurer = function() {
       );
   }
 };
+
 let backendUrl = backendConfigurer();
+
 let AXIOS = axios.create({
   baseURL: backendUrl,
   headers: { "auth-token": localStorage.getItem("auth_key") }
   // headers: {'Access-Control-Allow-Origin': frontendUrl}
 });
+
 export default {
   name: "Home",
   components: {
@@ -288,6 +293,7 @@ export default {
       currenttask: null
     };
   },
+
   beforeCreate() {
     let params = {
       username: localStorage.getItem("username")
@@ -310,16 +316,19 @@ export default {
         this.successCreateTask = "";
         return;
       }
+
       let params = {
         username: localStorage.getItem("username"),
         title: this.title,
         description: this.description
       };
+
       AXIOS.post("/api/student/addTaskToStudent", params)
         .then(response => {
           this.errorCreateTask = "";
           this.successCreateTask = "Successful new task";
           console.log("Worked");
+
           this.tasklist.push({
             title: this.title,
             tasktype: this.tasktype,
@@ -327,6 +336,7 @@ export default {
             location: this.location,
             deadline: this.deadline
           });
+
           this.title = "";
           this.tasktype = "";
           this.description = "";
@@ -340,8 +350,10 @@ export default {
           console.log(e);
           return;
         });
+
       this.togglePopupCreate();
     },
+
     editTask() {
       if (!this.title || !this.description) {
         this.errorCreateTask =
@@ -349,6 +361,7 @@ export default {
         this.successCreateTask = "";
         return;
       }
+
       let params = {
         username: localStorage.getItem("username"),
         taskId: this.currenttask._id,
@@ -364,6 +377,7 @@ export default {
           console.log("Edit successful");
         
            // console.log(this.tasklist);
+
           //console.log(this.index);
           //console.log(this.tasklist[this.index]);
           // ID of task is modified when deleted
@@ -391,22 +405,27 @@ export default {
         
         this.togglePopupEdit();
     },
+
     deleteTask() {
         let params = {
             username: localStorage.getItem("username"),
             taskId: this.currenttask._id
         }
+
         AXIOS.post("/api/student/deleteStudentTask", params)
             .then((response) => {
                 this.errorCreateTask = "";
                 this.successCreateTask = "Successful deletion of task";
                 console.log("Delete successful");
+
                 // Remove element at this.index
                 this.tasklist.splice(this.index,1);
+
                 this.title = "";
                 this.description = "";
                 this.index = -1;
                 this.currenttask = null;
+
             })
             .catch(e => {
                 e = e.response.data ? e.response.data : e;
@@ -415,8 +434,10 @@ export default {
                 console.log(e);
                 return;
             });
+
             this.togglePopupDelete();
     },
+
     deleteAccount() {
       console.log(localStorage.getItem("username"));
       let params = {
@@ -551,13 +572,16 @@ export default {
   text-align: center;
   border-radius: 50%;
 }
+
 .popup.active .overlay {
   display: block;
 }
+
 .popup.active .content {
   transition: all 300ms ease-in-out;
   transform: translate(-50%, -50%) scale(1);
 }
+
 .class-btn {
   position: absolute;
   top: 50%;
@@ -571,6 +595,7 @@ export default {
   font-weight: 600;
   background: #fff;
 }
+
 .inpbox,
 #taskType {
   text-align: center;
@@ -578,12 +603,15 @@ export default {
   margin-top: 3.3%;
   border: 2px solid #222;
 }
+
 .tasklistitems td {
     padding: 5%;
 }
+
 .btndelete {
     color: red;
 }
+
 #tasklistitemholder {
   float: left;
 }
