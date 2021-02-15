@@ -7,6 +7,7 @@
           class="tasklistitems"
           v-for="(task, index) in tasklist"
           v-bind:id="task._id"
+          v-bind:key="task._id"
         >
           <td>
             {{ task.title }}
