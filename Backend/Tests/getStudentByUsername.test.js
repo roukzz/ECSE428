@@ -4,8 +4,7 @@ const Student = require("../Models/student");
 const app = require("../server");
 const { connect, closeDatabase, clearDatabase } = require("../testdb");
 let authToken;
-// setup mock database connection before each test case
-// create a student before each test case
+
 beforeEach(async (done) => {
   await connect();
   let student = Student({
@@ -37,17 +36,19 @@ afterAll(async (done) => {
   await closeDatabase();
   done();
 });
-describe("Get tasks test", () => {
+
+describe("Get student by username test", () => {
   //Normal task that should succeed
   it("should succeed to get the tasks", async () => {
     // login with invalid username but right password
     const res = await request(app)
-      .get("/api/student/getStudentTasks")
+      .post("/api/student/getStudentByUsername")
       .send({
         username: "student",
       })
       .set("auth-token", authToken);
     expect(res.statusCode).toEqual(200);
+    expect(JSON.parse(res.text).username).toEqual("student");
   });
 
   //wrong username
@@ -55,7 +56,7 @@ describe("Get tasks test", () => {
   it("should fail to get the tasks", async () => {
     // login with invalid username but right password
     const res = await request(app)
-      .get("/api/student/getStudentTasks")
+      .post("/api/student/getStudentByUsername")
       .send({
         username: "st",
       })
