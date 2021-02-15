@@ -9,7 +9,7 @@ const { connect, clearDatabase, closeDatabase } = require("../../testdb");
 // ===== Step definitions for Update Tasks =====
 // =============================================
 
-// global vars
+// global variables
 var tasks = {};
 
 Given(

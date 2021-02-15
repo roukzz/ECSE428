@@ -3,20 +3,20 @@
     <NavBar></NavBar>
     <div id="taskHolder">
         <table>
-            <tr class="tasklistitems" v-for="(task, index) in tasklist">
-                <td id="arbitrarytitle">
+            <tr class="tasklistitems" v-for="(task, index) in tasklist" v-bind:id="task._id">
+                <td>
                     {{ task.title }}
                 </td>
                 <td>
                     {{task.description}}
                 </td>
                 <td> 
-                <button type="button" class="editbutton" @click="togglePopupEdit(task, index)">
+                <button id="editTaskButton" type="button" class="editbutton" @click="togglePopupEdit(task, index)">
                     Edit Task
                 </button>
                 </td>
                 <td>
-                <button
+                <button id="deleteTaskButton"
                         type="button"
                         class="btn btn-danger"
                         @click="togglePopupDelete(task, index)"

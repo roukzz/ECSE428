@@ -25,11 +25,7 @@ module.exports = {
       globals: {
         devServerURL: 'http://localhost:' + (process.env.PORT || config.dev.port) + '/#/app'
       },
-<<<<<<< HEAD
-      webStorageEnabled : true
-=======
       webStorageEnabled: true
->>>>>>> signout_selenium
     },
 
     chrome: {
