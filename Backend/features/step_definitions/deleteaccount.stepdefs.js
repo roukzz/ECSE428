@@ -6,8 +6,8 @@ const app = require("../../server");
 const Student = require("../../Models/student");
 const { connect, clearDatabase, closeDatabase } = require("../../testdb");
 
-// ===== Step definitions for Delete Account =====
-// ===============================================
+// ===== Step definitions for Delete Account ======
+// ================================================
 
 Given(
   "the following users with username {string} and password {string} are registered in the system",
