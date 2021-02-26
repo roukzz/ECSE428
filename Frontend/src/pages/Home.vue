@@ -39,9 +39,59 @@
       </table>
     </div>
 
+    <div id="timeSlotHolder">
+      <table>
+        <tr
+          class="timeslotlistitems"
+          v-for="(timeslot, index) in timeslotlist"
+          v-bind:id="timeslot._id"
+          v-bind:key="timeslot._id"
+        >
+          <td>
+            {{ timeslot.starttime }}
+          </td>
+          <td>
+            {{ timeslot.endtime }}
+          </td>
+          <td>
+            {{ timeslot.description }}
+          </td>
+          <td>
+            {{ timeslot.location }}
+          </td>
+          <td>
+            <button
+              id="editTimeSlotButton"
+              type="button"
+              class="edittimeslotbutton"
+              @click="togglePopupEditTimeSlot(timeslot, index)"
+            >
+              Edit Timeslot
+            </button>
+          </td>
+          <td>
+            <button
+              id="deleteTimeSlotButton"
+              type="button"
+              class="btn btn-danger"
+              @click="togglePopupDeleteTimeSlot(timeslot, index)"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
     <div id="buttonHolder">
       <button id="createTaskButton" v-on:click="togglePopupCreate()">
         Create Task
+      </button>
+      <button
+        id="createTimeSlotButton"
+        v-on:click="togglePopupCreateTimeSlot()"
+      >
+        Create Time Slot
       </button>
     </div>
 
@@ -304,6 +354,133 @@
         </div>
       </div>
     </div>
+    <div class="popup" id="popup-create-timeslot">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupCreateTimeSlot()">
+          &times;
+        </div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Create a new time slot
+        </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateTimeSlot"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateTimeSlot }}
+          </div>
+          <div
+            v-if="successCreateTimeSlot"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateTimeSlot }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <div class="row">
+            <div class="col-3">
+              <div v-if="errorCreateTimeSlot && !starttime" style="color: red">
+                * Required
+              </div>
+              <label for="starttime">Start Time</label>
+            </div>
+            <div class="col-9">
+              <input
+                class="inpbox"
+                type="time"
+                id="starttime"
+                placeholder="Start Time"
+                v-model="starttime"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorCreateTimeSlot && !endtime" style="color: red">
+                * Required
+              </div>
+              <label for="endtime">End Time</label>
+            </div>
+            <div class="col-md-9">
+              <input
+                class="inpbox"
+                type="time"
+                id="endtime"
+                placeholder="End Time"
+                v-model="endtime"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div
+                v-if="errorCreateTimeSlot && !description"
+                style="color: red"
+              >
+                * Required
+              </div>
+              <label for="description">Description</label>
+            </div>
+            <div class="col-md-9">
+              <input
+                class="inpbox"
+                type="text"
+                id="description"
+                placeholder="Description"
+                v-model="description"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorCreateTimeSlot && !location" style="color: red">
+                * Required
+              </div>
+              <label for="location">Location</label>
+            </div>
+            <div class="col-md-9">
+              <input
+                class="inpbox"
+                type="text"
+                id="location"
+                placeholder="Location"
+                v-model="location"
+              />
+            </div>
+          </div>
+          <div text-align="center">
+            <div>
+              <button
+                class="inpbox"
+                id="createbtn"
+                type="button"
+                @click="addNewTimeSlot()"
+              >
+                Create Time Slot
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -336,13 +513,18 @@ export default {
     return {
       title: "",
       tasklist: [],
+      timeslotlist: [],
       tasktype: "",
       description: "",
       location: "",
       deadline: "",
+      starttime: "",
+      endtime: "",
       index: -1,
       errorCreateTask: "",
       successCreateTask: "",
+      errorCreateTimeSlot: "",
+      successCreateTimeSlot: "",
       currenttask: null,
     };
   },
@@ -522,6 +704,38 @@ export default {
       localStorage.clear();
       this.$router.push("/Login");
     },
+    addNewTimeSlot() {
+      if (
+        !this.starttime ||
+        !this.endtime ||
+        !this.description ||
+        !this.location
+      ) {
+        this.errorCreateTimeSlot =
+          "Missing fields. Please fill in all required fields";
+        this.successCreateTimeSlot = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+      };
+      var timeslot = new Object();
+      timeslot.starttime = this.starttime;
+      timeslot.endtime = this.endtime;
+      timeslot.description = this.description;
+      timeslot.location = this.location;
+      this.timeslotlist.push(timeslot);
+      this.starttime = "";
+      this.endtime = "";
+      this.description = "";
+      this.location = "";
+      this.togglePopupCreateTimeSlot();
+    },
     togglePopupCreate() {
       this.errorCreateTask = "";
       this.successCreateTask = "";
@@ -575,12 +789,22 @@ export default {
       //console.log(this.title);
       document.getElementById("popup-delete").classList.toggle("active");
     },
+    togglePopupCreateTimeSlot() {
+      this.errorCreateTimeSlot = "";
+      this.successCreateTimeSlot = "";
+      document
+        .getElementById("popup-create-timeslot")
+        .classList.toggle("active");
+    },
+    togglePopupEditTimeSlot() {},
+    togglePopupDeleteTimeSlot() {},
   },
 };
 </script>
 
 <style scoped>
-#taskHolder {
+#taskHolder,
+#timeSlotHolder {
   width: 60%;
   height: 150%;
   /*border: 1px solid black;*/
