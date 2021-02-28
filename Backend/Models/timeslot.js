@@ -15,10 +15,6 @@ const timeslot = new mongoose.Schema({
   location: {
     type: String,
   },
-  taskID: {
-    type: String,
-    format: uuid,
-  },
 });
 
 module.exports = TimeSlot = mongoose.model("TimeSlot", timeslot);
