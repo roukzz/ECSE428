@@ -17,4 +17,4 @@ const timeslot = new mongoose.Schema({
   },
 });
 
-module.exports = TimeSlot = mongoose.model("TimeSlot", timeslot);
+module.exports = TimeSlot = mongoose.model("TimeSlots", timeslot);

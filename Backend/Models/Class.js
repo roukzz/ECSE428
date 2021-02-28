@@ -22,8 +22,8 @@ const Class = new mongoose.Schema({
   timeslots: {
     type: Array,
     default: [],
-    format: timeslot,
+    format: timeslot, //Not Sure if this will work
   },
 });
 
-module.exports = Class = mongoose.model("Reminder", reminder);
+module.exports = StudentClass = mongoose.model("Classes", Class);

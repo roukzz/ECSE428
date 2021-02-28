@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const Class = require("./Class");
+const task = require("./task");
 
 const student = new mongoose.Schema({
   username: {
@@ -13,6 +15,12 @@ const student = new mongoose.Schema({
   tasks: {
     type: Array,
     default: [],
+    format: task,
+  },
+  class: {
+    type: Array,
+    default: [],
+    format: Class,
   },
 });
 
