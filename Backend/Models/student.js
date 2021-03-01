@@ -17,7 +17,7 @@ const student = new mongoose.Schema({
     default: [],
     format: task,
   },
-  class: {
+  classes: {
     type: Array,
     default: [],
     format: Class,

@@ -3,11 +3,9 @@ const mongoose = require("mongoose");
 const reminder = new mongoose.Schema({
   startTime: {
     type: String,
-    format: Date,
   },
   endTime: {
     type: String,
-    format: Date,
   },
   description: {
     type: String,
