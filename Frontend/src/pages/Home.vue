@@ -1,6 +1,7 @@
 <template>
   <div id="wrapper">
     <NavBar></NavBar>
+    <Calendar></Calendar>
     <div id="taskHolder">
       <table>
         <tr
@@ -1365,6 +1366,7 @@
 import NavBar from "@/components/NavBar";
 import axios from "axios";
 import moment from "moment";
+import Calendar from '@/components/Calendar.vue';
 
 let config = require("../../config");
 
@@ -1386,6 +1388,7 @@ export default {
   name: "Home",
   components: {
     NavBar,
+    Calendar,
   },
   data() {
     return {
