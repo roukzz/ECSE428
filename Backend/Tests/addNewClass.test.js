@@ -1,6 +1,8 @@
 const request = require("supertest");
-
+const mongoose = require("mongoose");
 const Student = require("../Models/student");
+const Class = require("../Models/Class");
+const TimeSlot = require("../Models/timeslot");
 const app = require("../server");
 const { connect, closeDatabase, clearDatabase } = require("../testdb");
 
@@ -52,8 +54,18 @@ describe("Add Class to Student ", () => {
         location: "Montreal",
       })
       .set("auth-token", authToken);
-    console.log(res.text);
     expect(res.statusCode).toEqual(200);
+    let Title;
+    Class.findOne({ title: "ECSE 428" }, function (err, docs) {
+      if (err) {
+        console.log(err);
+      } else {
+        if (docs) {
+          Title = docs.title;
+        }
+      }
+    });
+    expect(Title).toEqual("ECSE 428");
   });
 
   it("Success with Timeslots", async () => {
@@ -75,7 +87,17 @@ describe("Add Class to Student ", () => {
         ],
       })
       .set("auth-token", authToken);
-    console.log(res.text);
     expect(res.statusCode).toEqual(200);
+    let Title;
+    Class.findOne({ title: "ECSE 428" }, function (err, docs) {
+      if (err) {
+        console.log(err);
+      } else {
+        if (docs) {
+          Title = docs.title;
+        }
+      }
+    });
+    expect(Title).toEqual("ECSE 428");
   });
 });

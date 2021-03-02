@@ -13,8 +13,8 @@ route.post("/addNewClass", verify, function (req, res) {
   const newClass = new Class({
     title: req.body.title,
     description: req.body.description,
-    startTime: new Date(req.body.startTime),
-    endTime: new Date(req.body.endTime),
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
     location: req.body.location,
   });
 
@@ -27,18 +27,16 @@ route.post("/addNewClass", verify, function (req, res) {
     }
     if (!err) {
       const studentClasses = student.classes;
-      let classTimeSlots;
+      let classTimeSlots = [];
       if (req.body.timeslots) {
         req.body.timeslots.forEach((element) => {
           let startDate = new Date(element.startTime);
           let endDate = new Date(element.endTime);
-          console.log(startDate);
-          console.log(endDate);
           const ruleStart = new RRule({
             freq: RRule.WEEKLY,
             dtstart: newClass.startTime,
             until: newClass.endTime,
-            byweekday: startDate.getDay(),
+            byweekday: RRuleDaySwitch(startDate.getDay()),
             byhour: startDate.getHours(),
             byminute: startDate.getMinutes(),
           });
@@ -46,15 +44,16 @@ route.post("/addNewClass", verify, function (req, res) {
             freq: RRule.WEEKLY,
             dtstart: newClass.startTime,
             until: newClass.endTime,
-            byweekday: endDate.getDay(),
+            byweekday: RRuleDaySwitch(endDate.getDay()),
             byhour: endDate.getHours(),
             byminute: endDate.getMinutes(),
           });
-          for (let i = 0; i < ruleStart.length; i++) {
+
+          for (let i = 0; i < ruleStart.all().length; i++) {
             classTimeSlots.push(
               new Timeslot({
-                startTime: ruleStart[0],
-                endTime: ruleEnd[0],
+                startTime: ruleStart.all()[i],
+                endTime: ruleEnd.all()[i],
                 description: newClass.description,
                 location: newClass.location,
               })
@@ -62,18 +61,17 @@ route.post("/addNewClass", verify, function (req, res) {
           }
         });
       }
-
+      newClass.timeslots = classTimeSlots;
       studentClasses.push(newClass);
 
       Student.updateOne(
         { username: req.body.username },
         { classes: studentClasses },
-        { timeslots: classTimeSlots },
         function (err) {
           if (err) {
             console.log(err);
           } else {
-            res.send(studentClasses);
+            res.send(newClass);
           }
         }
       );
@@ -82,4 +80,31 @@ route.post("/addNewClass", verify, function (req, res) {
     }
   });
 });
+
+function RRuleDaySwitch(number) {
+  let day;
+  switch (number) {
+    case 0:
+      day = RRule.SU;
+      break;
+    case 1:
+      day = RRule.MO;
+      break;
+    case 2:
+      day = RRule.TU;
+      break;
+    case 3:
+      day = RRule.WE;
+      break;
+    case 4:
+      day = RRule.TH;
+      break;
+    case 5:
+      day = RRule.FR;
+      break;
+    case 6:
+      day = RRule.SA;
+  }
+  return day;
+}
 module.exports = route;
