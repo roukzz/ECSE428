@@ -60,6 +60,9 @@
             {{ timeslot.location }}
           </td>
           <td>
+            {{ timeslot.task }}
+          </td>
+          <td>
             <button
               id="editTimeSlotButton"
               type="button"
@@ -466,6 +469,22 @@
               />
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorCreateTimeSlot && !task" style="color: red">
+                * Required
+              </div>
+              <label for="task">Task</label>
+            </div>
+            <div class="col-md-9">
+              <select id="task" v-model="task">
+                <option disabled value="">Please select one</option>
+                <option v-for="(task, i) in tasklist" v-bind:key="`task-${i}`">
+                  {{ task.title }}
+                </option>
+              </select>
+            </div>
+          </div>
           <div text-align="center">
             <div>
               <button
@@ -520,6 +539,7 @@ export default {
       deadline: "",
       starttime: "",
       endtime: "",
+      task: "",
       index: -1,
       errorCreateTask: "",
       successCreateTask: "",
@@ -709,7 +729,8 @@ export default {
         !this.starttime ||
         !this.endtime ||
         !this.description ||
-        !this.location
+        !this.location ||
+        !this.task
       ) {
         this.errorCreateTimeSlot =
           "Missing fields. Please fill in all required fields";
@@ -729,11 +750,13 @@ export default {
       timeslot.endtime = this.endtime;
       timeslot.description = this.description;
       timeslot.location = this.location;
+      timeslot.task = this.task;
       this.timeslotlist.push(timeslot);
       this.starttime = "";
       this.endtime = "";
       this.description = "";
       this.location = "";
+      this.task = "";
       this.togglePopupCreateTimeSlot();
     },
     togglePopupCreate() {
@@ -840,7 +863,7 @@ export default {
   transform: translate(-50%, -50%) scale(0);
   background: #fff;
   width: 500px;
-  height: 300px;
+  /**height: 300px;**/
   z-index: 2;
   text-align: center;
   padding: 20px;
