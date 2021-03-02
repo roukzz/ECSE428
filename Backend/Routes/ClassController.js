@@ -13,8 +13,8 @@ route.post("/addNewClass", verify, function (req, res) {
   const newClass = new Class({
     title: req.body.title,
     description: req.body.description,
-    startTime: req.body.startTime, //make this an actual date since its not a string
-    endTime: req.body.endTime,
+    startTime: new Date(req.body.startTime),
+    endTime: new Date(req.body.endTime),
     location: req.body.location,
   });
 
@@ -30,21 +30,25 @@ route.post("/addNewClass", verify, function (req, res) {
       let classTimeSlots;
       if (req.body.timeslots) {
         req.body.timeslots.forEach((element) => {
+          let startDate = new Date(element.startTime);
+          let endDate = new Date(element.endTime);
+          console.log(startDate);
+          console.log(endDate);
           const ruleStart = new RRule({
             freq: RRule.WEEKLY,
             dtstart: newClass.startTime,
             until: newClass.endTime,
-            byweekday: element.startTime.getDay(),
-            byhour: element.startTime.getHours(),
-            byminute: element.startTime.getMinutes(),
+            byweekday: startDate.getDay(),
+            byhour: startDate.getHours(),
+            byminute: startDate.getMinutes(),
           });
           const ruleEnd = new RRule({
             freq: RRule.WEEKLY,
             dtstart: newClass.startTime,
             until: newClass.endTime,
-            byweekday: element.endTime.getDay(),
-            byhour: element.endTime.getHours(),
-            byminute: element.endTime.getMinutes(),
+            byweekday: endDate.getDay(),
+            byhour: endDate.getHours(),
+            byminute: endDate.getMinutes(),
           });
           for (let i = 0; i < ruleStart.length; i++) {
             classTimeSlots.push(

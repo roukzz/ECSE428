@@ -56,25 +56,26 @@ describe("Add Class to Student ", () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  // it("Success with Timeslots", async () => {
-  //   // login with invalid username but right password
-  //   const res = await request(app)
-  //     .post("/api/class/addNewClass")
-  //     .send({
-  //       username: "student",
-  //       title: "ECSE 428",
-  //       description: "Software Engineering Practice",
-  //       startTime: new Date(Date.UTC(2021, 3, 1, 14, 30, 0)),
-  //       endTime: new Date(Date.UTC(2021, 5, 7, 20, 0, 0)),
-  //       location: "Montreal",
-  //       timeslots: [
-  //         {
-  //           startTime: Date.UTC(0, 0),
-  //         },
-  //       ],
-  //     })
-  //     .set("auth-token", authToken);
-  //   console.log(res.text);
-  //   expect(res.statusCode).toEqual(200);
-  // });
+  it("Success with Timeslots", async () => {
+    // login with invalid username but right password
+    const res = await request(app)
+      .post("/api/class/addNewClass")
+      .send({
+        username: "student",
+        title: "ECSE 428",
+        description: "Software Engineering Practice",
+        startTime: new Date(Date.UTC(2021, 3, 1, 14, 30, 0)),
+        endTime: new Date(Date.UTC(2021, 5, 7, 20, 0, 0)),
+        location: "Montreal",
+        timeslots: [
+          {
+            startTime: Date.UTC(2012, 1, 1, 10, 30),
+            endTime: Date.UTC(2012, 1, 1, 14, 30),
+          },
+        ],
+      })
+      .set("auth-token", authToken);
+    console.log(res.text);
+    expect(res.statusCode).toEqual(200);
+  });
 });
