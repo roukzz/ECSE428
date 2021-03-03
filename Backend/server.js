@@ -27,4 +27,7 @@ app.use("/api/student", require("./Routes/StudentController"));
 // ===========================================
 app.use("/api/class", require("./Routes/ClassController"));
 
+// ===== Reminder / reminders student route =====
+// ===========================================
+app.use("/api/reminder", require("./Routes/ReminderController"));
 module.exports = app;
