@@ -5,6 +5,7 @@ const Class = require("../Models/Class");
 const TimeSlot = require("../Models/timeslot");
 const app = require("../server");
 const { connect, closeDatabase, clearDatabase } = require("../testdb");
+const { assert } = require("joi");
 
 let authToken;
 
@@ -56,16 +57,16 @@ describe("Add Class to Student ", () => {
       .set("auth-token", authToken);
     expect(res.statusCode).toEqual(200);
     let Title;
-    Class.findOne({ title: "ECSE 428" }, function (err, docs) {
+    Student.findOne({ username: "student" }, function (err, docs) {
       if (err) {
         console.log(err);
+        assert.fail();
       } else {
         if (docs) {
-          Title = docs.title;
+          expect(docs.classes[0].title.toString()).toEqual("ECSE 428");
         }
       }
     });
-    expect(Title).toEqual("ECSE 428");
   });
 
   it("Success with Timeslots", async () => {
@@ -88,16 +89,17 @@ describe("Add Class to Student ", () => {
       })
       .set("auth-token", authToken);
     expect(res.statusCode).toEqual(200);
-    let Title;
-    Class.findOne({ title: "ECSE 428" }, function (err, docs) {
+    console.log(res.text);
+    let Title = "";
+    Student.findOne({ username: "student" }, function (err, docs) {
       if (err) {
         console.log(err);
+        assert.fail();
       } else {
         if (docs) {
-          Title = docs.title;
+          expect(docs.classes[0].title.toString()).toEqual("ECSE 428");
         }
       }
     });
-    expect(Title).toEqual("ECSE 428");
   });
 });
