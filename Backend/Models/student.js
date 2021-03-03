@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Class = require("./Class");
 const task = require("./task");
+const reminder = require("./reminder");
 
 const student = new mongoose.Schema({
   username: {
@@ -11,6 +12,10 @@ const student = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  email: {
+    type: String,
+    required: true
   },
   tasks: {
     type: Array,
@@ -22,6 +27,11 @@ const student = new mongoose.Schema({
     default: [],
     format: Class,
   },
+  reminders:{
+    type: Array,
+    default:[],
+    format: reminder
+  }
 });
 
 student.pre("save", async function (next) {
