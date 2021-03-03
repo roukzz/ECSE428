@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
 
 const reminder = new mongoose.Schema({
-  startTime: {
-    type: String,
-  },
-  endTime: {
-    type: String,
+  reminderDate: {
+    type: Date,
   },
   description: {
     type: String,
