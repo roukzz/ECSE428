@@ -82,14 +82,13 @@ describe("Add Class to Student ", () => {
         location: "Montreal",
         timeslots: [
           {
-            startTime: Date.UTC(2012, 1, 1, 10, 30),
-            endTime: Date.UTC(2012, 1, 1, 14, 30),
+            startTime: new Date(Date.UTC(2012, 1, 1, 10, 30)),
+            endTime: new Date(Date.UTC(2012, 1, 1, 14, 30)),
           },
         ],
       })
       .set("auth-token", authToken);
     expect(res.statusCode).toEqual(200);
-    console.log(res.text);
     let Title = "";
     Student.findOne({ username: "student" }, function (err, docs) {
       if (err) {
