@@ -4,10 +4,7 @@ const reminder = new mongoose.Schema({
   reminderDate: {
     type: Date,
   },
-  // endTime: {
-  //   type: String,
-  //   format: Date,
-  // },
+  
   description: {
     type: String,
   },
