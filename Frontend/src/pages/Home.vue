@@ -305,6 +305,7 @@
         </div>
       </div>
     </div>
+
     <div class="popup" id="popup-delete">
       <div class="overlay"></div>
       <div class="content">
@@ -357,6 +358,7 @@
         </div>
       </div>
     </div>
+
     <div class="popup" id="popup-create-timeslot">
       <div class="overlay"></div>
       <div class="content" style="text-align: center">
@@ -639,6 +641,61 @@
         </div>
       </div>
     </div>
+
+    <div class="popup" id="popup-delete-timeslot">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupDeleteTimeSlot()">
+          &times;
+        </div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          You are about to delete the timeslot.
+          <br />
+          Please confirm.
+        </div>
+        <!-- Messages -->
+        <div id="messages-delete-timeSlot">
+          <div
+            v-if="errorDeleteTimeSlot"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="errorDeleteTimeSlot"
+          >
+            {{ errorDeleteTimeSlot }}
+          </div>
+          <div
+            v-if="successDeleteTimeSlot"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="successDeleteTimeSlot"
+          >
+            {{ successDeleteTimeSlot }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields_delete_timeSlot">
+          <button
+            class="inpbox"
+            type="button"
+            id="btndeleteTimeSlot"
+            @click="deleteTimeSlot()"
+          >
+            Confirm Delete
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -686,6 +743,8 @@ export default {
       successCreateTimeSlot: "",
       errorEditTimeSlot: "",
       successEditTimeSlot: "",
+      errorDeleteTimeSlot: "",
+      successDeleteTimeSlot: "",
       currenttask: null,
     };
   },
@@ -933,6 +992,18 @@ export default {
       this.task = "";
       this.togglePopupEditTimeSlot();
     },
+    deleteTimeSlot() {
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+      };
+      this.timeslotlist.splice(this.index, 1);
+      this.togglePopupDeleteTimeSlot();
+    },
     togglePopupCreate() {
       this.errorCreateTask = "";
       this.successCreateTask = "";
@@ -1006,7 +1077,16 @@ export default {
       }
       document.getElementById("popup-edit-timeslot").classList.toggle("active");
     },
-    togglePopupDeleteTimeSlot(timeslot, index) {},
+    togglePopupDeleteTimeSlot(timeslot, index) {
+      this.errorDeleteTimeSlot = "";
+      this.successDeleteTimeSlot = "";
+      if (timeslot != null) {
+        this.index = index;
+      }
+      document
+        .getElementById("popup-delete-timeslot")
+        .classList.toggle("active");
+    },
   },
 };
 </script>
