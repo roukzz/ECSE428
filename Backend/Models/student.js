@@ -13,10 +13,10 @@ const student = new mongoose.Schema({
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-  },
+  // email: {
+  //   type: String,
+  //   required: true,
+  // },
   tasks: {
     type: Array,
     default: [],
