@@ -106,7 +106,6 @@ route.post("/updateClass", verify, function (req, res) {
       if (!classIDIsValid) {
         return res.status(400).send("No class matches this ID");
       }
-      console.log(student.classes);
       Student.updateOne(
         { username: req.body.username },
         { classes: student.classes },
