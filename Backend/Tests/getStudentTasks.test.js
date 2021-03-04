@@ -11,6 +11,7 @@ beforeEach(async (done) => {
   let student = Student({
     username: "student",
     password: "password",
+    email: "email@email.com",
     tasks: {
       title: "TitleTask",
       description: "DescriptionTask",

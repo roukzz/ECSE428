@@ -17,7 +17,9 @@ route.post("/addNewClass", verify, function (req, res) {
     endTime: req.body.endTime,
     location: req.body.location,
   });
-
+  if (newClass.startTime > newClass.endTime) {
+    return res.status(400).send("Start of class cannot be after end of class");
+  }
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }

@@ -17,6 +17,7 @@ beforeEach(async (done) => {
   let student = Student({
     username: "studenttest",
     password: "passwordtest",
+    email: "email@email.com",
   });
   await student.save();
   done();

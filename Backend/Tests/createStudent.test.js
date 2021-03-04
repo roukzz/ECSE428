@@ -28,6 +28,7 @@ describe("User Register Test", () => {
     const res = await request(app).post("/api/authentication/register").send({
       username: "student",
       password: "password",
+      email: "email@email",
     });
 
     expect(res.statusCode).toEqual(200);
@@ -38,6 +39,7 @@ describe("User Register Test", () => {
     const res = await request(app).post("/api/authentication/register").send({
       username: "st",
       password: "password",
+      email: "email@email",
     });
 
     expect(res.statusCode).toEqual(400);
@@ -50,6 +52,7 @@ describe("User Register Test", () => {
     const res = await request(app).post("/api/authentication/register").send({
       username: "student",
       password: "pas",
+      email: "email@email",
     });
 
     expect(res.statusCode).toEqual(400);
@@ -62,11 +65,13 @@ describe("User Register Test", () => {
     let student = Student({
       username: "student",
       password: "password",
+      email: "email@email",
     });
     await student.save();
     const res = await request(app).post("/api/authentication/register").send({
       username: "student",
       password: "password",
+      email: "email@email",
     });
 
     expect(res.statusCode).toEqual(400);
