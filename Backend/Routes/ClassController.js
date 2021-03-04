@@ -83,6 +83,47 @@ route.post("/addNewClass", verify, function (req, res) {
   });
 });
 
+route.post("/updateClass", verify, function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  Student.findOne({ username: req.body.username }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exist");
+    }
+    if (!err) {
+      let classIDIsValid = false;
+      student.classes.forEach((element) => {
+        if ((element.id = req.body.classID)) {
+          classIDIsValid = true;
+          element.title = req.body.title;
+          element.description = req.body.description;
+          element.startTime = req.body.startTime;
+          element.endTime = req.body.endTime;
+          element.location = req.body.location;
+        }
+      });
+      if (!classIDIsValid) {
+        return res.status(400).send("No class matches this ID");
+      }
+      console.log(student.classes);
+      Student.updateOne(
+        { username: req.body.username },
+        { classes: student.classes },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(student.classes);
+          }
+        }
+      );
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 function RRuleDaySwitch(number) {
   let day;
   switch (number) {
