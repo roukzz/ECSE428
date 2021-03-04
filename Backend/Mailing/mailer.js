@@ -5,7 +5,7 @@ const sendReminders = async () => {
   // email message options
   const mailOptions = {
     from: "mySchedule.ecse428@gmail.com",
-    to: "wangsen1202007@gmail.com",
+    to: "putemailhere@gmail.com",
     subject: "REMINDER TITLE!",
     text: "reminder description",
   };
