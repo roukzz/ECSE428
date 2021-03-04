@@ -3,7 +3,7 @@ const app = require("./server");
 const sendReminders = require("./Mailing/mailer");
 
 connectDB();
-sendReminders();
+// sendReminders();
 
 const port = 3000;
 
