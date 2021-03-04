@@ -37,7 +37,7 @@ afterAll(async (done) => {
 });
 
 describe("Add reminder Login Test", () => {
-  //Normal task that should succeed
+
   it("should succeed to add reminder", async () => {
     // login with invalid username but right password
     const res = await request(app)
@@ -72,7 +72,7 @@ describe("Add reminder Login Test", () => {
   });
 
   // Wrong username- Should fail
-  it("should fail to add task because of invalid username", async () => {
+  it("should fail to add reminder because of invalid username", async () => {
     // login with invalid username but right password
     try {
       const res = await request(app)
