@@ -15,9 +15,6 @@ const student = new mongoose.Schema({
   },
   email: {
     type: String,
-
-    required: true,
-
   },
   tasks: {
     type: Array,
@@ -35,7 +32,6 @@ const student = new mongoose.Schema({
     default: [],
     format: reminder,
   },
-
 });
 
 student.pre("save", async function (next) {
