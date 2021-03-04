@@ -54,7 +54,11 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
   const newTask = new Task({
     title: req.body.title,
     description: req.body.description,
+<<<<<<< HEAD
     dueDate: req.body.dueDate
+=======
+    dueDate: req.body.dueDate,
+>>>>>>> dev
   });
 
   if (!req.body.username) {
@@ -104,7 +108,11 @@ route.post("/updateStudentTask", verify, async function (req, res) {
   const newTask = new Task({
     title: req.body.title,
     description: req.body.description,
+<<<<<<< HEAD
     dueDate: req.body.dueDate
+=======
+    dueDate: req.body.dueDate,
+>>>>>>> dev
   });
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");

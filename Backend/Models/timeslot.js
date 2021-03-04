@@ -2,12 +2,10 @@ const mongoose = require("mongoose");
 
 const timeslot = new mongoose.Schema({
   startTime: {
-    type: String,
-    format: Date,
+    type: Date,
   },
   endTime: {
-    type: String,
-    format: Date,
+    type: Date,
   },
   description: {
     type: String,

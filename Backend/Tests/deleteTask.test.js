@@ -12,6 +12,7 @@ beforeEach(async (done) => {
   let student = Student({
     username: "student",
     password: "password",
+    email: "email@email.com",
   });
   await student.save();
   let task = Task({

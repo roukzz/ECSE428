@@ -15,23 +15,35 @@ const student = new mongoose.Schema({
   },
   email: {
     type: String,
+<<<<<<< HEAD
     required: true
+=======
+    required: true,
+>>>>>>> dev
   },
   tasks: {
     type: Array,
     default: [],
     format: task,
   },
-  class: {
+  classes: {
     type: Array,
     default: [],
     format: Class,
   },
+<<<<<<< HEAD
   reminders:{
     type: Array,
     default:[],
     format: reminder
   }
+=======
+  reminders: {
+    type: Array,
+    default: [],
+    format: reminder,
+  },
+>>>>>>> dev
 });
 
 student.pre("save", async function (next) {

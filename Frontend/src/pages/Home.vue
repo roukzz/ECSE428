@@ -60,6 +60,9 @@
             {{ timeslot.location }}
           </td>
           <td>
+            {{ timeslot.task }}
+          </td>
+          <td>
             <button
               id="editTimeSlotButton"
               type="button"
@@ -372,11 +375,11 @@
           Create a new time slot
         </div>
         <!-- Messages -->
-        <div id="messages">
+        <div id="messagesTimeSlot">
           <div
             v-if="errorCreateTimeSlot"
             style="width: 100%; color: red; text-align: center; margin: 0 auto"
-            id="error"
+            id="errorTimeSlot"
           >
             {{ errorCreateTimeSlot }}
           </div>
@@ -388,13 +391,13 @@
               text-align: center;
               margin: 0 auto;
             "
-            id="success"
+            id="successTimeSlot"
           >
             {{ successCreateTimeSlot }}
           </div>
         </div>
         <!-- Fields -->
-        <div id="create_fields">
+        <div id="create_fields_timeSlot">
           <div class="row">
             <div class="col-3">
               <div v-if="errorCreateTimeSlot && !starttime" style="color: red">
@@ -443,7 +446,7 @@
               <input
                 class="inpbox"
                 type="text"
-                id="description"
+                id="descriptionTimeSlot"
                 placeholder="Description"
                 v-model="description"
               />
@@ -460,21 +463,176 @@
               <input
                 class="inpbox"
                 type="text"
-                id="location"
+                id="locationTimeSlot"
                 placeholder="Location"
                 v-model="location"
               />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorCreateTimeSlot && !task" style="color: red">
+                * Required
+              </div>
+              <label for="task">Task</label>
+            </div>
+            <div class="col-md-9">
+              <select id="task" v-model="task">
+                <option disabled value="">Please select one</option>
+                <option v-for="(task, i) in tasklist" v-bind:key="`task-${i}`">
+                  {{ task.title }}
+                </option>
+              </select>
             </div>
           </div>
           <div text-align="center">
             <div>
               <button
                 class="inpbox"
-                id="createbtn"
+                id="createbtnTimeSlot"
                 type="button"
                 @click="addNewTimeSlot()"
               >
                 Create Time Slot
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="popup-edit-timeslot">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupEditTimeSlot()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Edit a time slot
+        </div>
+        <!-- Messages -->
+        <div id="messagesEditTimeSlot">
+          <div
+            v-if="errorEditTimeSlot"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="errorEditTimeSlot"
+          >
+            {{ errorEditTimeSlot }}
+          </div>
+          <div
+            v-if="successEditTimeSlot"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="successEditTimeSlot"
+          >
+            {{ successEditTimeSlot }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields_edit_timeSlot">
+          <div class="row">
+            <div class="col-3">
+              <div v-if="errorEditTimeSlot && !starttime" style="color: red">
+                * Required
+              </div>
+              <label for="starttime">Start Time</label>
+            </div>
+            <div class="col-9">
+              <input
+                class="inpbox"
+                type="time"
+                id="starttimeEdit"
+                :placeholder="[[starttime]]"
+                v-model="starttime"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorEditTimeSlot && !endtime" style="color: red">
+                * Required
+              </div>
+              <label for="endtime">End Time</label>
+            </div>
+            <div class="col-md-9">
+              <input
+                class="inpbox"
+                type="time"
+                id="endtimeEdit"
+                :placeholder="[[endtime]]"
+                v-model="endtime"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorEditTimeSlot && !description" style="color: red">
+                * Required
+              </div>
+              <label for="description">Description</label>
+            </div>
+            <div class="col-md-9">
+              <input
+                class="inpbox"
+                type="text"
+                id="descriptionEditTimeSlot"
+                :placeholder="[[description]]"
+                v-model="description"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorEditTimeSlot && !location" style="color: red">
+                * Required
+              </div>
+              <label for="location">Location</label>
+            </div>
+            <div class="col-md-9">
+              <input
+                class="inpbox"
+                type="text"
+                id="locationEditTimeSlot"
+                :placeholder="[[location]]"
+                v-model="location"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div v-if="errorEditTimeSlot && !task" style="color: red">
+                * Required
+              </div>
+              <label for="task">Task</label>
+            </div>
+            <div class="col-md-9">
+              <select id="taskEdit" v-model="task">
+                <option disabled value="">Please select one</option>
+                <option v-for="(task, i) in tasklist" v-bind:key="`task-${i}`">
+                  {{ task.title }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div text-align="center">
+            <div>
+              <button
+                class="inpbox"
+                id="editbtnTimeSlot"
+                type="button"
+                @click="editTimeSlot()"
+              >
+                Save Changes
               </button>
             </div>
           </div>
@@ -520,11 +678,14 @@ export default {
       deadline: "",
       starttime: "",
       endtime: "",
+      task: "",
       index: -1,
       errorCreateTask: "",
       successCreateTask: "",
       errorCreateTimeSlot: "",
       successCreateTimeSlot: "",
+      errorEditTimeSlot: "",
+      successEditTimeSlot: "",
       currenttask: null,
     };
   },
@@ -709,7 +870,8 @@ export default {
         !this.starttime ||
         !this.endtime ||
         !this.description ||
-        !this.location
+        !this.location ||
+        !this.task
       ) {
         this.errorCreateTimeSlot =
           "Missing fields. Please fill in all required fields";
@@ -729,12 +891,47 @@ export default {
       timeslot.endtime = this.endtime;
       timeslot.description = this.description;
       timeslot.location = this.location;
+      timeslot.task = this.task;
       this.timeslotlist.push(timeslot);
       this.starttime = "";
       this.endtime = "";
       this.description = "";
       this.location = "";
+      this.task = "";
       this.togglePopupCreateTimeSlot();
+    },
+    editTimeSlot() {
+      if (
+        !this.starttime ||
+        !this.endtime ||
+        !this.description ||
+        !this.location ||
+        !this.task
+      ) {
+        this.errorEditTimeSlot =
+          "Missing fields. Please fill in all required fields";
+        this.successEditTimeSlot = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+      };
+      this.timeslotlist[this.index].starttime = this.starttime;
+      this.timeslotlist[this.index].endtime = this.endtime;
+      this.timeslotlist[this.index].description = this.description;
+      this.timeslotlist[this.index].location = this.location;
+      this.timeslotlist[this.index].task = this.task;
+      this.starttime = "";
+      this.endtime = "";
+      this.description = "";
+      this.location = "";
+      this.task = "";
+      this.togglePopupEditTimeSlot();
     },
     togglePopupCreate() {
       this.errorCreateTask = "";
@@ -796,8 +993,20 @@ export default {
         .getElementById("popup-create-timeslot")
         .classList.toggle("active");
     },
-    togglePopupEditTimeSlot() {},
-    togglePopupDeleteTimeSlot() {},
+    togglePopupEditTimeSlot(timeslot, index) {
+      this.errorEditTimeSlot = "";
+      this.successEditTimeSlot = "";
+      if (timeslot != null) {
+        this.starttime = timeslot.starttime;
+        this.endtime = timeslot.endtime;
+        this.description = timeslot.description;
+        this.location = timeslot.location;
+        this.task = timeslot.task;
+        this.index = index;
+      }
+      document.getElementById("popup-edit-timeslot").classList.toggle("active");
+    },
+    togglePopupDeleteTimeSlot(timeslot, index) {},
   },
 };
 </script>
@@ -840,7 +1049,7 @@ export default {
   transform: translate(-50%, -50%) scale(0);
   background: #fff;
   width: 500px;
-  height: 300px;
+  /**height: 300px;**/
   z-index: 2;
   text-align: center;
   padding: 20px;

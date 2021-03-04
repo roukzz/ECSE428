@@ -3,12 +3,10 @@ const timeslot = require("./timeslot");
 
 const Class = new mongoose.Schema({
   startTime: {
-    type: String,
-    format: Date,
+    type: Date,
   },
   endTime: {
-    type: String,
-    format: Date,
+    type: Date,
   },
   description: {
     type: String,

@@ -13,9 +13,15 @@ const task = new mongoose.Schema({
     default: [],
     format: timeslot, //Not Sure if this will work
   },
+<<<<<<< HEAD
   dueDate:{
     type:Date
   }
+=======
+  dueDate: {
+    type: Date,
+  },
+>>>>>>> dev
 });
 
 module.exports = Task = mongoose.model("Tasks", task);
