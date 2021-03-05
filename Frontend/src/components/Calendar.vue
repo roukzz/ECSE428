@@ -33,7 +33,16 @@ export default {
       days: [],
     };
   },
-
+  props: {
+    tasks: {
+      type: Object,
+      default: null
+    },
+    timeslots: {
+      type: Object,
+      default: null
+    }
+  },
   methods: {
     countDays () {
       var n = this.daysInMonth(this.full_date.getMonth(), this.full_date.getFullYear());
@@ -101,6 +110,10 @@ export default {
 
       this.full_date = tmp_date;
       this.countDays();
+    },
+    tasks () {
+      // do what I want when task is updated
+      // call update UI method
     }
   }
 

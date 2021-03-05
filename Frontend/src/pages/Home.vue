@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper">
     <NavBar></NavBar>
-    <Calendar></Calendar>
+    <Calendar :tasks="this.tasklist" :timeslots="timeslotlist"></Calendar>
     <div id="taskHolder">
       <table>
         <tr
