@@ -149,4 +149,111 @@ function RRuleDaySwitch(number) {
   }
   return day;
 }
+
+// TODO: Implement delete class
+
+// TODO: Implement get class
+
+// get class time_slots
+route.get("/getClassTimeslots", verify, function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  if (!req.body.classID) {
+    return res.status(400).send("Please provide a classID");
+  }
+  let classID = req.body.classID;
+  let studentName = req.body.username;
+  let found = false;
+  Student.findOne({ username: studentName }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exist");
+    }
+    if (!err) {
+      const studentClasses = student.classes;
+      studentClasses.forEach((studentClass) => {
+        if (studentClass._id.toString() === classID.toString()) {
+          found = true;
+          res.send(studentClass.timeslots);
+        }
+      });
+    }
+    if (!found) {
+      res.status(400).send("Class not found");
+    }
+  });
+});
+
+// TODO: Add timeslots to class
+route.post("/addTimeslotToClass", verify, function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  if (!req.body.classID) {
+    return res.status(400).send("Please provide a class ID");
+  }
+  if (!req.body.timeslot) {
+    return res.status(400).send("Please provide a timeslot");
+  }
+  if (!req.body.timeslot.startTime) {
+    return res.status(400).send("Please provide a timeslot start time");
+  }
+  if (!req.body.timeslot.endTime) {
+    return res.status(400).send("Please provide a timeslot end time");
+  }
+  if (!Date.parse(req.body.timeslot.startTime)) {
+    return res
+      .status(400)
+      .send("Please provide a valid startTime in UTC format");
+  }
+  if (!Date.parse(req.body.timeslot.endTime)) {
+    return res.status(400).send("Please provide a valid endTime in UTC format");
+  }
+  let classID = req.body.classID;
+  let studentName = req.body.username;
+  let found = false;
+  Student.findOne({ username: studentName }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exist");
+    }
+    if (!err) {
+      const studentClasses = student.classes;
+      studentClasses.forEach((studentClass) => {
+        if (studentClass._id.toString() === classID.toString()) {
+          found = true;
+          const timeslots = studentClass.timeslots;
+          const newTimeslot = new Timeslot({
+            startTime: req.body.timeslot.startTime,
+            endTime: req.body.timeslot.endTime,
+            description: req.body.timeslot.description,
+            location: req.body.timeslot.location,
+          });
+          timeslots.push(newTimeslot);
+          studentClass.timeslots = timeslots;
+          Student.updateOne(
+            { username: studentName },
+            { classes: studentClasses },
+            function (err) {
+              if (err) {
+                return res.status(500).send(err);
+              } else {
+                res.send(timeslots);
+              }
+            }
+          );
+        }
+      });
+    } else {
+      res.status(500).send(err);
+    }
+    if (!found) {
+      res.status(400).send("Class not found");
+    }
+  });
+});
+
+// Update existing timeslots of a classes
+
+// Delete timeslot of a classes
+
 module.exports = route;
