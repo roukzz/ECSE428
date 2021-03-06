@@ -335,5 +335,61 @@ route.post("/updateTimeSlotClass", verify, async function (req, res) {
 });
 
 // Delete timeslot of a classes
+route.post("/deleteTimeSlotClass", verify, async function (req, res) {
+
+  if (!req.body.timeSID) {
+    return res.status(400).send("Please provide a Time Slot ID");
+  }
+  if (!req.body.classID) {
+    return res.status(400).send("Please provide a class ID");
+  }
+
+  const studentName = req.body.username;
+  const timeSlotId = req.body.timeSID;
+
+  Student.findOne({ username: studentName }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exists");
+    }
+
+    var idx = -1;
+    var idx2 = -1;
+    var i,j;
+    for(i = 0; i < student.classes.length; i++) {
+      for (j = 0; j < student.classes[i].timeslots.length; j++) {
+        if (student.classes[i].timeslots[j]._id == timeSlotId) {
+          idx = i;
+          idx2 = j;
+        }
+      }
+    }
+
+    if(idx == -1){
+      return res.status(400).send("Time Slot does not exist");
+    }
+
+    if (!err) {
+
+      const classT = student.classes[idx];
+      if (!classT.timeslots) {
+        return res.status(400).send("TimeSlot does not exists");
+      }
+      classT.timeslots.splice(idx2, 1);
+      Student.updateOne(
+          { username: studentName },
+          { classes: classT },
+          function (err) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send(student.classes[idx]);
+            }
+          }
+      );
+    } else {
+      res.send(err);
+    }
+  });
+});
 
 module.exports = route;
