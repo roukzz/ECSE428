@@ -789,6 +789,7 @@ export default {
         username: localStorage.getItem("username"),
         title: this.title,
         description: this.description,
+        dueDate: this.deadline
       };
 
       AXIOS.post("/api/student/addTaskToStudent", params)
@@ -802,6 +803,7 @@ export default {
 
           this.title = "";
           this.description = "";
+          this.deadline = "";
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -831,6 +833,7 @@ export default {
         taskId: this.currenttask._id,
         title: this.title,
         description: this.description,
+        dueDate: this.deadline
       };
       //console.log(this.currenttask);
       console.log(this.currenttask._id);
@@ -854,7 +857,7 @@ export default {
           // this.tasktype = "";
           this.description = "";
           //this.location = "";
-          //this.deadline = "";
+          this.deadline = "";
           this.index = -1;
           this.currenttask = null;
         })
@@ -1033,12 +1036,13 @@ export default {
         this.index = index;
         this.description = task.description;
       }
-      //   else {
-      //       this.title = "";
-      //       this.description = "";
+      else {
+        this.title = "";
+        this.description = "";
       //       this.index = -1;
-      //       this.currenttask = null;
-      //   }
+        this.currenttask = null;
+        this.deadline = "";
+      }
       //console.log(this.title);
       document.getElementById("popup-edit").classList.toggle("active");
     },
