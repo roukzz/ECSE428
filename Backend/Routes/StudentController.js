@@ -5,6 +5,7 @@ const Task = require("../Models/task");
 const route = express.Router();
 const verify = require("./VerifyToken");
 const Reminder = require("../Models/reminder");
+const Timeslot = require("../Models/timeslot");
 
 // return custom status: res.json({status : "ok"})
 
@@ -56,7 +57,6 @@ route.post("/addTaskToStudent", verify, async function (req, res) {
     description: req.body.description,
 
     dueDate: req.body.dueDate,
-
   });
 
   if (!req.body.username) {
@@ -108,7 +108,6 @@ route.post("/updateStudentTask", verify, async function (req, res) {
     description: req.body.description,
 
     dueDate: req.body.dueDate,
-
   });
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
@@ -261,8 +260,8 @@ route.post("/addTimeslotToTask", verify, function (req, res) {
   }
   if (!Date.parse(req.body.timeslot.startTime)) {
     return res
-        .status(400)
-        .send("Please provide a valid startTime in UTC format");
+      .status(400)
+      .send("Please provide a valid startTime in UTC format");
   }
   if (!Date.parse(req.body.timeslot.endTime)) {
     return res.status(400).send("Please provide a valid endTime in UTC format");
@@ -289,15 +288,15 @@ route.post("/addTimeslotToTask", verify, function (req, res) {
           timeslots.push(newTimeslot);
           studentTask.timeslots = timeslots;
           Student.updateOne(
-              { username: studentName },
-              { tasks: studentTasks },
-              function (err) {
-                if (err) {
-                  return res.status(500).send(err);
-                } else {
-                  res.send(timeslots);
-                }
+            { username: studentName },
+            { tasks: studentTasks },
+            function (err) {
+              if (err) {
+                return res.status(500).send(err);
+              } else {
+                res.send(timeslots);
               }
+            }
           );
         }
       });
@@ -367,8 +366,8 @@ route.post("/updateTimeSlotTask", verify, async function (req, res) {
   }
   if (!Date.parse(req.body.startTime)) {
     return res
-        .status(400)
-        .send("Please provide a valid startTime in UTC format");
+      .status(400)
+      .send("Please provide a valid startTime in UTC format");
   }
   if (!Date.parse(req.body.endTime)) {
     return res.status(400).send("Please provide a valid endTime in UTC format");
@@ -383,8 +382,8 @@ route.post("/updateTimeSlotTask", verify, async function (req, res) {
 
     var idx = -1;
     var idx2 = -1;
-    var i,j;
-    for(i = 0; i < student.tasks.length; i++) {
+    var i, j;
+    for (i = 0; i < student.tasks.length; i++) {
       for (j = 0; j < student.tasks[i].timeslots.length; j++) {
         if (student.tasks[i].timeslots[j]._id == timeSlotId) {
           idx = i;
@@ -393,27 +392,26 @@ route.post("/updateTimeSlotTask", verify, async function (req, res) {
       }
     }
 
-    if(idx == -1){
+    if (idx == -1) {
       return res.status(400).send("Task does not exist");
     }
 
     if (!err) {
-
       const classT = student.tasks[idx];
       if (!classT.timeslots) {
         return res.status(400).send("TimeSlot does not exists");
       }
       classT.timeslots.splice(idx2, 1, newTimeSlot);
       Student.updateOne(
-          { username: studentName },
-          { tasks: classT },
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.send(student.tasks[idx]);
-            }
+        { username: studentName },
+        { tasks: classT },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(student.tasks[idx]);
           }
+        }
       );
     } else {
       res.send(err);
@@ -423,7 +421,6 @@ route.post("/updateTimeSlotTask", verify, async function (req, res) {
 
 // Delete existing time slot of a task
 route.post("/deleteTimeSlotTask", verify, async function (req, res) {
-
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
@@ -444,8 +441,8 @@ route.post("/deleteTimeSlotTask", verify, async function (req, res) {
 
     var idx = -1;
     var idx2 = -1;
-    var i,j;
-    for(i = 0; i < student.tasks.length; i++) {
+    var i, j;
+    for (i = 0; i < student.tasks.length; i++) {
       for (j = 0; j < student.tasks[i].timeslots.length; j++) {
         if (student.tasks[i].timeslots[j]._id == timeSlotId) {
           idx = i;
@@ -454,7 +451,7 @@ route.post("/deleteTimeSlotTask", verify, async function (req, res) {
       }
     }
 
-    if(idx == -1){
+    if (idx == -1) {
       return res.status(400).send("Task does not exist");
     }
 
@@ -465,21 +462,20 @@ route.post("/deleteTimeSlotTask", verify, async function (req, res) {
       }
       classT.timeslots.splice(idx2, 1);
       Student.updateOne(
-          { username: studentName },
-          { tasks: classT },
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.send(student.tasks[idx]);
-            }
+        { username: studentName },
+        { tasks: classT },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(student.tasks[idx]);
           }
+        }
       );
     } else {
       res.send(err);
     }
   });
 });
-
 
 module.exports = route;
