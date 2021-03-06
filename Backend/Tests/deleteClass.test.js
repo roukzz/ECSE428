@@ -57,12 +57,12 @@ afterAll(async (done) => {
   await closeDatabase();
   done();
 });
-describe("Update Class ", () => {
+describe("Delete Class", () => {
   //Normal task that should succeed
-  it("Success updating description", async () => {
+  it("Success deleting class", async () => {
     // login with invalid username but right password
     const res = await request(app)
-      .post("/api/class/updateClass")
+      .post("/api/class/deleteClass")
       .send({
         username: "student",
         title: "ECSE 428",
@@ -75,17 +75,14 @@ describe("Update Class ", () => {
       .set("auth-token", authToken);
 
     expect(res.statusCode).toEqual(200);
-    expect(JSON.parse(res.text).length).toEqual(1);
-    expect(JSON.parse(res.text)[0].description).toEqual("Super Fun Class");
+    expect(JSON.parse(res.text).length).toEqual(0);
     Student.findOne({ username: "student" }, function (err, docs) {
       if (err) {
         console.log(err);
         assert.fail();
       } else {
         if (docs) {
-          expect(docs.classes[0].description.toString()).toEqual(
-            "Super Fun Class"
-          );
+          expect(docs.classes.length).toEqual(0);
         }
       }
     });

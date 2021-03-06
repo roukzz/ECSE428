@@ -123,6 +123,43 @@ route.post("/updateClass", verify, function (req, res) {
   });
 });
 
+route.post("/deleteClass", verify, function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  Student.findOne({ username: req.body.username }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exist");
+    }
+    if (!err) {
+      let classIDIsValid = false;
+
+      for (let i = 0; i < student.classes.length; i++) {
+        if ((student.classes[i].id = req.body.classID)) {
+          classIDIsValid = true;
+          student.classes.splice(i, 1);
+        }
+      }
+      if (!classIDIsValid) {
+        return res.status(400).send("No class matches this ID");
+      }
+      Student.updateOne(
+        { username: req.body.username },
+        { classes: student.classes },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(student.classes);
+          }
+        }
+      );
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 function RRuleDaySwitch(number) {
   let day;
   switch (number) {
@@ -149,8 +186,6 @@ function RRuleDaySwitch(number) {
   }
   return day;
 }
-
-// TODO: Implement delete class
 
 // TODO: Implement get class
 
@@ -279,8 +314,8 @@ route.post("/updateTimeSlotClass", verify, async function (req, res) {
   }
   if (!Date.parse(req.body.startTime)) {
     return res
-        .status(400)
-        .send("Please provide a valid startTime in UTC format");
+      .status(400)
+      .send("Please provide a valid startTime in UTC format");
   }
   if (!Date.parse(req.body.endTime)) {
     return res.status(400).send("Please provide a valid endTime in UTC format");
@@ -293,40 +328,39 @@ route.post("/updateTimeSlotClass", verify, async function (req, res) {
       return res.status(400).send("Student does not exists");
     }
 
-      var idx = -1;
-      var idx2 = -1;
-      var i,j;
-      for(i = 0; i < student.classes.length; i++) {
-          for (j = 0; j < student.classes[i].timeslots.length; j++) {
-            //console.log("ID = "+student.classes[i].timeslots[j]._id)
-          if (student.classes[i].timeslots[j]._id == timeSlotId) {
-              idx = i;
-              idx2 = j;
-               }
-          }
+    var idx = -1;
+    var idx2 = -1;
+    var i, j;
+    for (i = 0; i < student.classes.length; i++) {
+      for (j = 0; j < student.classes[i].timeslots.length; j++) {
+        //console.log("ID = "+student.classes[i].timeslots[j]._id)
+        if (student.classes[i].timeslots[j]._id == timeSlotId) {
+          idx = i;
+          idx2 = j;
+        }
       }
+    }
 
-      if(idx == -1){
-          return res.status(400).send("Class does not exist");
-      }
+    if (idx == -1) {
+      return res.status(400).send("Class does not exist");
+    }
 
     if (!err) {
-
       const classT = student.classes[idx];
       if (!classT.timeslots) {
         return res.status(400).send("TimeSlot does not exists");
       }
       classT.timeslots.splice(idx2, 1, newTimeSlot);
       Student.updateOne(
-          { username: studentName },
-          { classes: classT },
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.send(student.classes[idx]);
-            }
+        { username: studentName },
+        { classes: classT },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(student.classes[idx]);
           }
+        }
       );
     } else {
       res.send(err);
@@ -336,7 +370,6 @@ route.post("/updateTimeSlotClass", verify, async function (req, res) {
 
 // Delete timeslot of a classes
 route.post("/deleteTimeSlotClass", verify, async function (req, res) {
-
   if (!req.body.timeSID) {
     return res.status(400).send("Please provide a Time Slot ID");
   }
@@ -354,8 +387,8 @@ route.post("/deleteTimeSlotClass", verify, async function (req, res) {
 
     var idx = -1;
     var idx2 = -1;
-    var i,j;
-    for(i = 0; i < student.classes.length; i++) {
+    var i, j;
+    for (i = 0; i < student.classes.length; i++) {
       for (j = 0; j < student.classes[i].timeslots.length; j++) {
         if (student.classes[i].timeslots[j]._id == timeSlotId) {
           idx = i;
@@ -364,27 +397,26 @@ route.post("/deleteTimeSlotClass", verify, async function (req, res) {
       }
     }
 
-    if(idx == -1){
+    if (idx == -1) {
       return res.status(400).send("Time Slot does not exist");
     }
 
     if (!err) {
-
       const classT = student.classes[idx];
       if (!classT.timeslots) {
         return res.status(400).send("TimeSlot does not exists");
       }
       classT.timeslots.splice(idx2, 1);
       Student.updateOne(
-          { username: studentName },
-          { classes: classT },
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.send(student.classes[idx]);
-            }
+        { username: studentName },
+        { classes: classT },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(student.classes[idx]);
           }
+        }
       );
     } else {
       res.send(err);
