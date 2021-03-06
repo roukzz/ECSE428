@@ -340,12 +340,86 @@ route.get("/getTaskTimeslots", verify, function (req, res) {
   });
 });
 
+// Update existing time slot of a task
+route.post("/updateTimeSlotTask", verify, async function (req, res) {
+  const newTimeSlot = new TimeSlot({
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    description: req.body.description,
+    location: req.body.location,
+  });
 
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  if (!req.body.timeSID) {
+    return res.status(400).send("Please provide a Time Slot ID");
+  }
+  if (!req.body.taskID) {
+    return res.status(400).send("Please provide a task ID");
+  }
 
+  if (!req.body.startTime) {
+    return res.status(400).send("Please provide a timeslot start time");
+  }
+  if (!req.body.endTime) {
+    return res.status(400).send("Please provide a timeslot end time");
+  }
+  if (!Date.parse(req.body.startTime)) {
+    return res
+        .status(400)
+        .send("Please provide a valid startTime in UTC format");
+  }
+  if (!Date.parse(req.body.endTime)) {
+    return res.status(400).send("Please provide a valid endTime in UTC format");
+  }
+  const studentName = req.body.username;
+  const timeSlotId = req.body.timeSID;
 
+  Student.findOne({ username: studentName }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exists");
+    }
 
+    var idx = -1;
+    var idx2 = -1;
+    var i,j;
+    for(i = 0; i < student.tasks.length; i++) {
+      for (j = 0; j < student.tasks[i].timeslots.length; j++) {
+        if (student.tasks[i].timeslots[j]._id == timeSlotId) {
+          idx = i;
+          idx2 = j;
+        }
+      }
+    }
 
+    if(idx == -1){
+      return res.status(400).send("Task does not exist");
+    }
 
+    if (!err) {
+
+      const classT = student.tasks[idx];
+      if (!classT.timeslots) {
+        return res.status(400).send("TimeSlot does not exists");
+      }
+      classT.timeslots.splice(idx2, 1, newTimeSlot);
+      Student.updateOne(
+          { username: studentName },
+          { tasks: classT },
+          function (err) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send(student.tasks[idx]);
+            }
+          }
+      );
+    } else {
+      res.send(err);
+    }
+  });
+});
 
 
 module.exports = route;
