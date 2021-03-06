@@ -96,6 +96,12 @@
       >
         Create Time Slot
       </button>
+      <button
+        id="createClassButton"
+        v-on:click="togglePopupCreateClass()"
+      >
+        Create Class
+      </button>
     </div>
 
     <div class="popup" id="popup-create">
@@ -157,6 +163,9 @@
             placeholder="Description"
             v-model="description"
           />
+          <div v-if="errorCreateTask && !deadline" style="color: red">
+            * Required
+          </div>
           <input
             class="inpbox"
             type="date"
@@ -175,6 +184,114 @@
             @click="addNewTask()"
           >
             Create Task
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="popup-create-class">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupCreateClass()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Create a new class
+        </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateClass"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateClass }}
+          </div>
+          <div
+            v-if="successCreateClass"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateClass }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <div v-if="errorCreateClass && !classname" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="classname"
+            placeholder="Class Name"
+            v-model="classname"
+          />
+          <div v-if="errorCreateClass && !startdate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="startdate"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="startdate"
+          />
+          <div v-if="errorCreateClass && !enddate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="enddate"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="enddate"
+          />
+          <div v-if="errorCreateTask && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="description"
+            placeholder="Description"
+            v-model="description"
+          />
+          <div v-if="errorCreateClass && !location" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="location"
+            placeholder="Location"
+            v-model="location"
+          />
+
+          <button
+            class="inpbox"
+            id="createclassbtn"
+            type="button"
+            @click="addNewClass()"
+          >
+            Create Class
           </button>
         </div>
       </div>
@@ -288,6 +405,9 @@
             :placeholder="[[description]]"
             v-model="description"
           />
+          <div v-if="errorCreateTask && !deadline" style="color: red">
+            * Required
+          </div>
           <input
             class="inpbox"
             type="date"
@@ -739,6 +859,9 @@ export default {
       deadline: "",
       starttime: "",
       endtime: "",
+      startdate: "",
+      enddate: "",
+      classname: "",
       task: "",
       index: -1,
       errorCreateTask: "",
@@ -749,7 +872,10 @@ export default {
       successEditTimeSlot: "",
       errorDeleteTimeSlot: "",
       successDeleteTimeSlot: "",
+      errorCreateClass: "",
+      successCreateClass: "",
       currenttask: null,
+      class: null,
     };
   },
 
@@ -1095,6 +1221,11 @@ export default {
         .getElementById("popup-delete-timeslot")
         .classList.toggle("active");
     },
+    togglePopupCreateClass() {
+      this.errorCreateClass = "";
+      this.successCreateClass = "";
+      document.getElementById("popup-create-class").classList.toggle("active");
+    }
   },
 };
 </script>
