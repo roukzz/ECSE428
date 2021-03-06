@@ -43,7 +43,7 @@
       <table>
         <tr
           class="classeslistitems"
-          v-for="(cl) in classeslist"
+          v-for="cl in classeslist"
           v-bind:id="cl._id"
           v-bind:key="cl._id"
         >
@@ -59,7 +59,6 @@
           <td>
             {{ cl.location }}
           </td>
-          
         </tr>
       </table>
     </div>
@@ -72,10 +71,10 @@
           v-bind:key="timeslot._id"
         >
           <td>
-            {{ timeslot.starttime }}
+            {{ timeslot.startTime }}
           </td>
           <td>
-            {{ timeslot.endtime }}
+            {{ timeslot.endTime }}
           </td>
           <td>
             {{ timeslot.description }}
@@ -83,8 +82,11 @@
           <td>
             {{ timeslot.location }}
           </td>
-          <td>
-            {{ timeslot.task }}
+          <td v-if="timeslot.task">
+            {{ timeslot.task.title }}
+          </td>
+          <td v-if="timeslot.class">
+            {{ timeslot.class.title }}
           </td>
           <td>
             <button
@@ -120,10 +122,7 @@
       >
         Create Time Slot
       </button>
-      <button
-        id="createClassButton"
-        v-on:click="togglePopupCreateClass()"
-      >
+      <button id="createClassButton" v-on:click="togglePopupCreateClass()">
         Create Class
       </button>
     </div>
@@ -196,7 +195,7 @@
             id="deadline"
             placeHolder="YYYY-MM-DD"
             maxlength="10"
-            min="2021-01-01" 
+            min="2021-01-01"
             max="3000-12-31"
             v-model="deadline"
           />
@@ -271,7 +270,7 @@
             id="createclass-startdate"
             placeHolder="YYYY-MM-DD"
             maxlength="10"
-            min="2021-01-01" 
+            min="2021-01-01"
             max="3000-12-31"
             v-model="startdate"
           />
@@ -284,7 +283,7 @@
             id="createclass-enddate"
             placeHolder="YYYY-MM-DD"
             maxlength="10"
-            min="2021-01-01" 
+            min="2021-01-01"
             max="3000-12-31"
             v-model="enddate"
           />
@@ -438,7 +437,7 @@
             id="deadlineEdit"
             :placeHolder="[[deadline]]"
             maxlength="10"
-            min="2021-01-01" 
+            min="2021-01-01"
             max="3000-12-31"
             v-model="deadline"
           />
@@ -548,37 +547,58 @@
         </div>
         <!-- Fields -->
         <div id="create_fields_timeSlot">
+          <div text-align="center">
+            <div>
+              <input
+                type="radio"
+                name="taskOrClass"
+                value="task"
+                v-model="taskOrClass"
+                checked
+                id="taskForTimeSlot"
+              />
+              <label for="task">Task</label>
+              <input
+                type="radio"
+                name="taskOrClass"
+                value="class"
+                v-model="taskOrClass"
+                id="classForTimeSlot"
+              />
+              <label for="class">Class</label>
+            </div>
+          </div>
           <div class="row">
             <div class="col-3">
-              <div v-if="errorCreateTimeSlot && !starttime" style="color: red">
+              <div v-if="errorCreateTimeSlot && !startTime" style="color: red">
                 * Required
               </div>
-              <label for="starttime">Start Time</label>
+              <label for="startTime">Start Time</label>
             </div>
             <div class="col-9">
               <input
                 class="inpbox"
-                type="time"
-                id="starttime"
+                type="datetime-local"
+                id="startTime"
                 placeholder="Start Time"
-                v-model="starttime"
+                v-model="startTime"
               />
             </div>
           </div>
           <div class="row">
             <div class="col-md-3">
-              <div v-if="errorCreateTimeSlot && !endtime" style="color: red">
+              <div v-if="errorCreateTimeSlot && !endTime" style="color: red">
                 * Required
               </div>
-              <label for="endtime">End Time</label>
+              <label for="endTime">End Time</label>
             </div>
             <div class="col-md-9">
               <input
                 class="inpbox"
-                type="time"
-                id="endtime"
+                type="datetime-local"
+                id="endTime"
                 placeholder="End Time"
-                v-model="endtime"
+                v-model="endTime"
               />
             </div>
           </div>
@@ -619,18 +639,46 @@
               />
             </div>
           </div>
-          <div class="row">
+          <div class="row" v-if="taskOrClass == 'class'">
             <div class="col-md-3">
-              <div v-if="errorCreateTimeSlot && !task" style="color: red">
+              <div
+                v-if="errorCreateTimeSlot && !classSelected"
+                style="color: red"
+              >
+                * Required
+              </div>
+              <label for="class">Class</label>
+            </div>
+            <div class="col-md-9">
+              <select id="class" v-model="classSelected">
+                <option disabled value="">Please select one</option>
+                <option
+                  v-for="(classSelected, i) in classeslist"
+                  v-bind:key="`class-${i}`"
+                >
+                  {{ classSelected.title }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row" v-if="taskOrClass == 'task'">
+            <div class="col-md-3">
+              <div
+                v-if="errorCreateTimeSlot && !taskSelected"
+                style="color: red"
+              >
                 * Required
               </div>
               <label for="task">Task</label>
             </div>
             <div class="col-md-9">
-              <select id="task" v-model="task">
+              <select id="task" v-model="taskSelected">
                 <option disabled value="">Please select one</option>
-                <option v-for="(task, i) in tasklist" v-bind:key="`task-${i}`">
-                  {{ task.title }}
+                <option
+                  v-for="(taskSelected, i) in tasklist"
+                  v-bind:key="`task-${i}`"
+                >
+                  {{ taskSelected.title }}
                 </option>
               </select>
             </div>
@@ -692,35 +740,35 @@
         <div id="create_fields_edit_timeSlot">
           <div class="row">
             <div class="col-3">
-              <div v-if="errorEditTimeSlot && !starttime" style="color: red">
+              <div v-if="errorEditTimeSlot && !startTime" style="color: red">
                 * Required
               </div>
-              <label for="starttime">Start Time</label>
+              <label for="startTime">Start Time</label>
             </div>
             <div class="col-9">
               <input
                 class="inpbox"
-                type="time"
-                id="starttimeEdit"
-                :placeholder="[[starttime]]"
-                v-model="starttime"
+                type="datetime-local"
+                id="startTimeEdit"
+                :placeholder="[[startTime]]"
+                v-model="startTime"
               />
             </div>
           </div>
           <div class="row">
             <div class="col-md-3">
-              <div v-if="errorEditTimeSlot && !endtime" style="color: red">
+              <div v-if="errorEditTimeSlot && !endTime" style="color: red">
                 * Required
               </div>
-              <label for="endtime">End Time</label>
+              <label for="endTime">End Time</label>
             </div>
             <div class="col-md-9">
               <input
                 class="inpbox"
-                type="time"
-                id="endtimeEdit"
-                :placeholder="[[endtime]]"
-                v-model="endtime"
+                type="datetime-local"
+                id="endTimeEdit"
+                :placeholder="[[endTime]]"
+                v-model="endTime"
               />
             </div>
           </div>
@@ -758,20 +806,29 @@
               />
             </div>
           </div>
-          <div class="row">
+          <div class="row" v-if="classSelected">
             <div class="col-md-3">
-              <div v-if="errorEditTimeSlot && !task" style="color: red">
+              <div
+                v-if="errorCreateTimeSlot && !classSelected"
+                style="color: red"
+              >
+                * Required
+              </div>
+              <label for="class">Class</label>
+            </div>
+            <div class="col-md-9">
+              {{ classSelected }}
+            </div>
+          </div>
+          <div class="row" v-if="taskSelected">
+            <div class="col-md-3">
+              <div v-if="errorEditTimeSlot && !taskSelected" style="color: red">
                 * Required
               </div>
               <label for="task">Task</label>
             </div>
             <div class="col-md-9">
-              <select id="taskEdit" v-model="task">
-                <option disabled value="">Please select one</option>
-                <option v-for="(task, i) in tasklist" v-bind:key="`task-${i}`">
-                  {{ task.title }}
-                </option>
-              </select>
+              {{ taskSelected }}
             </div>
           </div>
           <div text-align="center">
@@ -850,6 +907,7 @@
 <script>
 import NavBar from "@/components/NavBar";
 import axios from "axios";
+import moment from "moment";
 
 let config = require("../../config");
 
@@ -882,12 +940,14 @@ export default {
       description: "",
       location: "",
       deadline: "",
-      starttime: "",
-      endtime: "",
       startdate: "",
       enddate: "",
       classname: "",
-      task: "",
+      startTime: "",
+      endTime: "",
+      taskSelected: "",
+      classSelected: "",
+      taskOrClass: "",
       index: -1,
       errorCreateTask: "",
       successCreateTask: "",
@@ -917,6 +977,57 @@ export default {
       .then((response) => {
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
+        this.timeslotlist = [];
+        for (let task of this.tasklist) {
+          let params = {
+            username: localStorage.getItem("username"),
+            taskID: task._id,
+          };
+          AXIOS.post("/api/student/getTaskTimeslots", params)
+            .then((response) => {
+              var timeslots = response.data;
+              for (let timeslot of timeslots) {
+                timeslot.startTime = moment(timeslot.startTime).format(
+                  "YYYY-MM-DDTkk:mm"
+                );
+                timeslot.endTime = moment(timeslot.endTime).format(
+                  "YYYY-MM-DDTkk:mm"
+                );
+                timeslot.task = task;
+              }
+              this.timeslotlist.push(...timeslots);
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
+        }
+        for (let classe of this.classeslist) {
+          let params = {
+            username: localStorage.getItem("username"),
+            classID: classe._id,
+          };
+          AXIOS.post("/api/class/getClassTimeslots", params)
+            .then((response) => {
+              var timeslots = response.data;
+              for (let timeslot of timeslots) {
+                timeslot.startTime = moment(timeslot.startTime).format(
+                  "YYYY-MM-DDTkk:mm"
+                );
+                timeslot.endTime = moment(timeslot.endTime).format(
+                  "YYYY-MM-DDTkk:mm"
+                );
+                timeslot.class = classe;
+              }
+              this.timeslotlist.push(...timeslots);
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
+        }
       })
       .catch((e) => {
         e = e.response.data ? e.response.data : e;
@@ -941,7 +1052,7 @@ export default {
         username: localStorage.getItem("username"),
         title: this.title,
         description: this.description,
-        dueDate: this.deadline
+        dueDate: this.deadline,
       };
 
       AXIOS.post("/api/student/addTaskToStudent", params)
@@ -950,8 +1061,7 @@ export default {
           this.successCreateTask = "Successful new task";
           console.log("Worked");
 
-          // Updated tasklist is returned
-          this.tasklist = response.data;
+          this.updatePage();
 
           this.title = "";
           this.description = "";
@@ -967,7 +1077,6 @@ export default {
 
       this.togglePopupCreate();
     },
-
     editTask() {
       if (!this.title || !this.description || !this.dueDate) {
         this.errorCreateTask =
@@ -985,7 +1094,7 @@ export default {
         taskId: this.currenttask._id,
         title: this.title,
         description: this.description,
-        dueDate: this.deadline
+        dueDate: this.deadline,
       };
       //console.log(this.currenttask);
       console.log(this.currenttask._id);
@@ -995,15 +1104,7 @@ export default {
           this.successCreateTask = "Successful edit of task";
           console.log("Edit successful");
 
-          // console.log(this.tasklist);
-
-          //console.log(this.index);
-          //console.log(this.tasklist[this.index]);
-          // ID of task is modified when deleted
-          var tasks = response.data;
-          //console.log(tasks);
-          //  console.log(this.title);
-          this.tasklist = tasks;
+          this.updatePage();
 
           this.title = "";
           // this.tasktype = "";
@@ -1023,7 +1124,6 @@ export default {
 
       this.togglePopupEdit();
     },
-
     deleteTask() {
       let AXIOS = axios.create({
         baseURL: backendUrl,
@@ -1041,8 +1141,7 @@ export default {
           this.successCreateTask = "Successful deletion of task";
           console.log("Delete successful");
 
-          // Remove element at this.index
-          this.tasklist.splice(this.index, 1);
+          this.updatePage();
 
           this.title = "";
           this.description = "";
@@ -1059,9 +1158,14 @@ export default {
 
       this.togglePopupDelete();
     },
-
     addNewClass() {
-      if (!this.classname || !this.description || !this.location || !this.startdate || !this.enddate /*|| !this.timeslot*/) {
+      if (
+        !this.classname ||
+        !this.description ||
+        !this.location ||
+        !this.startdate ||
+        !this.enddate /*|| !this.timeslot*/
+      ) {
         this.errorCreateClass =
           "Missing fields. Please fill in all required fields";
         this.successCreateClass = "";
@@ -1076,10 +1180,10 @@ export default {
         username: localStorage.getItem("username"),
         title: this.classname,
         description: this.description,
-        startTime: this.startdate, 
+        startTime: this.startdate,
         endTime: this.enddate,
-        location: this.location, 
-        timeslots: null
+        location: this.location,
+        timeslots: null,
       };
 
       AXIOS.post("/api/Class/addNewClass", params)
@@ -1088,15 +1192,13 @@ export default {
           this.successCreateClass = "Successful new task";
           console.log("class created");
 
-          // Updated tasklist is returned
-          this.classeslist.push(response.data);
+          this.updatePage();
 
           this.classname = "";
           this.description = "";
           this.startTime = "";
           this.endTime = "";
           this.location = "";
-
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -1108,7 +1210,6 @@ export default {
 
       this.togglePopupCreateClass();
     },
-
     deleteAccount() {
       let AXIOS = axios.create({
         baseURL: backendUrl,
@@ -1134,11 +1235,11 @@ export default {
     },
     addNewTimeSlot() {
       if (
-        !this.starttime ||
-        !this.endtime ||
+        !this.startTime ||
+        !this.endTime ||
         !this.description ||
         !this.location ||
-        !this.task
+        (!this.taskSelected && !this.classSelected)
       ) {
         this.errorCreateTimeSlot =
           "Missing fields. Please fill in all required fields";
@@ -1150,30 +1251,85 @@ export default {
         headers: { "auth-token": localStorage.getItem("auth_key") },
         // headers: {'Access-Control-Allow-Origin': frontendUrl}
       });
-      let params = {
-        username: localStorage.getItem("username"),
-      };
       var timeslot = new Object();
-      timeslot.starttime = this.starttime;
-      timeslot.endtime = this.endtime;
+      timeslot.startTime = this.startTime;
+      timeslot.endTime = this.endTime;
       timeslot.description = this.description;
       timeslot.location = this.location;
-      timeslot.task = this.task;
-      this.timeslotlist.push(timeslot);
-      this.starttime = "";
-      this.endtime = "";
-      this.description = "";
-      this.location = "";
-      this.task = "";
-      this.togglePopupCreateTimeSlot();
+      if (this.taskOrClass == "task") {
+        timeslot.task = this.tasklist.find(
+          (element) => element.title == this.taskSelected
+        );
+      } else {
+        timeslot.class = this.classeslist.find(
+          (element) => element.title == this.classSelected
+        );
+      }
+      if (this.taskOrClass == "task") {
+        let params = {
+          username: localStorage.getItem("username"),
+          taskID: timeslot.task._id,
+          timeslot: timeslot,
+        };
+        AXIOS.post("/api/student/addTimeslotToTask", params)
+          .then((response) => {
+            this.errorCreateTimeSlot = "";
+            this.successCreateTimeSlot = "Successful new time slot";
+
+            this.updatePage();
+
+            this.startTime = "";
+            this.endTime = "";
+            this.description = "";
+            this.location = "";
+            this.taskSelected = "";
+            this.classSelected = "";
+            this.togglePopupCreateTimeSlot();
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorCreateTimeSlot = e;
+            this.successCreateTimeSlot = "";
+            console.log(e);
+            return;
+          });
+      } else {
+        let params = {
+          username: localStorage.getItem("username"),
+          classID: timeslot.class._id,
+          timeslot: timeslot,
+        };
+        AXIOS.post("/api/class/addTimeslotToClass", params)
+          .then((response) => {
+            this.errorCreateTimeSlot = "";
+            this.successCreateTimeSlot = "Successful new time slot";
+
+            this.updatePage();
+
+            this.startTime = "";
+            this.endTime = "";
+            this.description = "";
+            this.location = "";
+            this.taskSelected = "";
+            this.classSelected = "";
+            this.togglePopupCreateTimeSlot();
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorCreateTimeSlot = e;
+            this.successCreateTimeSlot = "";
+            console.log(e);
+            return;
+          });
+      }
     },
     editTimeSlot() {
       if (
-        !this.starttime ||
-        !this.endtime ||
+        !this.startTime ||
+        !this.endTime ||
         !this.description ||
         !this.location ||
-        !this.task
+        (!this.taskSelected && !this.classSelected)
       ) {
         this.errorEditTimeSlot =
           "Missing fields. Please fill in all required fields";
@@ -1185,20 +1341,72 @@ export default {
         headers: { "auth-token": localStorage.getItem("auth_key") },
         // headers: {'Access-Control-Allow-Origin': frontendUrl}
       });
-      let params = {
-        username: localStorage.getItem("username"),
-      };
-      this.timeslotlist[this.index].starttime = this.starttime;
-      this.timeslotlist[this.index].endtime = this.endtime;
-      this.timeslotlist[this.index].description = this.description;
-      this.timeslotlist[this.index].location = this.location;
-      this.timeslotlist[this.index].task = this.task;
-      this.starttime = "";
-      this.endtime = "";
-      this.description = "";
-      this.location = "";
-      this.task = "";
-      this.togglePopupEditTimeSlot();
+      if (this.taskSelected) {
+        let params = {
+          username: localStorage.getItem("username"),
+          taskID: this.timeslotlist[this.index].task._id,
+          timeSID: this.timeslotlist[this.index]._id,
+          description: this.description,
+          location: this.location,
+          startTime: this.startTime,
+          endTime: this.endTime,
+        };
+        console.log(params);
+        AXIOS.post("/api/student/updateTimeSlotTask", params)
+          .then((response) => {
+            this.errorEditTimeSlot = "";
+            this.successEditTimeSlot = "Successful edit time slot";
+
+            this.updatePage();
+
+            this.startTime = "";
+            this.endTime = "";
+            this.description = "";
+            this.location = "";
+            this.taskSelected = "";
+            this.classSelected = "";
+            this.togglePopupEditTimeSlot();
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorEditTimeSlot = e;
+            this.successEditTimeSlot = "";
+            console.log(e);
+            return;
+          });
+      } else {
+        let params = {
+          username: localStorage.getItem("username"),
+          classID: this.timeslotlist[this.index].class._id,
+          timeSID: this.timeslotlist[this.index]._id,
+          description: this.description,
+          location: this.location,
+          startTime: this.startTime,
+          endTime: this.endTime,
+        };
+        AXIOS.post("/api/class/updateTimeSlotClass", params)
+          .then((response) => {
+            this.errorEditTimeSlot = "";
+            this.successEditTimeSlot = "Successful edit time slot";
+
+            this.updatePage();
+
+            this.startTime = "";
+            this.endTime = "";
+            this.description = "";
+            this.location = "";
+            this.taskSelected = "";
+            this.classSelected = "";
+            this.togglePopupEditTimeSlot();
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorEditTimeSlot = e;
+            this.successEditTimeSlot = "";
+            console.log(e);
+            return;
+          });
+      }
     },
     deleteTimeSlot() {
       let AXIOS = axios.create({
@@ -1206,11 +1414,63 @@ export default {
         headers: { "auth-token": localStorage.getItem("auth_key") },
         // headers: {'Access-Control-Allow-Origin': frontendUrl}
       });
-      let params = {
-        username: localStorage.getItem("username"),
-      };
-      this.timeslotlist.splice(this.index, 1);
-      this.togglePopupDeleteTimeSlot();
+      if (this.taskSelected) {
+        let params = {
+          username: localStorage.getItem("username"),
+          taskID: this.timeslotlist[this.index].task._id,
+          timeSID: this.timeslotlist[this.index]._id,
+        };
+        AXIOS.post("/api/student/deleteTimeSlotTask", params)
+          .then((response) => {
+            this.errorDeleteTimeSlot = "";
+            this.successDeleteTimeSlot = "Successful delete time slot";
+
+            this.updatePage();
+
+            this.startTime = "";
+            this.endTime = "";
+            this.description = "";
+            this.location = "";
+            this.taskSelected = "";
+            this.classSelected = "";
+            this.togglePopupDeleteTimeSlot();
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorDeleteTimeSlot = e;
+            this.successDeleteTimeSlot = "";
+            console.log(e);
+            return;
+          });
+      } else {
+        let params = {
+          username: localStorage.getItem("username"),
+          classID: this.timeslotlist[this.index].class._id,
+          timeSID: this.timeslotlist[this.index]._id,
+        };
+        AXIOS.post("/api/class/deleteTimeSlotClass", params)
+          .then((response) => {
+            this.errorDeleteTimeSlot = "";
+            this.successDeleteTimeSlot = "Successful delete time slot";
+
+            this.updatePage();
+
+            this.startTime = "";
+            this.endTime = "";
+            this.description = "";
+            this.location = "";
+            this.taskSelected = "";
+            this.classSelected = "";
+            this.togglePopupDeleteTimeSlot();
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            this.errorDeleteTimeSlot = e;
+            this.successDeleteTimeSlot = "";
+            console.log(e);
+            return;
+          });
+      }
     },
     togglePopupCreate() {
       this.errorCreateTask = "";
@@ -1236,11 +1496,10 @@ export default {
         this.currenttask = task;
         this.index = index;
         this.description = task.description;
-      }
-      else {
+      } else {
         this.title = "";
         this.description = "";
-      //       this.index = -1;
+        //       this.index = -1;
         this.currenttask = null;
         this.deadline = "";
       }
@@ -1277,11 +1536,17 @@ export default {
       this.errorEditTimeSlot = "";
       this.successEditTimeSlot = "";
       if (timeslot != null) {
-        this.starttime = timeslot.starttime;
-        this.endtime = timeslot.endtime;
+        this.startTime = timeslot.startTime;
+        this.endTime = timeslot.endTime;
         this.description = timeslot.description;
         this.location = timeslot.location;
-        this.task = timeslot.task;
+        if (timeslot.task) {
+          this.taskSelected = timeslot.task.title;
+          this.classSelected = "";
+        } else {
+          this.classSelected = timeslot.class.title;
+          this.taskSelected = "";
+        }
         this.index = index;
       }
       document.getElementById("popup-edit-timeslot").classList.toggle("active");
@@ -1291,6 +1556,13 @@ export default {
       this.successDeleteTimeSlot = "";
       if (timeslot != null) {
         this.index = index;
+        if (timeslot.task) {
+          this.taskSelected = timeslot.task.title;
+          this.classSelected = "";
+        } else {
+          this.classSelected = timeslot.class.title;
+          this.taskSelected = "";
+        }
       }
       document
         .getElementById("popup-delete-timeslot")
@@ -1300,7 +1572,78 @@ export default {
       this.errorCreateClass = "";
       this.successCreateClass = "";
       document.getElementById("popup-create-class").classList.toggle("active");
-    }
+    },
+    updatePage() {
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+      };
+      AXIOS.post("/api/student/getStudentByUsername", params)
+        .then((response) => {
+          this.tasklist = response.data.tasks;
+          this.classeslist = response.data.classes;
+          this.timeslotlist = [];
+          for (let task of this.tasklist) {
+            let params = {
+              username: localStorage.getItem("username"),
+              taskID: task._id,
+            };
+            AXIOS.post("/api/student/getTaskTimeslots", params)
+              .then((response) => {
+                var timeslots = response.data;
+                for (let timeslot of timeslots) {
+                  timeslot.startTime = moment(timeslot.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  timeslot.endTime = moment(timeslot.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  timeslot.task = task;
+                }
+                this.timeslotlist.push(...timeslots);
+              })
+              .catch((e) => {
+                e = e.response.data ? e.response.data : e;
+                console.log(e);
+                return;
+              });
+          }
+          for (let classe of this.classeslist) {
+            let params = {
+              username: localStorage.getItem("username"),
+              classID: classe._id,
+            };
+            AXIOS.post("/api/class/getClassTimeslots", params)
+              .then((response) => {
+                var timeslots = response.data;
+                for (let timeslot of timeslots) {
+                  timeslot.startTime = moment(timeslot.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  timeslot.endTime = moment(timeslot.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  timeslot.class = classe;
+                }
+                this.timeslotlist.push(...timeslots);
+              })
+              .catch((e) => {
+                e = e.response.data ? e.response.data : e;
+                console.log(e);
+                return;
+              });
+          }
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          console.log(e);
+          return;
+        });
+    },
   },
 };
 </script>

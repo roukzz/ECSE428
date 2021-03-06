@@ -257,7 +257,7 @@ function RRuleDaySwitch(number) {
 //and how would they have the ID without the class? Basically im not sure this is necessary.
 
 // get class time_slots
-route.get("/getClassTimeslots", verify, function (req, res) {
+route.post("/getClassTimeslots", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
