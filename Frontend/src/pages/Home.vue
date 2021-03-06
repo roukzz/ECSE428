@@ -39,6 +39,30 @@
       </table>
     </div>
 
+    <div id="classes-test">
+      <table>
+        <tr
+          class="classeslistitems"
+          v-for="(cl) in classeslist"
+          v-bind:id="cl._id"
+          v-bind:key="cl._id"
+        >
+          <td>
+            {{ cl.startTime }}
+          </td>
+          <td>
+            {{ cl.endTime }}
+          </td>
+          <td>
+            {{ cl.description }}
+          </td>
+          <td>
+            {{ cl.location }}
+          </td>
+          
+        </tr>
+      </table>
+    </div>
     <div id="timeSlotHolder">
       <table>
         <tr
@@ -234,7 +258,7 @@
           <input
             class="inpbox"
             type="text"
-            id="classname"
+            id="createclass-classname"
             placeholder="Class Name"
             v-model="classname"
           />
@@ -244,7 +268,7 @@
           <input
             class="inpbox"
             type="date"
-            id="startdate"
+            id="createclass-startdate"
             placeHolder="YYYY-MM-DD"
             maxlength="10"
             min="2021-01-01" 
@@ -257,7 +281,7 @@
           <input
             class="inpbox"
             type="date"
-            id="enddate"
+            id="createclass-enddate"
             placeHolder="YYYY-MM-DD"
             maxlength="10"
             min="2021-01-01" 
@@ -270,7 +294,7 @@
           <input
             class="inpbox"
             type="text"
-            id="description"
+            id="createclass-description"
             placeholder="Description"
             v-model="description"
           />
@@ -280,7 +304,7 @@
           <input
             class="inpbox"
             type="text"
-            id="location"
+            id="createclass-location"
             placeholder="Location"
             v-model="location"
           />
@@ -853,6 +877,7 @@ export default {
       title: "",
       tasklist: [],
       timeslotlist: [],
+      classeslist: [],
       tasktype: "",
       description: "",
       location: "",
@@ -891,6 +916,7 @@ export default {
     AXIOS.post("/api/student/getStudentByUsername", params)
       .then((response) => {
         this.tasklist = response.data.tasks;
+        this.classeslist = response.data.classes;
       })
       .catch((e) => {
         e = e.response.data ? e.response.data : e;
@@ -900,7 +926,7 @@ export default {
   },
   methods: {
     addNewTask() {
-      if (!this.title || !this.description) {
+      if (!this.title || !this.description || !this.deadline) {
         this.errorCreateTask =
           "Missing fields. Please fill in all required fields";
         this.successCreateTask = "";
@@ -943,7 +969,7 @@ export default {
     },
 
     editTask() {
-      if (!this.title || !this.description) {
+      if (!this.title || !this.description || !this.dueDate) {
         this.errorCreateTask =
           "Missing fields. Please fill in all required fields";
         this.successCreateTask = "";
@@ -1032,6 +1058,55 @@ export default {
         });
 
       this.togglePopupDelete();
+    },
+
+    addNewClass() {
+      if (!this.classname || !this.description || !this.location || !this.startdate || !this.enddate /*|| !this.timeslot*/) {
+        this.errorCreateClass =
+          "Missing fields. Please fill in all required fields";
+        this.successCreateClass = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        title: this.classname,
+        description: this.description,
+        startTime: this.startdate, 
+        endTime: this.enddate,
+        location: this.location, 
+        timeslots: null
+      };
+
+      AXIOS.post("/api/Class/addNewClass", params)
+        .then((response) => {
+          this.errorCreateClass = "";
+          this.successCreateClass = "Successful new task";
+          console.log("class created");
+
+          // Updated tasklist is returned
+          this.classeslist.push(response.data);
+
+          this.classname = "";
+          this.description = "";
+          this.startTime = "";
+          this.endTime = "";
+          this.location = "";
+
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateTask = e;
+          this.successCreateTask = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupCreateClass();
     },
 
     deleteAccount() {
