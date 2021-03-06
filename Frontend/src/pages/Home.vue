@@ -157,6 +157,17 @@
             placeholder="Description"
             v-model="description"
           />
+          <input
+            class="inpbox"
+            type="date"
+            id="deadline"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="deadline"
+          />
+
           <button
             class="inpbox"
             id="createbtn"
@@ -166,23 +177,6 @@
             Create Task
           </button>
         </div>
-        <!-- <div class="close-btn" onclick="togglePopup()">&times;</div>
-        
-            <input class="inpbox" type="text" v-model="newNewTask" placeholder="Task Title"> 
-            <br>
-            <select id="taskType" v-model="tasktype">
-                <option value="currentSelected">Current Selected Type</option>
-                <option value="defaultType">Default Type</option>
-                <option value="typeTwo">Type Two</option>
-                <option value="typeThree">Type Three</option>
-            </select>
-            <br>
-            <input class="inpbox" type="text" v-model="detail" placeholder="Task Details"> 
-            <input class="inpbox" type="text" v-model="location" placeholder="Location"> 
-            <input class="inpbox" type="text" v-model="deadline" placeholder="Deadline"> 
-            <br>
-            <br>
-            <button v-on:click="addNewTask()">Click to Add</button>  -->
       </div>
     </div>
 
@@ -293,6 +287,16 @@
             id="descriptionEdit"
             :placeholder="[[description]]"
             v-model="description"
+          />
+          <input
+            class="inpbox"
+            type="date"
+            id="deadlineEdit"
+            :placeHolder="[[deadline]]"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="deadline"
           />
           <button
             id="updateChanges"
