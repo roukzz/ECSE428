@@ -39,6 +39,30 @@
       </table>
     </div>
 
+    <div id="classes-test">
+      <table>
+        <tr
+          class="classeslistitems"
+          v-for="(cl) in classeslist"
+          v-bind:id="cl._id"
+          v-bind:key="cl._id"
+        >
+          <td>
+            {{ cl.startTime }}
+          </td>
+          <td>
+            {{ cl.endTime }}
+          </td>
+          <td>
+            {{ cl.description }}
+          </td>
+          <td>
+            {{ cl.location }}
+          </td>
+          
+        </tr>
+      </table>
+    </div>
     <div id="timeSlotHolder">
       <table>
         <tr
@@ -95,6 +119,12 @@
         v-on:click="togglePopupCreateTimeSlot()"
       >
         Create Time Slot
+      </button>
+      <button
+        id="createClassButton"
+        v-on:click="togglePopupCreateClass()"
+      >
+        Create Class
       </button>
     </div>
 
@@ -157,6 +187,20 @@
             placeholder="Description"
             v-model="description"
           />
+          <div v-if="errorCreateTask && !deadline" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="deadline"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="deadline"
+          />
+
           <button
             class="inpbox"
             id="createbtn"
@@ -166,23 +210,114 @@
             Create Task
           </button>
         </div>
-        <!-- <div class="close-btn" onclick="togglePopup()">&times;</div>
-        
-            <input class="inpbox" type="text" v-model="newNewTask" placeholder="Task Title"> 
-            <br>
-            <select id="taskType" v-model="tasktype">
-                <option value="currentSelected">Current Selected Type</option>
-                <option value="defaultType">Default Type</option>
-                <option value="typeTwo">Type Two</option>
-                <option value="typeThree">Type Three</option>
-            </select>
-            <br>
-            <input class="inpbox" type="text" v-model="detail" placeholder="Task Details"> 
-            <input class="inpbox" type="text" v-model="location" placeholder="Location"> 
-            <input class="inpbox" type="text" v-model="deadline" placeholder="Deadline"> 
-            <br>
-            <br>
-            <button v-on:click="addNewTask()">Click to Add</button>  -->
+      </div>
+    </div>
+
+    <div class="popup" id="popup-create-class">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupCreateClass()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Create a new class
+        </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateClass"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateClass }}
+          </div>
+          <div
+            v-if="successCreateClass"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateClass }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <div v-if="errorCreateClass && !classname" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="createclass-classname"
+            placeholder="Class Name"
+            v-model="classname"
+          />
+          <div v-if="errorCreateClass && !startdate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="createclass-startdate"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="startdate"
+          />
+          <div v-if="errorCreateClass && !enddate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="createclass-enddate"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="enddate"
+          />
+          <div v-if="errorCreateTask && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="createclass-description"
+            placeholder="Description"
+            v-model="description"
+          />
+          <div v-if="errorCreateClass && !location" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="createclass-location"
+            placeholder="Location"
+            v-model="location"
+          />
+
+          <button
+            class="inpbox"
+            id="createclassbtn"
+            type="button"
+            @click="addNewClass()"
+          >
+            Create Class
+          </button>
+        </div>
       </div>
     </div>
 
@@ -293,6 +428,19 @@
             id="descriptionEdit"
             :placeholder="[[description]]"
             v-model="description"
+          />
+          <div v-if="errorCreateTask && !deadline" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="deadlineEdit"
+            :placeHolder="[[deadline]]"
+            maxlength="10"
+            min="2021-01-01" 
+            max="3000-12-31"
+            v-model="deadline"
           />
           <button
             id="updateChanges"
@@ -729,12 +877,16 @@ export default {
       title: "",
       tasklist: [],
       timeslotlist: [],
+      classeslist: [],
       tasktype: "",
       description: "",
       location: "",
       deadline: "",
       starttime: "",
       endtime: "",
+      startdate: "",
+      enddate: "",
+      classname: "",
       task: "",
       index: -1,
       errorCreateTask: "",
@@ -745,7 +897,10 @@ export default {
       successEditTimeSlot: "",
       errorDeleteTimeSlot: "",
       successDeleteTimeSlot: "",
+      errorCreateClass: "",
+      successCreateClass: "",
       currenttask: null,
+      class: null,
     };
   },
 
@@ -761,6 +916,7 @@ export default {
     AXIOS.post("/api/student/getStudentByUsername", params)
       .then((response) => {
         this.tasklist = response.data.tasks;
+        this.classeslist = response.data.classes;
       })
       .catch((e) => {
         e = e.response.data ? e.response.data : e;
@@ -770,7 +926,7 @@ export default {
   },
   methods: {
     addNewTask() {
-      if (!this.title || !this.description) {
+      if (!this.title || !this.description || !this.deadline) {
         this.errorCreateTask =
           "Missing fields. Please fill in all required fields";
         this.successCreateTask = "";
@@ -785,6 +941,7 @@ export default {
         username: localStorage.getItem("username"),
         title: this.title,
         description: this.description,
+        dueDate: this.deadline
       };
 
       AXIOS.post("/api/student/addTaskToStudent", params)
@@ -798,6 +955,7 @@ export default {
 
           this.title = "";
           this.description = "";
+          this.deadline = "";
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -811,7 +969,7 @@ export default {
     },
 
     editTask() {
-      if (!this.title || !this.description) {
+      if (!this.title || !this.description || !this.dueDate) {
         this.errorCreateTask =
           "Missing fields. Please fill in all required fields";
         this.successCreateTask = "";
@@ -827,6 +985,7 @@ export default {
         taskId: this.currenttask._id,
         title: this.title,
         description: this.description,
+        dueDate: this.deadline
       };
       //console.log(this.currenttask);
       console.log(this.currenttask._id);
@@ -850,7 +1009,7 @@ export default {
           // this.tasktype = "";
           this.description = "";
           //this.location = "";
-          //this.deadline = "";
+          this.deadline = "";
           this.index = -1;
           this.currenttask = null;
         })
@@ -899,6 +1058,55 @@ export default {
         });
 
       this.togglePopupDelete();
+    },
+
+    addNewClass() {
+      if (!this.classname || !this.description || !this.location || !this.startdate || !this.enddate /*|| !this.timeslot*/) {
+        this.errorCreateClass =
+          "Missing fields. Please fill in all required fields";
+        this.successCreateClass = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        title: this.classname,
+        description: this.description,
+        startTime: this.startdate, 
+        endTime: this.enddate,
+        location: this.location, 
+        timeslots: null
+      };
+
+      AXIOS.post("/api/Class/addNewClass", params)
+        .then((response) => {
+          this.errorCreateClass = "";
+          this.successCreateClass = "Successful new task";
+          console.log("class created");
+
+          // Updated tasklist is returned
+          this.classeslist.push(response.data);
+
+          this.classname = "";
+          this.description = "";
+          this.startTime = "";
+          this.endTime = "";
+          this.location = "";
+
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateTask = e;
+          this.successCreateTask = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupCreateClass();
     },
 
     deleteAccount() {
@@ -1029,12 +1237,13 @@ export default {
         this.index = index;
         this.description = task.description;
       }
-      //   else {
-      //       this.title = "";
-      //       this.description = "";
+      else {
+        this.title = "";
+        this.description = "";
       //       this.index = -1;
-      //       this.currenttask = null;
-      //   }
+        this.currenttask = null;
+        this.deadline = "";
+      }
       //console.log(this.title);
       document.getElementById("popup-edit").classList.toggle("active");
     },
@@ -1087,6 +1296,11 @@ export default {
         .getElementById("popup-delete-timeslot")
         .classList.toggle("active");
     },
+    togglePopupCreateClass() {
+      this.errorCreateClass = "";
+      this.successCreateClass = "";
+      document.getElementById("popup-create-class").classList.toggle("active");
+    }
   },
 };
 </script>
