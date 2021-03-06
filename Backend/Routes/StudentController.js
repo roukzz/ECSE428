@@ -241,7 +241,104 @@ route.post("/deleteStudentTask", verify, function (req, res) {
   });
 });
 
+// ===== add a time slot to an existing task =====
+// =============================================
+route.post("/addTimeslotToTask", verify, function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  if (!req.body.taskID) {
+    return res.status(400).send("Please provide a task ID");
+  }
+  if (!req.body.timeslot) {
+    return res.status(400).send("Please provide a timeslot");
+  }
+  if (!req.body.timeslot.startTime) {
+    return res.status(400).send("Please provide a timeslot start time");
+  }
+  if (!req.body.timeslot.endTime) {
+    return res.status(400).send("Please provide a timeslot end time");
+  }
+  if (!Date.parse(req.body.timeslot.startTime)) {
+    return res
+        .status(400)
+        .send("Please provide a valid startTime in UTC format");
+  }
+  if (!Date.parse(req.body.timeslot.endTime)) {
+    return res.status(400).send("Please provide a valid endTime in UTC format");
+  }
+  let taskID = req.body.taskID;
+  let studentName = req.body.username;
+  let found = false;
+  Student.findOne({ username: studentName }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exist");
+    }
+    if (!err) {
+      const studentTasks = student.tasks;
+      studentTasks.forEach((studentTask) => {
+        if (studentTask._id.toString() === taskID.toString()) {
+          found = true;
+          const timeslots = studentTask.timeslots;
+          const newTimeslot = new Timeslot({
+            startTime: req.body.timeslot.startTime,
+            endTime: req.body.timeslot.endTime,
+            description: req.body.timeslot.description,
+            location: req.body.timeslot.location,
+          });
+          timeslots.push(newTimeslot);
+          studentTask.timeslots = timeslots;
+          Student.updateOne(
+              { username: studentName },
+              { tasks: studentTasks },
+              function (err) {
+                if (err) {
+                  return res.status(500).send(err);
+                } else {
+                  res.send(timeslots);
+                }
+              }
+          );
+        }
+      });
+    } else {
+      res.status(500).send(err);
+    }
+    if (!found) {
+      res.status(400).send("Class not found");
+    }
+  });
+});
 
+// get task time_slots
+route.get("/getTaskTimeslots", verify, function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  if (!req.body.taskID) {
+    return res.status(400).send("Please provide a taskID");
+  }
+  let taskID = req.body.taskID;
+  let studentName = req.body.username;
+  let found = false;
+  Student.findOne({ username: studentName }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exist");
+    }
+    if (!err) {
+      const studentTasks = student.tasks;
+      studentTasks.forEach((studentTask) => {
+        if (studentTask._id.toString() === taskID.toString()) {
+          found = true;
+          res.send(studentTask.timeslots);
+        }
+      });
+    }
+    if (!found) {
+      res.status(400).send("Class not found");
+    }
+  });
+});
 
 
 
