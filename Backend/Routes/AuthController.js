@@ -15,7 +15,6 @@ const schema = Joi.object({
   password: Joi.string().min(6).required(),
 
   email: Joi.string(),
-
 });
 
 // ===== register a new student =====
@@ -23,7 +22,7 @@ const schema = Joi.object({
 router.post("/register", async (req, res) => {
   // data validation
   try {
-  //  console.log(req.body);
+    //  console.log(req.body);
     //console.log('------------------------------------------------------');
     const value = await schema.validateAsync(req.body);
   } catch (error) {
@@ -37,7 +36,6 @@ router.post("/register", async (req, res) => {
   }
 
   // create new student
-  console.log(req.body);
   const student = new Student(req.body);
   //console.log('------------------------------------------------------');
   //console.log(student);
