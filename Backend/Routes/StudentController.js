@@ -310,7 +310,7 @@ route.post("/addTimeslotToTask", verify, function (req, res) {
 });
 
 // get task time_slots
-route.get("/getTaskTimeslots", verify, function (req, res) {
+route.post("/getTaskTimeslots", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
