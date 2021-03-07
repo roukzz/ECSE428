@@ -100,13 +100,13 @@ export default {
     
       var daily_timeslots = [];
       var timeslot_start_date;
-      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + date.getDate();
+      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + this.padMonth(date.getDate());
       var mod_timeslot;
 
       for (var i = 0; i < this.timeslots.length; i++) {
         
         timeslot_start_date = this.timeslots[i].startTime.split("T");
-
+        
         if (timeslot_start_date[0] == date_str) {
           
           mod_timeslot = this.timeslots[i];
