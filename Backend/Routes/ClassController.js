@@ -9,18 +9,19 @@ const Timeslot = require("../Models/timeslot");
 
 const { RRule, RRuleSet, rrulestr } = require("rrule");
 
-// ===== get tasks of existing student =====
-// =========================================
+// ===== get classes of existing student =====
+// ===========================================
 route.get("/getStudentClasses", verify, function (req, res) {
+  // check for username
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
   const studentName = req.body.username;
+  // find student
   Student.findOne({ username: studentName }, function (err, student) {
     if (!student) {
       return res.status(400).send("Student does not exists");
     }
-    // console.log("found student name  :" + student);
     if (!err) {
       res.send(student.classes);
     } else {
@@ -29,7 +30,31 @@ route.get("/getStudentClasses", verify, function (req, res) {
   });
 });
 
+// ===== add new class to existing student =====
+// =============================================
 route.post("/addNewClass", verify, function (req, res) {
+  // err handlings
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  if (!req.body.title) {
+    return res.status(400).send("Please provide a class title");
+  }
+  if (!req.body.startTime) {
+    return res.status(400).send("Please provide a class start time");
+  }
+  if (!req.body.endTime) {
+    return res.status(400).send("Please provide a class end time");
+  }
+  if (!Date.parse(req.body.startTime)) {
+    return res
+      .status(400)
+      .send("Please provide a valid startTime in UTC format");
+  }
+  if (!Date.parse(req.body.endTime)) {
+    return res.status(400).send("Please provide a valid endTime in UTC format");
+  }
+  // create new class
   const newClass = new Class({
     title: req.body.title,
     description: req.body.description,
@@ -37,11 +62,9 @@ route.post("/addNewClass", verify, function (req, res) {
     endTime: req.body.endTime,
     location: req.body.location,
   });
+
   if (newClass.startTime > newClass.endTime) {
     return res.status(400).send("Start of class cannot be after end of class");
-  }
-  if (!req.body.username) {
-    return res.status(400).send("Please provide an username");
   }
   Student.findOne({ username: req.body.username }, function (err, student) {
     if (!student) {
@@ -273,9 +296,6 @@ function RRuleDaySwitch(number) {
   return day;
 }
 
-// TODO: Implement get class   --If they want the classes, front end can just do getStudent. If they want a specific class, then they will need an ID,
-//and how would they have the ID without the class? Basically im not sure this is necessary.
-
 // get class time_slots
 route.post("/getClassTimeslots", verify, function (req, res) {
   if (!req.body.username) {
@@ -306,7 +326,7 @@ route.post("/getClassTimeslots", verify, function (req, res) {
   });
 });
 
-// TODO: Add timeslots to class
+//Add timeslots to class
 route.post("/addTimeslotToClass", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
@@ -375,11 +395,11 @@ route.post("/addTimeslotToClass", verify, function (req, res) {
 });
 
 // Update existing timeslots of a classes
-route.post("/updateTimeSlotClass", verify, async function (req, res) {
+route.post("/updateTimeSlotOfClass", verify, async function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
-  if (!req.body.timeSID) {
+  if (!req.body.timeslotID) {
     return res.status(400).send("Please provide a Time Slot ID");
   }
   if (!req.body.classID) {
@@ -409,7 +429,7 @@ route.post("/updateTimeSlotClass", verify, async function (req, res) {
   });
 
   const studentName = req.body.username;
-  const timeSlotId = req.body.timeSID;
+  const timeSlotId = req.body.timeslotID;
   const classID = req.body.classID;
 
   Student.findOne({ username: studentName }, function (err, student) {
