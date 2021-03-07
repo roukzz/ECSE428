@@ -11,9 +11,30 @@
           {{ day.weekday }}, <br/> {{ day.month_short }} {{ day.num }} <hr>
         </div>
 
-        <!-- TODO: Display timeslots for that day (chronological order) -->
-        <!-- <div class="day-content" v-for="timeslot in day" v-bind:key="timeslot.id"></div>  -->
+        <div class="day-content" v-for="item in day.items" v-bind:key="item._id">
+          <table v-if="item.type == 'timeslot'" style="background-color: #99ccff" v-on:click="controls_panels_on(item)">
+            <tr>
+              <th>{{ item.startTime.split("T")[1] }} <br/> | <br/>  {{ item.endTime.split("T")[1] }}</th>
+              <td>{{ item.description }} <br/> {{ item.location }}</td>
+            </tr>
+          </table>
+
+          <table v-if="item.type == 'task'" style="background-color: #ff9999" v-on:click="controls_panels_on(item)">
+            <tr>
+              <th>{{ item.dueDate.split("T")[0] }}</th>
+              <td>{{ item.title }} <br/> {{ item.description }}</td>
+            </tr>
+          </table>
+        </div>
       </div>
+    </div>
+
+    <div id="controls_panel" style="display: none;">
+      <div class="close-btn" v-on:click="controls_panels_off()">
+        &times;
+      </div>
+      <button v-on:click="trigger_edit()">Edit</button>
+      <button v-on:click="trigger_delete()">Delete</button>
     </div>
     
   </div> 
@@ -22,7 +43,7 @@
 <script>
 
 const monthNames_short = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
-const weekdayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const weekdayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default {
   name: "Calendar",
@@ -30,47 +51,93 @@ export default {
     return {
       month_input: null,
       full_date: null,
-      days: [],
+      task_selection: null,
+      timeslot_selection: null,
+      controls_on: false,
     };
   },
   props: {
     tasks: {
-      type: Object,
+      type: Array,
       default: null
     },
     timeslots: {
-      type: Object,
+      type: Array,
       default: null
+    }
+  },
+  computed: {
+    days() {
+      return this.countDays();
     }
   },
   methods: {
     countDays () {
-      var n = this.daysInMonth(this.full_date.getMonth(), this.full_date.getFullYear());
-      var month_short = monthNames_short[this.full_date.getMonth()];
-
       var tmp_arr = [];
-      var tmp_date = new Date();
-      for (var i = 1; i <= n; i++) {
-        tmp_date.setDate(i);
-        tmp_arr.push(
-          {
-            "num": this.ordinal_suffix_of(i),
-            "weekday": weekdayNames[tmp_date.getDay()],
-            "month_short": month_short,
-            "timeslots": this.getDailyTimeslots(tmp_date)
-          }
-        );
+
+      if (this.full_date != null) {
+
+        var n = this.daysInMonth(this.full_date.getMonth(), this.full_date.getFullYear());
+        var month_short = monthNames_short[this.full_date.getMonth()];
+        var tmp_date = new Date();
+        tmp_date.setMonth(this.full_date.getMonth());
+        
+        for (var i = 1; i <= n; i++) {
+          tmp_date.setDate(i);
+          tmp_arr.push(
+            {
+              "num": this.ordinal_suffix_of(i),
+              "weekday": weekdayNames[tmp_date.getDay()],
+              "month_short": month_short,
+              "items": this.getDailyTimeslots(tmp_date).concat(this.getDailyTasks(tmp_date))
+            }
+          );
+        }
       }
-      this.days = tmp_arr;
+      return tmp_arr
     },
     getDailyTimeslots (date) {
+    
+      var daily_timeslots = [];
+      var timeslot_start_date;
+      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + date.getDate();
+      var mod_timeslot;
 
-      /* 
-       * TODO:
-       * Get tasks/timesolts corresponding to that date and return them as a list 
-       */
+      for (var i = 0; i < this.timeslots.length; i++) {
+        
+        timeslot_start_date = this.timeslots[i].startTime.split("T");
 
-      return null;
+        if (timeslot_start_date[0] == date_str) {
+          
+          mod_timeslot = this.timeslots[i];
+          mod_timeslot["type"] = "timeslot";
+
+          daily_timeslots.push(mod_timeslot);
+        }
+      }
+
+      return daily_timeslots;
+    },
+    getDailyTasks (date) {
+      var daily_tasks = [];
+      var task_start_date;
+      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + date.getDate();
+      var mod_task;
+
+      for (var i = 0; i < this.tasks.length; i++) {
+        
+        task_start_date = this.tasks[i].dueDate.split("T");
+
+        if (task_start_date[0] == date_str) {
+          
+          mod_task = this.tasks[i];
+          mod_task["type"] = "task";
+
+          daily_tasks.push(mod_task);
+        }
+      }
+
+      return daily_tasks;
     },
     daysInMonth (month, year) {
       return new Date(year, month, 0).getDate();
@@ -95,6 +162,51 @@ export default {
           return i + "rd";
       }
       return i + "th";
+    },
+    controls_panels_on (item) {
+
+      var xpos = window.event.screenX;
+      var ypos = window.event.screenY;
+
+      document.getElementById("controls_panel").style = "display: block; left:" + xpos + "px; top:" + (ypos - 60) + "px;";
+
+      if (item.type == "task") {
+        this.task_selection= item;
+      }
+      else if (item.type == "timeslot") {
+        this.timeslot_selection = item;
+      }
+    },
+    controls_panels_off() {
+      document.getElementById("controls_panel").style = "display: none;";
+      this.task_selection = null;
+      this.timeslot_selection = null;
+    },
+    trigger_edit() {
+      /**
+       * Call Home.vue handler for edit 
+       */
+      console.log("Called trigger_edit()")
+      if (this.task_selection != null) {
+        // update task
+      }
+      else if (this.timeslot_selection != null) {
+        // update timeslot
+      }
+      this.controls_panels_off();
+    },
+    trigger_delete() {
+      /**
+       * Call Home.vue handler for delete
+       */
+      console.log("Called trigger_delete()")
+      if (this.task_selection != null) {
+        // delete task
+      }
+      else if (this.timeslot_selection != null) {
+        // delete timeslot
+      }
+      this.controls_panels_off();
     }
   },
   mounted () {
@@ -109,14 +221,8 @@ export default {
       tmp_date.setFullYear(parseInt(split[0]), parseInt(split[1]) - 1, 1);
 
       this.full_date = tmp_date;
-      this.countDays();
-    },
-    tasks () {
-      // do what I want when task is updated
-      // call update UI method
     }
   }
-
 };
 </script>
 
@@ -127,6 +233,24 @@ export default {
   height: 600px;
   padding: 10px;
   background-color: grey;
+}
+
+#controls_panel {
+  position: absolute;
+  width: 250px;
+  height: 100px;
+  border-radius: 5px;
+  background-color: #efeff5;
+  border: solid 1px black;
+  padding-top: 10px;
+}
+
+#controls_panel button {
+  position: relative;
+  display: block;
+  width: 100px;
+  left: calc(50% - 50px);
+  margin-top: 10px;
 }
 
 #month_container {
@@ -154,12 +278,46 @@ export default {
   margin: 10px 5px;
   background-color: white;
   border-radius: 5px;
+  overflow-y: auto;
 }
 
 .day-header {
   text-align: center;
   font-weight: bold;
-  padding: 10px;
+  padding: 10px 10px 0px 10px;
+}
+
+.day-content table {
+  font-size: 12px;
+  margin: 0px 5px 20px 5px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.day-content table th {
+  border-right: solid black 1px;
+  padding-right: 5px;
+}
+
+.day-content table td {
+  width: 100%;
+}
+
+.close-btn {
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 35px;
+  height: 35px;
+  background: #222;
+  color: #fff;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 30px;
+  text-align: center;
+  border-radius: 50%;
 }
 
 </style>

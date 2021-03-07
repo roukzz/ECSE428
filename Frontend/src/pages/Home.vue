@@ -1,7 +1,26 @@
 <template>
   <div id="wrapper">
     <NavBar></NavBar>
-    <Calendar :tasks="this.tasklist" :timeslots="timeslotlist"></Calendar>
+
+    <div id="buttonHolder">
+      <button id="createTaskButton" v-on:click="togglePopupCreate()">
+        Create Task
+      </button>
+      <button
+        id="createTimeSlotButton"
+        v-on:click="togglePopupCreateTimeSlot()"
+      >
+        Create Time Slot
+      </button>
+      <button id="createClassButton" v-on:click="togglePopupCreateClass()">
+        Create Class
+      </button>
+    </div>
+
+    <div id="calendarHolder">
+      <Calendar :tasks="this.tasklist" :timeslots="timeslotlist"></Calendar>
+    </div>
+
     <div id="taskHolder">
       <table>
         <tr
@@ -131,24 +150,6 @@
           </td>
         </tr>
       </table>
-    </div>
-
-    <div id="buttonHolder">
-      <button id="createTaskButton" v-on:click="togglePopupCreate()">
-        Create Task
-      </button>
-      <button
-        id="createTimeSlotButton"
-        v-on:click="togglePopupCreateTimeSlot()"
-      >
-        Create Time Slot
-      </button>
-      <button id="createClassButton" v-on:click="togglePopupCreateClass()">
-        Create Class
-      </button>
-      <button id="createReminderButton" v-on:click="togglePopupCreateReminder()">
-        Create Reminder
-      </button>
     </div>
 
     <div class="popup" id="popup-create">
@@ -2420,6 +2421,13 @@ export default {
 </script>
 
 <style scoped>
+#calendarHolder {
+  position: relative;
+  width: 1140px;
+  margin: none;
+  float: right;
+}
+
 #taskHolder,
 #timeSlotHolder {
   width: 60%;
@@ -2429,16 +2437,19 @@ export default {
   margin-top: 10%;
 }
 #buttonHolder {
-  width: 100%;
-  /*border: 1px solid red;*/
-  height: 100px;
-  display: flex;
+  width: calc(100% - 1150px);
+  height: 100%;
   align-items: center;
   justify-content: center;
   position: relative;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
+  float: left;
+}
+#buttonHolder button {
+  display: block;
+  position: relative;
+  width: 150px;
+  margin: auto;
+  margin-top: 20px;
 }
 #reminder {
   height: 300px !important;
