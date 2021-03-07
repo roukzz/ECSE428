@@ -117,7 +117,7 @@ route.post("/addPeriodToClass", verify, function (req, res) {
     if (!err) {
       let classIDIsValid = false;
       student.classes.forEach((element) => {
-        if ((element.id = req.body.classID)) {
+        if (element._id.toString() === req.body.classID.toString()) {
           classIDIsValid = true;
           const startPeriod = new Date(req.body.startTime);
           const endPeriod = new Date(req.body.endTime);
@@ -169,6 +169,7 @@ route.post("/addPeriodToClass", verify, function (req, res) {
   });
 });
 
+// TODO: FIX
 route.post("/updateClass", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
@@ -180,7 +181,7 @@ route.post("/updateClass", verify, function (req, res) {
     if (!err) {
       let classIDIsValid = false;
       student.classes.forEach((element) => {
-        if ((element.id = req.body.classID)) {
+        if (element._id.toString() === req.body.classID.toString()) {
           classIDIsValid = true;
           element.title = req.body.title;
           element.description = req.body.description;
@@ -213,30 +214,38 @@ route.post("/deleteClass", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
+  if (!req.body.classID) {
+    return res.status(400).send("Please provide a classID");
+  }
+
   Student.findOne({ username: req.body.username }, function (err, student) {
     if (!student) {
       return res.status(400).send("Student does not exist");
     }
     if (!err) {
       let classIDIsValid = false;
-
-      for (let i = 0; i < student.classes.length; i++) {
-        if (student.classes[i].id.toString() === req.body.classID.toString()) {
+      const classID = req.body.classID;
+      let classToBeDeleted;
+      let studentClasses = student.classes;
+      studentClasses.forEach((studentClass) => {
+        if (studentClass._id.toString() === classID.toString()) {
           classIDIsValid = true;
-          student.classes.splice(i, 1);
+          classToBeDeleted = studentClass;
         }
-      }
+      });
       if (!classIDIsValid) {
         return res.status(400).send("No class matches this ID");
       }
+      const index = studentClasses.indexOf(classToBeDeleted);
+      studentClasses.splice(index, 1);
       Student.updateOne(
         { username: req.body.username },
-        { classes: student.classes },
+        { classes: studentClasses },
         function (err) {
           if (err) {
             console.log(err);
           } else {
-            res.send(student.classes);
+            res.send(studentClasses);
           }
         }
       );
@@ -272,9 +281,6 @@ function RRuleDaySwitch(number) {
   }
   return day;
 }
-
-// TODO: Implement get class   --If they want the classes, front end can just do getStudent. If they want a specific class, then they will need an ID,
-//and how would they have the ID without the class? Basically im not sure this is necessary.
 
 // get class time_slots
 route.post("/getClassTimeslots", verify, function (req, res) {

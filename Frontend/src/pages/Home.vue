@@ -1432,7 +1432,7 @@ export default {
       successDeleteReminder: "",
       errorDeleteReminder: "",
       currenttask: null,
-      class: null,
+      curClass: null,
     };
   },
 
@@ -1551,7 +1551,7 @@ export default {
       this.togglePopupCreate();
     },
     editTask() {
-      if (!this.title || !this.description || !this.dueDate) {
+      if (!this.title || !this.description || !this.deadline) {
         this.errorCreateTask =
           "Missing fields. Please fill in all required fields";
         this.successCreateTask = "";
@@ -1703,6 +1703,7 @@ export default {
       });
       let params = {
         username: localStorage.getItem("username"),
+        classID: this.curClass._id,
         title: this.classname,
         description: this.description,
         startTime: this.startdate,
@@ -1733,7 +1734,39 @@ export default {
           return;
         });
 
-      this.togglePopupUpdateClass();
+      this.togglePopupEditClass();
+    },
+    deleteClass() {
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      
+      let params = {
+        username: localStorage.getItem("username"),
+        classID: this.curClass._id,
+      };
+      
+      AXIOS.post("/api/Class/deleteClass", params)
+        .then((response) => {
+          this.errorDeleteTask = "";
+          this.successDeleteTask = "Successful deletion of class";
+          console.log("Delete successful");
+
+          this.updatePage();
+
+          this.classname = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateTask = e;
+          this.successCreateTask = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupDeleteClass();
     },
     deleteAccount() {
       let AXIOS = axios.create({
@@ -2223,7 +2256,7 @@ export default {
       this.errorEditClass = "";
       this.successEditClass = "";
       
-      this.class = curClass;
+      this.curClass = curClass;
 
       if(curClass) {
         this.classname = curClass.title;
@@ -2246,7 +2279,7 @@ export default {
       this.errorDeleteClass = "";
       this.successDeleteClass = "";
       
-      this.class = curClass;
+      this.curClass = curClass;
 
       if(curClass) {
         this.classname = curClass.title;
