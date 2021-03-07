@@ -21,6 +21,7 @@ const config = {
       deleteTask: "#deleteTaskButton",
       title: "#title",
       description: "#description",
+      deadline : "#deadline",
       titleEdit: "#titleEdit",
       descriptionEdit: "#descriptionEdit",
       create: "#createbtn",
