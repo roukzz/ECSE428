@@ -1563,7 +1563,7 @@ export default {
       });
       let params = {
         username: localStorage.getItem("username"),
-        taskId: this.currenttask._id,
+        taskId: this.currentTask._id,
         title: this.title,
         description: this.description,
         dueDate: this.deadline,
