@@ -341,13 +341,6 @@ route.post("/getTaskTimeslots", verify, function (req, res) {
 
 // Update existing time slot of a task
 route.post("/updateTimeSlotTask", verify, async function (req, res) {
-  const newTimeSlot = new TimeSlot({
-    startTime: req.body.startTime,
-    endTime: req.body.endTime,
-    description: req.body.description,
-    location: req.body.location,
-  });
-
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
@@ -357,7 +350,6 @@ route.post("/updateTimeSlotTask", verify, async function (req, res) {
   if (!req.body.taskID) {
     return res.status(400).send("Please provide a task ID");
   }
-
   if (!req.body.startTime) {
     return res.status(400).send("Please provide a timeslot start time");
   }
@@ -372,49 +364,61 @@ route.post("/updateTimeSlotTask", verify, async function (req, res) {
   if (!Date.parse(req.body.endTime)) {
     return res.status(400).send("Please provide a valid endTime in UTC format");
   }
+
+  const newTimeSlot = new TimeSlot({
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    description: req.body.description,
+    location: req.body.location,
+  });
+
   const studentName = req.body.username;
   const timeSlotId = req.body.timeSID;
+  const taskID = req.body.taskID;
 
   Student.findOne({ username: studentName }, function (err, student) {
     if (!student) {
       return res.status(400).send("Student does not exists");
     }
 
-    var idx = -1;
-    var idx2 = -1;
-    var i, j;
-    for (i = 0; i < student.tasks.length; i++) {
-      for (j = 0; j < student.tasks[i].timeslots.length; j++) {
-        if (student.tasks[i].timeslots[j]._id == timeSlotId) {
-          idx = i;
-          idx2 = j;
-        }
-      }
-    }
-
-    if (idx == -1) {
-      return res.status(400).send("Task does not exist");
-    }
-
     if (!err) {
-      const classT = student.tasks[idx];
-      if (!classT.timeslots) {
-        return res.status(400).send("TimeSlot does not exists");
-      }
-      classT.timeslots.splice(idx2, 1, newTimeSlot);
-      Student.updateOne(
-        { username: studentName },
-        { tasks: classT },
-        function (err) {
-          if (err) {
-            console.log(err);
-          } else {
-            res.send(student.tasks[idx]);
-          }
+      const studentTasks = student.tasks;
+      var timeSlotToBeDeleted;
+      var timeSlotList;
+      studentTasks.forEach((studentTask) => {
+        if (studentTask._id.toString() === taskID.toString()) {
+          timeSlotList = studentTask.timeslots;
+          studentTask.timeslots.forEach((timeslot) => {
+            if (timeslot._id.toString() === timeSlotId.toString()) {
+              timeSlotToBeDeleted = timeslot;
+            }
+          });
         }
+      });
+      if (!timeSlotToBeDeleted) {
+        return res.status(400).send("Timeslot does not exist");
+      }
+      const index = timeSlotList.indexOf(timeSlotToBeDeleted);
+      timeSlotList.splice(index, 1, newTimeSlot);
+      studentTasks.forEach((studentTask) => {
+        if (studentTask._id.toString() === taskID.toString()) {
+          studentTask.timeslots = timeSlotList;
+        }
+      });
+
+      Student.updateOne(
+          { username: studentName },
+          { tasks: studentTasks },
+          function (err) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send(timeSlotList);
+            }
+          }
       );
     } else {
-      res.send(err);
+      res.status(500).send(err);
     }
   });
 });
@@ -433,47 +437,51 @@ route.post("/deleteTimeSlotTask", verify, async function (req, res) {
 
   const studentName = req.body.username;
   const timeSlotId = req.body.timeSID;
+  const taskID = req.body.taskID;
 
   Student.findOne({ username: studentName }, function (err, student) {
     if (!student) {
       return res.status(400).send("Student does not exists");
     }
 
-    var idx = -1;
-    var idx2 = -1;
-    var i, j;
-    for (i = 0; i < student.tasks.length; i++) {
-      for (j = 0; j < student.tasks[i].timeslots.length; j++) {
-        if (student.tasks[i].timeslots[j]._id == timeSlotId) {
-          idx = i;
-          idx2 = j;
-        }
-      }
-    }
-
-    if (idx == -1) {
-      return res.status(400).send("Task does not exist");
-    }
-
     if (!err) {
-      const classT = student.tasks[idx];
-      if (!classT.timeslots) {
-        return res.status(400).send("TimeSlot does not exists");
-      }
-      classT.timeslots.splice(idx2, 1);
-      Student.updateOne(
-        { username: studentName },
-        { tasks: classT },
-        function (err) {
-          if (err) {
-            console.log(err);
-          } else {
-            res.send(student.tasks[idx]);
-          }
+      const studentTasks = student.tasks;
+      var timeSlotToBeDeleted;
+      var timeSlotList;
+      studentTasks.forEach((studentTask) => {
+        if (studentTask._id.toString() === taskID.toString()) {
+          timeSlotList = studentTask.timeslots;
+          studentTask.timeslots.forEach((timeslot) => {
+            if (timeslot._id.toString() === timeSlotId.toString()) {
+              timeSlotToBeDeleted = timeslot;
+            }
+          });
         }
+      });
+      if (!timeSlotToBeDeleted) {
+        return res.status(400).send("Timeslot does not exist");
+      }
+      const index = timeSlotList.indexOf(timeSlotToBeDeleted);
+      timeSlotList.splice(index, 1);
+      studentTasks.forEach((studentTask) => {
+        if (studentTask._id.toString() === taskID.toString()) {
+          studentTask.timeslots = timeSlotList;
+        }
+      });
+
+      Student.updateOne(
+          { username: studentName },
+          { tasks: studentTasks },
+          function (err) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send(timeSlotList);
+            }
+          }
       );
     } else {
-      res.send(err);
+      res.status(500).send(err);
     }
   });
 });
