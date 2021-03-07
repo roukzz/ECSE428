@@ -69,7 +69,7 @@ When(
             location,
             description
         }).set("auth-token", this.authToken);
-        this.answer = JSON.parse(res.text).timeslots[0];
+        this.answer = JSON.parse(res.text)[0];
     }
 );
 
