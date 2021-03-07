@@ -25,6 +25,20 @@
               <td>{{ item.title }} <br/> {{ item.description }}</td>
             </tr>
           </table>
+
+          <table v-if="item.type == 'class'" style="background-color: #99ff99" v-on:click="controls_panels_on(item, $event)">
+            <tr v-if="item.spec == 'start'">
+              <th rowspan="2">Start</th>
+              <td>{{ item.title }}</td>
+            </tr>
+            <tr v-if="item.spec == 'end'">
+              <th rowspan="2">End</th>
+              <td>{{ item.title }}</td>
+            </tr>
+            <tr>
+              <td>{{ item.description }} <br/> {{ item.location }} </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
@@ -53,6 +67,7 @@ export default {
       full_date: null,
       task_selection: null,
       timeslot_selection: null,
+      class_selection: null,
       controls_on: false,
     };
   },
@@ -62,6 +77,10 @@ export default {
       default: null
     },
     timeslots: {
+      type: Array,
+      default: null
+    },
+    classes: {
       type: Array,
       default: null
     }
@@ -77,7 +96,7 @@ export default {
 
       if (this.full_date != null) {
 
-        var n = this.daysInMonth(this.full_date.getMonth(), this.full_date.getFullYear());
+        var n = this.daysInMonth(this.full_date.getMonth() + 1, this.full_date.getFullYear());
         var month_short = monthNames_short[this.full_date.getMonth()];
         var tmp_date = new Date();
         tmp_date.setMonth(this.full_date.getMonth());
@@ -85,7 +104,7 @@ export default {
 
         for (var i = 1; i <= n; i++) {
           tmp_date.setDate(i);
-          tmp_items = this.getDailyTimeslots(tmp_date).concat(this.getDailyTasks(tmp_date));
+          tmp_items = this.getDailyTimeslots(tmp_date).concat(this.getDailyTasks(tmp_date), this.getDailyClasses(tmp_date));
           tmp_arr.push(
             {
               "num": this.ordinal_suffix_of(i),
@@ -141,6 +160,37 @@ export default {
 
       return daily_tasks;
     },
+    getDailyClasses (date) {
+      var daily_classes = [];
+      var class_start_date;
+      var class_end_date;
+      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + this.padMonth(date.getDate());
+      var mod_class_start;
+      var mod_class_end;
+
+      for (var i = 0; i < this.classes.length; i++) {
+        
+        class_start_date = this.classes[i].startTime.split("T");
+        class_end_date = this.classes[i].endTime.split("T");
+
+        if (class_start_date[0] == date_str) {
+          mod_class_start = this.classes[i];
+          mod_class_start["type"] = "class";
+          mod_class_start["spec"] ="start";
+
+          daily_classes.push({...mod_class_start});
+        }
+        else if (class_end_date[0] == date_str) {
+          mod_class_end = this.classes[i];
+          mod_class_end["type"] = "class";
+          mod_class_end["spec"] = "end";
+
+          daily_classes.push(mod_class_end);
+        }
+      }
+
+      return daily_classes;
+    },
     daysInMonth (month, year) {
       return new Date(year, month, 0).getDate();
     },
@@ -178,6 +228,12 @@ export default {
       else if (a.type == "timeslot" && b.type == "task") {
         return (a.startTime.split("T")[1] > b.dueDate.split("T")[1]);
       }
+      else if (a.type == "class") {
+        return (1 > 0)
+      }
+      else if (b.type == "class") {
+        return (0 > 1)
+      }
       return true;
     },
     controls_panels_on (item, event) {
@@ -193,11 +249,15 @@ export default {
       else if (item.type == "timeslot") {
         this.timeslot_selection = item;
       }
+      else if (item.type == "class") {
+        this.class_selection = item;
+      }
     },
     controls_panels_off() {
       document.getElementById("controls_panel").style = "display: none;";
       this.task_selection = null;
       this.timeslot_selection = null;
+      this.class_selection = null;
     },
     trigger_edit() {
       if (this.task_selection != null) {
@@ -207,6 +267,10 @@ export default {
       else if (this.timeslot_selection != null) {
         // update timeslot
         this.$parent.togglePopupEditTimeSlot(this.timeslot_selection);
+      }
+      else if (this.class_selection != null) {
+        // update class
+        this.$parent.togglePopupEditClass(this.class_selection);
       }
       this.controls_panels_off();
     },
@@ -218,6 +282,10 @@ export default {
       else if (this.timeslot_selection != null) {
         // delete timeslot
         this.$parent.togglePopupDeleteTimeSlot(this.timeslot_selection);
+      }
+      else if (this.class_selection != null) {
+        // delete class
+        this.$parent.togglePopupDeleteClass(this.class_selection);
       }
       this.controls_panels_off();
     }

@@ -21,7 +21,7 @@
     </div>
 
     <div id="calendarHolder">
-      <Calendar :tasks="this.tasklist" :timeslots="timeslotlist"></Calendar>
+      <Calendar :tasks="this.tasklist" :timeslots="timeslotlist" :classes="classeslist"></Calendar>
     </div>
 
     <div class="popup" id="popup-create">
@@ -2143,7 +2143,6 @@ export default {
     togglePopupDeleteClass(curClass) {
       this.errorDeleteClass = "";
       this.successDeleteClass = "";
-      
       this.curClass = curClass;
 
       if(curClass) {
