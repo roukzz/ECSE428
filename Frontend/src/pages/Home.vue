@@ -1396,6 +1396,7 @@ export default {
       reminderlist: [],
       tasktype: "",
       description: "",
+      reminderDate: "",
       location: "",
       deadline: "",
       startdate: "",
@@ -2072,7 +2073,7 @@ export default {
       this.togglePopupCreateReminder();
     },
     editReminder() {
-      if (!this.title || !this.description || !this.reminderDate) {
+      if (!this.title || !this.description || !this.deadline) {
         this.errorCreateReminder =
           "Missing fields. Please fill in all required fields";
         this.successCreateReminder = "";
@@ -2088,7 +2089,7 @@ export default {
         reminderId: this.currentReminder._id,
         title: this.title,
         description: this.description,
-        reminderDate: this.reminderDate,
+        reminderDate: this.deadline,
       };
       //console.log(this.currenttask);
       console.log(this.currentReminder._id);
@@ -2104,7 +2105,7 @@ export default {
           // this.tasktype = "";
           this.description = "";
           //this.location = "";
-          this.reminderDate = "";
+          this.deadline = "";
           this.currentReminder = null;
         })
         .catch((e) => {
@@ -2138,7 +2139,7 @@ export default {
 
           this.title = "";
           this.description = "";
-          this.reminderDate = "";
+          this.deadline = "";
           this.currentReminder = null;
         })
         .catch((e) => {
