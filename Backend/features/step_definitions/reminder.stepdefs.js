@@ -93,3 +93,21 @@ When(
     // reminders[rem_title] = JSON.parse(res.text).pop()._id;
   }
 );
+
+When(
+  "the user {string} attempts to delete the reminder with title {string}",
+  async function (username, rem_title) {
+    let id = reminders[rem_title];
+    if (!id) {
+      id = 0;
+    }
+    const res = await request(app)
+      .post("/api/reminder/deleteStudentReminder")
+      .send({
+        username,
+        reminderId: id,
+      })
+      .set("auth-token", this.authToken);
+    this.status = res.statusCode;
+  }
+);
