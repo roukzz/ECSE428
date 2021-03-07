@@ -9,6 +9,26 @@ const Timeslot = require("../Models/timeslot");
 
 const { RRule, RRuleSet, rrulestr } = require("rrule");
 
+// ===== get tasks of existing student =====
+// =========================================
+route.get("/getStudentClasses", verify, function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
+  const studentName = req.body.username;
+  Student.findOne({ username: studentName }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exists");
+    }
+    // console.log("found student name  :" + student);
+    if (!err) {
+      res.send(student.classes);
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 route.post("/addNewClass", verify, function (req, res) {
   const newClass = new Class({
     title: req.body.title,
@@ -356,13 +376,6 @@ route.post("/addTimeslotToClass", verify, function (req, res) {
 
 // Update existing timeslots of a classes
 route.post("/updateTimeSlotClass", verify, async function (req, res) {
-  const newTimeSlot = new TimeSlot({
-    startTime: req.body.startTime,
-    endTime: req.body.endTime,
-    description: req.body.description,
-    location: req.body.location,
-  });
-
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
@@ -387,55 +400,67 @@ route.post("/updateTimeSlotClass", verify, async function (req, res) {
   if (!Date.parse(req.body.endTime)) {
     return res.status(400).send("Please provide a valid endTime in UTC format");
   }
+
+  const newTimeSlot = new TimeSlot({
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    description: req.body.description,
+    location: req.body.location,
+  });
+
   const studentName = req.body.username;
   const timeSlotId = req.body.timeSID;
+  const classID = req.body.classID;
 
   Student.findOne({ username: studentName }, function (err, student) {
     if (!student) {
       return res.status(400).send("Student does not exists");
     }
 
-    var idx = -1;
-    var idx2 = -1;
-    var i, j;
-    for (i = 0; i < student.classes.length; i++) {
-      for (j = 0; j < student.classes[i].timeslots.length; j++) {
-        //console.log("ID = "+student.classes[i].timeslots[j]._id)
-        if (student.classes[i].timeslots[j]._id == timeSlotId) {
-          idx = i;
-          idx2 = j;
-        }
-      }
-    }
-
-    if (idx == -1) {
-      return res.status(400).send("Class does not exist");
-    }
-
     if (!err) {
-      const classT = student.classes[idx];
-      if (!classT.timeslots) {
-        return res.status(400).send("TimeSlot does not exists");
+      const studentClasses = student.classes;
+      var timeSlotToBeDeleted;
+      var timeSlotList;
+      studentClasses.forEach((studentClass) => {
+        if (studentClass._id.toString() === classID.toString()) {
+          timeSlotList = studentClass.timeslots;
+          studentClass.timeslots.forEach((timeslot) => {
+            if (timeslot._id.toString() === timeSlotId.toString()) {
+              timeSlotToBeDeleted = timeslot;
+            }
+          });
+        }
+      });
+      if (!timeSlotToBeDeleted) {
+        return res.status(400).send("Timeslot does not exist");
       }
-      classT.timeslots.splice(idx2, 1, newTimeSlot);
+      const index = timeSlotList.indexOf(timeSlotToBeDeleted);
+      timeSlotList.splice(index, 1, newTimeSlot);
+      studentClasses.forEach((studentClass) => {
+        if (studentClass._id.toString() === classID.toString()) {
+          studentClass.timeslots = timeSlotList;
+        }
+      });
+
       Student.updateOne(
         { username: studentName },
-        { classes: classT },
+        { classes: studentClasses },
         function (err) {
           if (err) {
             console.log(err);
           } else {
-            res.send(student.classes[idx]);
+            res.send(timeSlotList);
           }
         }
       );
     } else {
-      res.send(err);
+      res.status(500).send(err);
     }
   });
 });
 
 // Delete timeslot of a classes
+// TODO: FIX THIS
 route.post("/deleteTimeSlotClass", verify, async function (req, res) {
   if (!req.body.timeSID) {
     return res.status(400).send("Please provide a Time Slot ID");
