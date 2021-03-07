@@ -92,3 +92,43 @@ When(
     this.status = res.statusCode;
   }
 );
+
+When(
+  "the user attemps to update a class with old_title {string} to new title {string}, description {string}, startTime {string} and endTime {string} and I am username {string}",
+  async function (old_title, title, description, startTime, endTime, username) {
+    const res = await request(app)
+      .post("/api/class/updateClass")
+      .send({
+        username,
+        title,
+        description,
+        startTime,
+        endTime,
+        classID: classes[old_title],
+      })
+      .set("auth-token", this.authToken);
+    this.status = res.statusCode;
+    if (res.statusCode === 200) {
+      classes[title] = JSON.parse(res.text)._id;
+    }
+  }
+);
+
+When(
+  "the user attemps to update a class with title {string}, description {string}, startTime {string} and endTime {string} and I am username {string}",
+  async function (title, description, startTime, endTime, username) {
+    const res = await request(app)
+      .post("/api/class/updateClass")
+      .send({
+        username,
+        title,
+        description,
+        startTime,
+        endTime,
+        classID: classes[title],
+      })
+      .set("auth-token", this.authToken);
+    this.status = res.statusCode;
+    classes[title] = JSON.parse(res.text)._id;
+  }
+);
