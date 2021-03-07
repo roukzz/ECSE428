@@ -21,138 +21,6 @@
       <Calendar :tasks="this.tasklist" :timeslots="timeslotlist"></Calendar>
     </div>
 
-    <div id="taskHolder">
-      <table>
-        <tr
-          class="tasklistitems"
-          v-for="task in tasklist"
-          v-bind:id="task._id"
-          v-bind:key="task._id"
-        >
-          <td>
-            {{ task.title }}
-          </td>
-          <td>
-            {{ task.description }}
-          </td>
-          <td>
-            <button
-              id="editTaskButton"
-              type="button"
-              class="editbutton"
-              @click="togglePopupEditTask(task)"
-            >
-              Edit Task
-            </button>
-          </td>
-          <td>
-            <button
-              id="deleteTaskButton"
-              type="button"
-              class="btn btn-danger"
-              @click="togglePopupDeleteTask(task)"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <div id="classes-test">
-      <table>
-        <tr
-          class="classeslistitems"
-          v-for="cl in classeslist"
-          v-bind:id="cl._id"
-          v-bind:key="cl._id"
-        >
-          <td>
-            {{ cl.startTime }}
-          </td>
-          <td>
-            {{ cl.endTime }}
-          </td>
-          <td>
-            {{ cl.description }}
-          </td>
-          <td>
-            {{ cl.location }}
-          </td>
-          <td>
-            <button
-              id="editClassButton"
-              type="button"
-              class="editbutton"
-              @click="togglePopupEditClass(cl)"
-            >
-              Edit Class
-            </button>
-          </td>
-          <td>
-            <button
-              id="deleteClassButton"
-              type="button"
-              class="btn btn-danger"
-              @click="togglePopupDeleteClass(cl)"
-            >
-              Delete Class
-            </button>
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <div id="timeSlotHolder">
-      <table>
-        <tr
-          class="timeslotlistitems"
-          v-for="timeslot in timeslotlist"
-          v-bind:id="timeslot._id"
-          v-bind:key="timeslot._id"
-        >
-          <td>
-            {{ timeslot.startTime }}
-          </td>
-          <td>
-            {{ timeslot.endTime }}
-          </td>
-          <td>
-            {{ timeslot.description }}
-          </td>
-          <td>
-            {{ timeslot.location }}
-          </td>
-          <td v-if="timeslot.task">
-            {{ timeslot.task.title }}
-          </td>
-          <td v-if="timeslot.class">
-            {{ timeslot.class.title }}
-          </td>
-          <td>
-            <button
-              id="editTimeSlotButton"
-              type="button"
-              class="edittimeslotbutton"
-              @click="togglePopupEditTimeSlot(timeslot)"
-            >
-              Edit Timeslot
-            </button>
-          </td>
-          <td>
-            <button
-              id="deleteTimeSlotButton"
-              type="button"
-              class="btn btn-danger"
-              @click="togglePopupDeleteTimeSlot(timeslot)"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      </table>
-    </div>
-
     <div class="popup" id="popup-create">
       <div class="overlay"></div>
       <div class="content" style="text-align: center">
@@ -1455,6 +1323,9 @@ export default {
             username: localStorage.getItem("username"),
             taskID: task._id,
           };
+          task.dueDate = moment(task.dueDate).format(
+            "YYYY-MM-DDTkk:mm"
+          );
           AXIOS.post("/api/student/getTaskTimeslots", params)
             .then((response) => {
               var timeslots = response.data;
@@ -2350,6 +2221,9 @@ export default {
               username: localStorage.getItem("username"),
               taskID: task._id,
             };
+            task.dueDate = moment(task.dueDate).format(
+              "YYYY-MM-DDTkk:mm"
+            );
             AXIOS.post("/api/student/getTaskTimeslots", params)
               .then((response) => {
                 var timeslots = response.data;

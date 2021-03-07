@@ -11,7 +11,7 @@
           {{ day.weekday }}, <br/> {{ day.month_short }} {{ day.num }} <hr>
         </div>
 
-        <div class="day-content" v-for="item in day.items" v-bind:key="item._id">
+        <div class="day-content" v-for="item in day.items" v-bind:key="item._id" v-bind:id="item._id">
           <table v-if="item.type == 'timeslot'" style="background-color: #99ccff" v-on:click="controls_panels_on(item)">
             <tr>
               <th>{{ item.startTime.split("T")[1] }} <br/> | <br/>  {{ item.endTime.split("T")[1] }}</th>
@@ -81,15 +81,17 @@ export default {
         var month_short = monthNames_short[this.full_date.getMonth()];
         var tmp_date = new Date();
         tmp_date.setMonth(this.full_date.getMonth());
-        
+        var tmp_items;
+
         for (var i = 1; i <= n; i++) {
           tmp_date.setDate(i);
+          tmp_items = this.getDailyTimeslots(tmp_date).concat(this.getDailyTasks(tmp_date));
           tmp_arr.push(
             {
               "num": this.ordinal_suffix_of(i),
               "weekday": weekdayNames[tmp_date.getDay()],
               "month_short": month_short,
-              "items": this.getDailyTimeslots(tmp_date).concat(this.getDailyTasks(tmp_date))
+              "items": tmp_items.sort((a, b) => this.isBefore(a, b) ? 1 : -1)
             }
           );
         }
@@ -121,7 +123,7 @@ export default {
     getDailyTasks (date) {
       var daily_tasks = [];
       var task_start_date;
-      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + date.getDate();
+      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + this.padMonth(date.getDate());
       var mod_task;
 
       for (var i = 0; i < this.tasks.length; i++) {
@@ -162,6 +164,21 @@ export default {
           return i + "rd";
       }
       return i + "th";
+    },
+    isBefore(a, b) {
+      if (a.type == "task" && b.type == "task") {
+        return (a.dueDate.split("T")[1] > b.dueDate.split("T")[1])
+      }
+      else if (a.type == "task" && b.type == "timeslot") {
+        return (a.dueDate.split("T")[1] > b.startTime.split("T")[1]);
+      }
+      else if (a.type == "timeslot" && b.type == "timeslot") {
+        return (a.startTime.split("T")[1] > b.startTime.split("T")[1]);
+      }
+      else if (a.type == "timeslot" && b.type == "task") {
+        return (a.startTime.split("T")[1] > b.dueDate.split("T")[1]);
+      }
+      return true;
     },
     controls_panels_on (item) {
 
