@@ -25,7 +25,7 @@
       <table>
         <tr
           class="tasklistitems"
-          v-for="(task, index) in tasklist"
+          v-for="task in tasklist"
           v-bind:id="task._id"
           v-bind:key="task._id"
         >
@@ -40,7 +40,7 @@
               id="editTaskButton"
               type="button"
               class="editbutton"
-              @click="togglePopupEdit(task, index)"
+              @click="togglePopupEditTask(task)"
             >
               Edit Task
             </button>
@@ -50,7 +50,7 @@
               id="deleteTaskButton"
               type="button"
               class="btn btn-danger"
-              @click="togglePopupDelete(task, index)"
+              @click="togglePopupDeleteTask(task)"
             >
               Delete
             </button>
@@ -102,11 +102,12 @@
         </tr>
       </table>
     </div>
+
     <div id="timeSlotHolder">
       <table>
         <tr
           class="timeslotlistitems"
-          v-for="(timeslot, index) in timeslotlist"
+          v-for="timeslot in timeslotlist"
           v-bind:id="timeslot._id"
           v-bind:key="timeslot._id"
         >
@@ -133,7 +134,7 @@
               id="editTimeSlotButton"
               type="button"
               class="edittimeslotbutton"
-              @click="togglePopupEditTimeSlot(timeslot, index)"
+              @click="togglePopupEditTimeSlot(timeslot)"
             >
               Edit Timeslot
             </button>
@@ -143,7 +144,7 @@
               id="deleteTimeSlotButton"
               type="button"
               class="btn btn-danger"
-              @click="togglePopupDeleteTimeSlot(timeslot, index)"
+              @click="togglePopupDeleteTimeSlot(timeslot)"
             >
               Delete
             </button>
@@ -218,10 +219,6 @@
             class="inpbox"
             type="datetime-local"
             id="deadline"
-            placeHolder="YYYY-MM-DD"
-            maxlength="10"
-            min="2021-01-01"
-            max="3000-12-31"
             v-model="deadline"
           />
 
@@ -558,7 +555,7 @@
     <div class="popup" id="popup-edit">
       <div class="overlay"></div>
       <div class="content">
-        <div class="close-btn" @click="togglePopupEdit()">&times;</div>
+        <div class="close-btn" @click="togglePopupEditTask()">&times;</div>
         <div
           style="
             width: 100%;
@@ -622,9 +619,6 @@
             type="datetime-local"
             id="deadlineEdit"
             :placeHolder="[[deadline]]"
-            maxlength="10"
-            min="2021-01-01"
-            max="3000-12-31"
             v-model="deadline"
           />
           <button
@@ -642,7 +636,7 @@
     <div class="popup" id="popup-delete">
       <div class="overlay"></div>
       <div class="content">
-        <div class="close-btn" @click="togglePopupDelete()">&times;</div>
+        <div class="close-btn" @click="togglePopupDeleteTask()">&times;</div>
         <div
           style="
             width: 100%;
@@ -1411,7 +1405,6 @@ export default {
       taskSelected: "",
       classSelected: "",
       taskOrClass: "",
-      index: -1,
       errorCreateTask: "",
       successCreateTask: "",
       errorEditTask: "",
@@ -1436,7 +1429,8 @@ export default {
       errorEditReminder: "",
       successDeleteReminder: "",
       errorDeleteReminder: "",
-      currenttask: null,
+      currentTask: null,
+      currentTimeSlot: null,
       curClass: null,
     };
   },
@@ -1575,7 +1569,7 @@ export default {
         dueDate: this.deadline,
       };
       //console.log(this.currenttask);
-      console.log(this.currenttask._id);
+      console.log(this.currentTask._id);
       AXIOS.post("/api/student/updateStudentTask", params)
         .then((response) => {
           this.errorCreateTask = "";
@@ -1589,8 +1583,7 @@ export default {
           this.description = "";
           //this.location = "";
           this.deadline = "";
-          this.index = -1;
-          this.currenttask = null;
+          this.currentTask = null;
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -1600,7 +1593,7 @@ export default {
           return;
         });
 
-      this.togglePopupEdit();
+      this.togglePopupEditTask();
     },
     deleteTask() {
       let AXIOS = axios.create({
@@ -1610,7 +1603,7 @@ export default {
       });
       let params = {
         username: localStorage.getItem("username"),
-        taskId: this.currenttask._id,
+        taskId: this.currentTask._id,
       };
 
       AXIOS.post("/api/student/deleteStudentTask", params)
@@ -1623,8 +1616,7 @@ export default {
 
           this.title = "";
           this.description = "";
-          this.index = -1;
-          this.currenttask = null;
+          this.currentTask = null;
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -1634,7 +1626,7 @@ export default {
           return;
         });
 
-      this.togglePopupDelete();
+      this.togglePopupDeleteTask();
     },
     addNewClass() {
       if (
@@ -1907,8 +1899,8 @@ export default {
       if (this.taskSelected) {
         let params = {
           username: localStorage.getItem("username"),
-          taskID: this.timeslotlist[this.index].task._id,
-          timeSID: this.timeslotlist[this.index]._id,
+          taskID: this.currentTimeSlot.task._id,
+          timeSID: this.currentTimeSlot._id,
           description: this.description,
           location: this.location,
           startTime: this.startTime,
@@ -1926,6 +1918,7 @@ export default {
             this.endTime = "";
             this.description = "";
             this.location = "";
+            this.currentTimeSlot = null;
             this.taskSelected = "";
             this.classSelected = "";
             this.togglePopupEditTimeSlot();
@@ -1940,8 +1933,8 @@ export default {
       } else {
         let params = {
           username: localStorage.getItem("username"),
-          classID: this.timeslotlist[this.index].class._id,
-          timeSID: this.timeslotlist[this.index]._id,
+          classID: this.currentTimeSlot.class._id,
+          timeSID: this.currentTimeSlot._id,
           description: this.description,
           location: this.location,
           startTime: this.startTime,
@@ -1958,6 +1951,7 @@ export default {
             this.endTime = "";
             this.description = "";
             this.location = "";
+            this.currentTimeSlot = null;
             this.taskSelected = "";
             this.classSelected = "";
             this.togglePopupEditTimeSlot();
@@ -1980,8 +1974,8 @@ export default {
       if (this.taskSelected) {
         let params = {
           username: localStorage.getItem("username"),
-          taskID: this.timeslotlist[this.index].task._id,
-          timeSID: this.timeslotlist[this.index]._id,
+          taskID: this.currentTimeSlot.task._id,
+          timeSID: this.currentTimeSlot._id,
         };
         AXIOS.post("/api/student/deleteTimeSlotTask", params)
           .then((response) => {
@@ -1994,6 +1988,7 @@ export default {
             this.endTime = "";
             this.description = "";
             this.location = "";
+            this.currentTimeSlot = null;
             this.taskSelected = "";
             this.classSelected = "";
             this.togglePopupDeleteTimeSlot();
@@ -2008,8 +2003,8 @@ export default {
       } else {
         let params = {
           username: localStorage.getItem("username"),
-          classID: this.timeslotlist[this.index].class._id,
-          timeSID: this.timeslotlist[this.index]._id,
+          classID: this.currentTimeSlot.class._id,
+          timeSID: this.currentTimeSlot._id,
         };
         AXIOS.post("/api/class/deleteTimeSlotClass", params)
           .then((response) => {
@@ -2022,6 +2017,7 @@ export default {
             this.endTime = "";
             this.description = "";
             this.location = "";
+            this.currentTimeSlot = null;
             this.taskSelected = "";
             this.classSelected = "";
             this.togglePopupDeleteTimeSlot();
@@ -2170,43 +2166,33 @@ export default {
     togglePopupHelp() {
       document.getElementById("helpSupport").classList.toggle("active");
     },
-    togglePopupEdit(task, index) {
+    togglePopupEditTask(task) {
       this.errorCreateTask = "";
       this.successCreateTask = "";
       //console.log(task);
       //console.log(this.title);
       if (task != null) {
         this.title = task.title;
-        this.currenttask = task;
-        this.index = index;
+        this.currentTask = task;
         this.description = task.description;
       } else {
         this.title = "";
         this.description = "";
-        //       this.index = -1;
-        this.currenttask = null;
+        this.currentTask = null;
         this.deadline = "";
       }
       //console.log(this.title);
       document.getElementById("popup-edit").classList.toggle("active");
     },
-    togglePopupDelete(task, index) {
+    togglePopupDeleteTask(task) {
       this.errorCreateTask = "";
       this.successCreateTask = "";
-      //console.log(task);
-      //console.log(this.title);
+
       if (task != null) {
         this.title = task.title;
-        this.currenttask = task;
-        this.index = index;
+        this.currentTask = task;
       }
-      // else {
-      //   this.title = "";
-      //   this.description = "";
-      //   this.index = -1;
-      //   this.currenttask = null;
-      // }
-      //console.log(this.title);
+
       document.getElementById("popup-delete").classList.toggle("active");
     },
     togglePopupCreateTimeSlot() {
@@ -2216,7 +2202,7 @@ export default {
         .getElementById("popup-create-timeslot")
         .classList.toggle("active");
     },
-    togglePopupEditTimeSlot(timeslot, index) {
+    togglePopupEditTimeSlot(timeslot) {
       this.errorEditTimeSlot = "";
       this.successEditTimeSlot = "";
       if (timeslot != null) {
@@ -2224,6 +2210,7 @@ export default {
         this.endTime = timeslot.endTime;
         this.description = timeslot.description;
         this.location = timeslot.location;
+        this.currentTimeSlot = timeslot;
         if (timeslot.task) {
           this.taskSelected = timeslot.task.title;
           this.classSelected = "";
@@ -2231,15 +2218,14 @@ export default {
           this.classSelected = timeslot.class.title;
           this.taskSelected = "";
         }
-        this.index = index;
       }
       document.getElementById("popup-edit-timeslot").classList.toggle("active");
     },
-    togglePopupDeleteTimeSlot(timeslot, index) {
+    togglePopupDeleteTimeSlot(timeslot) {
       this.errorDeleteTimeSlot = "";
       this.successDeleteTimeSlot = "";
       if (timeslot != null) {
-        this.index = index;
+        this.currentTimeSlot = timeslot;
         if (timeslot.task) {
           this.taskSelected = timeslot.task.title;
           this.classSelected = "";

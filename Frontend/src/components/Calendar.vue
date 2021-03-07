@@ -21,7 +21,7 @@
 
           <table v-if="item.type == 'task'" style="background-color: #ff9999" v-on:click="controls_panels_on(item)">
             <tr>
-              <th>{{ item.dueDate.split("T")[0] }}</th>
+              <th>{{ item.dueDate.split("T")[1] }}</th>
               <td>{{ item.title }} <br/> {{ item.description }}</td>
             </tr>
           </table>
@@ -168,7 +168,7 @@ export default {
       var xpos = window.event.screenX;
       var ypos = window.event.screenY;
 
-      document.getElementById("controls_panel").style = "display: block; left:" + xpos + "px; top:" + (ypos - 60) + "px;";
+      document.getElementById("controls_panel").style = "display: block; left:" + (xpos - 380) + "px; top:" + (ypos - 120) + "px;";
 
       if (item.type == "task") {
         this.task_selection= item;
@@ -183,28 +183,24 @@ export default {
       this.timeslot_selection = null;
     },
     trigger_edit() {
-      /**
-       * Call Home.vue handler for edit 
-       */
-      console.log("Called trigger_edit()")
       if (this.task_selection != null) {
         // update task
+        this.$parent.togglePopupEditTask(this.task_selection);
       }
       else if (this.timeslot_selection != null) {
         // update timeslot
+        this.$parent.togglePopupEditTimeSlot(this.timeslot_selection);
       }
       this.controls_panels_off();
     },
     trigger_delete() {
-      /**
-       * Call Home.vue handler for delete
-       */
-      console.log("Called trigger_delete()")
       if (this.task_selection != null) {
         // delete task
+        this.$parent.togglePopupDeleteTask(this.task_selection);
       }
       else if (this.timeslot_selection != null) {
         // delete timeslot
+        this.$parent.togglePopupDeleteTimeSlot(this.timeslot_selection);
       }
       this.controls_panels_off();
     }
