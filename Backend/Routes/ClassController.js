@@ -117,7 +117,7 @@ route.post("/addPeriodToClass", verify, function (req, res) {
     if (!err) {
       let classIDIsValid = false;
       student.classes.forEach((element) => {
-        if ((element.id = req.body.classID)) {
+        if (element._id.toString() === req.body.classID.toString()) {
           classIDIsValid = true;
           const startPeriod = new Date(req.body.startTime);
           const endPeriod = new Date(req.body.endTime);
@@ -169,6 +169,7 @@ route.post("/addPeriodToClass", verify, function (req, res) {
   });
 });
 
+// TODO: FIX
 route.post("/updateClass", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
@@ -180,7 +181,7 @@ route.post("/updateClass", verify, function (req, res) {
     if (!err) {
       let classIDIsValid = false;
       student.classes.forEach((element) => {
-        if ((element.id = req.body.classID)) {
+        if (element._id.toString() === req.body.classID.toString()) {
           classIDIsValid = true;
           element.title = req.body.title;
           element.description = req.body.description;
@@ -225,7 +226,7 @@ route.post("/deleteClass", verify, function (req, res) {
       let classIDIsValid = false;
       const classID = req.body.classID;
       let classToBeDeleted;
-      studentClasses = student.classes;
+      let studentClasses = student.classes;
       studentClasses.forEach((studentClass) => {
         if (studentClass._id.toString() === classID.toString()) {
           classIDIsValid = true;
@@ -280,9 +281,6 @@ function RRuleDaySwitch(number) {
   }
   return day;
 }
-
-// TODO: Implement get class   --If they want the classes, front end can just do getStudent. If they want a specific class, then they will need an ID,
-//and how would they have the ID without the class? Basically im not sure this is necessary.
 
 // get class time_slots
 route.post("/getClassTimeslots", verify, function (req, res) {
