@@ -221,7 +221,7 @@ route.post("/deleteClass", verify, function (req, res) {
       let classIDIsValid = false;
 
       for (let i = 0; i < student.classes.length; i++) {
-        if ((student.classes[i].id = req.body.classID)) {
+        if (student.classes[i].id.toString() === req.body.classID.toString()) {
           classIDIsValid = true;
           student.classes.splice(i, 1);
         }
