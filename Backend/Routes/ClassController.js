@@ -462,6 +462,9 @@ route.post("/updateTimeSlotClass", verify, async function (req, res) {
 // Delete timeslot of a classes
 // TODO: FIX THIS
 route.post("/deleteTimeSlotClass", verify, async function (req, res) {
+  if (!req.body.username) {
+    return res.status(400).send("Please provide an username");
+  }
   if (!req.body.timeSID) {
     return res.status(400).send("Please provide a Time Slot ID");
   }
@@ -471,47 +474,51 @@ route.post("/deleteTimeSlotClass", verify, async function (req, res) {
 
   const studentName = req.body.username;
   const timeSlotId = req.body.timeSID;
+  const classID = req.body.classID;
 
   Student.findOne({ username: studentName }, function (err, student) {
     if (!student) {
       return res.status(400).send("Student does not exists");
     }
 
-    var idx = -1;
-    var idx2 = -1;
-    var i, j;
-    for (i = 0; i < student.classes.length; i++) {
-      for (j = 0; j < student.classes[i].timeslots.length; j++) {
-        if (student.classes[i].timeslots[j]._id == timeSlotId) {
-          idx = i;
-          idx2 = j;
-        }
-      }
-    }
-
-    if (idx == -1) {
-      return res.status(400).send("Time Slot does not exist");
-    }
-
     if (!err) {
-      const classT = student.classes[idx];
-      if (!classT.timeslots) {
-        return res.status(400).send("TimeSlot does not exists");
+      const studentClasses = student.classes;
+      var timeSlotToBeDeleted;
+      var timeSlotList;
+      studentClasses.forEach((studentClass) => {
+        if (studentClass._id.toString() === classID.toString()) {
+          timeSlotList = studentClass.timeslots;
+          studentClass.timeslots.forEach((timeslot) => {
+            if (timeslot._id.toString() === timeSlotId.toString()) {
+              timeSlotToBeDeleted = timeslot;
+            }
+          });
+        }
+      });
+      if (!timeSlotToBeDeleted) {
+        return res.status(400).send("Timeslot does not exist");
       }
-      classT.timeslots.splice(idx2, 1);
+      const index = timeSlotList.indexOf(timeSlotToBeDeleted);
+      timeSlotList.splice(index, 1);
+      studentClasses.forEach((studentClass) => {
+        if (studentClass._id.toString() === classID.toString()) {
+          studentClass.timeslots = timeSlotList;
+        }
+      });
+
       Student.updateOne(
         { username: studentName },
-        { classes: classT },
+        { classes: studentClasses },
         function (err) {
           if (err) {
             console.log(err);
           } else {
-            res.send(student.classes[idx]);
+            res.send(timeSlotList);
           }
         }
       );
     } else {
-      res.send(err);
+      res.status(500).send(err);
     }
   });
 });
