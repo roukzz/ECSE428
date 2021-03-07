@@ -191,7 +191,7 @@
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="deadline"
             placeHolder="YYYY-MM-DD"
             maxlength="10"
@@ -433,7 +433,7 @@
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="deadlineEdit"
             :placeHolder="[[deadline]]"
             maxlength="10"
