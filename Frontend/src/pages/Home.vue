@@ -59,6 +59,26 @@
           <td>
             {{ cl.location }}
           </td>
+          <td>
+            <button
+              id="editClassButton"
+              type="button"
+              class="editbutton"
+              @click="togglePopupEditClass(cl)"
+            >
+              Edit Class
+            </button>
+          </td>
+          <td>
+            <button
+              id="deleteClassButton"
+              type="button"
+              class="btn btn-danger"
+              @click="togglePopupDeleteClass(cl)"
+            >
+              Delete Class
+            </button>
+          </td>
         </tr>
       </table>
     </div>
@@ -315,6 +335,167 @@
             @click="addNewClass()"
           >
             Create Class
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="popup-edit-class">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupEditClass()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Edit class
+        </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorEditClass"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="errorEditClass"
+          >
+            {{ errorEditClass }}
+          </div>
+          <div
+            v-if="successEditClass"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="successEditClass"
+          >
+            {{ successEditClass }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <div v-if="errorEditClass && !classname" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="editclass-classname"
+            :placeholder="[[classname]]"
+            v-model="classname"
+          />
+          <div v-if="errorEditClass && !startdate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="editclass-startdate"
+            :placeHolder="[[startdate]]"
+            maxlength="10"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="startdate"
+          />
+          <div v-if="errorEditClass && !enddate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="editclass-enddate"
+            :placeHolder="[[enddate]]"
+            maxlength="10"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="enddate"
+          />
+          <div v-if="errorEditTask && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="editclass-description"
+            :placeholder="[[description]]"
+            v-model="description"
+          />
+          <div v-if="errorEditClass && !location" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="editclass-location"
+            :placeholder="[[location]]"
+            v-model="location"
+          />
+
+          <button
+            class="inpbox"
+            id="editclassbtn"
+            type="button"
+            @click="editClass()"
+          >
+            Edit Class
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="popup-delete-class">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupDeleteClass()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          You are about to delete the class: {{ classname }}.
+          <br />
+          Please confirm.
+        </div>
+        <!-- Messages -->
+        <div id="messages-delete-class">
+          <div
+            v-if="errorDeleteClass"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorDeleteClass }}
+          </div>
+          <div
+            v-if="successDeleteClass"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success-delete-class"
+          >
+            {{ successDeleteClass }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields-delete-class">
+          <button
+            class="inpbox"
+            type="button"
+            id="btndeleteclass"
+            @click="deleteClass()"
+          >
+            Confirm Delete
           </button>
         </div>
       </div>
@@ -951,6 +1132,10 @@ export default {
       index: -1,
       errorCreateTask: "",
       successCreateTask: "",
+      errorEditTask: "",
+      successEditTask: "",
+      errorDeleteTask: "",
+      successDeleteTask: "",
       errorCreateTimeSlot: "",
       successCreateTimeSlot: "",
       errorEditTimeSlot: "",
@@ -959,6 +1144,10 @@ export default {
       successDeleteTimeSlot: "",
       errorCreateClass: "",
       successCreateClass: "",
+      errorEditClass: "",
+      successEditClass: "",
+      errorDeleteClass: "",
+      successDeleteClass: "",
       currenttask: null,
       class: null,
     };
@@ -1189,7 +1378,7 @@ export default {
       AXIOS.post("/api/Class/addNewClass", params)
         .then((response) => {
           this.errorCreateClass = "";
-          this.successCreateClass = "Successful new task";
+          this.successCreateClass = "Successful new class";
           console.log("class created");
 
           this.updatePage();
@@ -1209,6 +1398,58 @@ export default {
         });
 
       this.togglePopupCreateClass();
+    },
+    editClass() {
+      if (
+        !this.classname ||
+        !this.description ||
+        !this.location ||
+        !this.startdate ||
+        !this.enddate /*|| !this.timeslot*/
+      ) {
+        this.errorEditClass =
+          "Missing fields. Please fill in all required fields";
+        this.successEditClass = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        title: this.classname,
+        description: this.description,
+        startTime: this.startdate,
+        endTime: this.enddate,
+        location: this.location,
+        timeslots: null,
+      };
+
+      AXIOS.post("/api/Class/updateClass", params)
+        .then((response) => {
+          this.errorEditClass = "";
+          this.successEditClass = "Successful update class";
+          console.log("class updated");
+
+          this.updatePage();
+
+          this.classname = "";
+          this.description = "";
+          this.startTime = "";
+          this.endTime = "";
+          this.location = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateTask = e;
+          this.successCreateTask = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupUpdateClass();
     },
     deleteAccount() {
       let AXIOS = axios.create({
@@ -1572,6 +1813,44 @@ export default {
       this.errorCreateClass = "";
       this.successCreateClass = "";
       document.getElementById("popup-create-class").classList.toggle("active");
+    },
+    togglePopupEditClass(curClass) {
+      this.errorEditClass = "";
+      this.successEditClass = "";
+      
+      this.class = curClass;
+
+      if(curClass) {
+        this.classname = curClass.title;
+        this.startdate = moment(curClass.startTime).format("YYYY-MM-DD");
+        this.enddate = moment(curClass.endTime).format("YYYY-MM-DD");
+        this.description = curClass.description;
+        this.location = curClass.location;
+      }
+      else {
+        this.classname = "";
+        this.startdate = "";
+        this.enddate = "";
+        this.description = "";
+        this.location = "";
+      }
+      
+      document.getElementById("popup-edit-class").classList.toggle("active");
+    },
+    togglePopupDeleteClass(curClass) {
+      this.errorDeleteClass = "";
+      this.successDeleteClass = "";
+      
+      this.class = curClass;
+
+      if(curClass) {
+        this.classname = curClass.title;
+      }
+      else {
+        this.classname = "";
+      }
+      
+      document.getElementById("popup-delete-class").classList.toggle("active");
     },
     updatePage() {
       let AXIOS = axios.create({
