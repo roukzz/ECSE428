@@ -1149,7 +1149,7 @@ export default {
       errorDeleteClass: "",
       successDeleteClass: "",
       currenttask: null,
-      class: null,
+      curClass: null,
     };
   },
 
@@ -1419,6 +1419,7 @@ export default {
       });
       let params = {
         username: localStorage.getItem("username"),
+        classID: this.curClass._id,
         title: this.classname,
         description: this.description,
         startTime: this.startdate,
@@ -1449,7 +1450,7 @@ export default {
           return;
         });
 
-      this.togglePopupUpdateClass();
+      this.togglePopupEditClass();
     },
     deleteClass() {
       let AXIOS = axios.create({
@@ -1460,9 +1461,9 @@ export default {
       
       let params = {
         username: localStorage.getItem("username"),
-        classId: this.class._id,
+        classID: this.curClass._id,
       };
-      console.log(this.class._id);
+      
       AXIOS.post("/api/Class/deleteClass", params)
         .then((response) => {
           this.errorDeleteTask = "";
@@ -1471,7 +1472,6 @@ export default {
 
           this.updatePage();
 
-          this.currenttask = null;
           this.classname = "";
         })
         .catch((e) => {
@@ -1851,7 +1851,7 @@ export default {
       this.errorEditClass = "";
       this.successEditClass = "";
       
-      this.class = curClass;
+      this.curClass = curClass;
 
       if(curClass) {
         this.classname = curClass.title;
@@ -1874,7 +1874,7 @@ export default {
       this.errorDeleteClass = "";
       this.successDeleteClass = "";
       
-      this.class = curClass;
+      this.curClass = curClass;
 
       if(curClass) {
         this.classname = curClass.title;
