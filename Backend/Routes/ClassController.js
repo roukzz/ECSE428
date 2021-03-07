@@ -223,17 +223,11 @@ route.post("/deleteClass", verify, function (req, res) {
     }
     if (!err) {
       let classIDIsValid = false;
-<<<<<<< HEAD
-
-      for (let i = 0; i < student.classes.length; i++) {
-        if (student.classes[i]._id.toString() === req.body.classID.toString()) {
-=======
       const classID = req.body.classID;
       let classToBeDeleted;
       studentClasses = student.classes;
       studentClasses.forEach((studentClass) => {
         if (studentClass._id.toString() === classID.toString()) {
->>>>>>> 441023a2b0dfa89299e423c9426fbeceb9c5bf88
           classIDIsValid = true;
           classToBeDeleted = studentClass;
         }
