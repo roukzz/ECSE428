@@ -15,6 +15,9 @@
       <button id="createClassButton" v-on:click="togglePopupCreateClass()">
         Create Class
       </button>
+      <button id="createReminderButton" v-on:click="togglePopupCreateReminder()">
+        Create Reminder
+      </button>
     </div>
 
     <div id="calendarHolder">
