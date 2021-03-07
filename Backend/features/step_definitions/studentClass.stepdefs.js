@@ -60,3 +60,36 @@ Then(
     await closeDatabase();
   }
 );
+
+Given(
+  "that we have the following class with title {string} and description {string} and startTime {string} and endTime {string} and I am username {string}",
+  async function (title, description, startTime, endTime, username) {
+    const res = await request(app)
+      .post("/api/class/addNewClass")
+      .send({
+        username,
+        title,
+        description,
+        startTime,
+        endTime,
+      })
+      .set("auth-token", this.authToken);
+    this.status = res.statusCode;
+    classes[title] = JSON.parse(res.text)._id;
+  }
+);
+
+When(
+  "the user attemps to delete a class with title {string} and the user is {string}",
+  async function (title, username) {
+    console.log(classes[title]);
+    const res = await request(app)
+      .post("/api/class/deleteClass")
+      .send({
+        username,
+        classID: classes[title],
+      })
+      .set("auth-token", this.authToken);
+    this.status = res.statusCode;
+  }
+);
