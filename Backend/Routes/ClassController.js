@@ -169,6 +169,7 @@ route.post("/addPeriodToClass", verify, function (req, res) {
   });
 });
 
+// TODO: FIX
 route.post("/updateClass", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
@@ -280,9 +281,6 @@ function RRuleDaySwitch(number) {
   }
   return day;
 }
-
-// TODO: Implement get class   --If they want the classes, front end can just do getStudent. If they want a specific class, then they will need an ID,
-//and how would they have the ID without the class? Basically im not sure this is necessary.
 
 // get class time_slots
 route.post("/getClassTimeslots", verify, function (req, res) {
