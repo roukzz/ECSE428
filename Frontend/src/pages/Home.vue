@@ -1320,6 +1320,11 @@ export default {
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
         this.reminderlist = response.data.reminders;
+        for(let reminder of this.reminderlist){
+          reminder.reminderDate = moment(reminder.reminderDate).format(
+            "YYYY-MM-DDTkk:mm"
+          );
+        }
         this.timeslotlist = [];
         for (let task of this.tasklist) {
           let params = {
@@ -1354,6 +1359,12 @@ export default {
             username: localStorage.getItem("username"),
             classID: classe._id,
           };
+          classe.startTime = moment(classe.startTime).format(
+            "YYYY-MM-DDTkk:mm"
+          );
+          classe.endTime = moment(classe.endTime).format(
+            "YYYY-MM-DDTkk:mm"
+          );
           AXIOS.post("/api/class/getClassTimeslots", params)
             .then((response) => {
               var timeslots = response.data;
@@ -2218,6 +2229,11 @@ export default {
           this.tasklist = response.data.tasks;
           this.classeslist = response.data.classes;
           this.reminderlist = response.data.reminders;
+          for(let reminder of this.reminderlist){
+          reminder.reminderDate = moment(reminder.reminderDate).format(
+            "YYYY-MM-DDTkk:mm"
+          );
+        }
           this.timeslotlist = [];
           for (let task of this.tasklist) {
             let params = {
@@ -2252,6 +2268,12 @@ export default {
               username: localStorage.getItem("username"),
               classID: classe._id,
             };
+            classe.startTime = moment(classe.startTime).format(
+              "YYYY-MM-DDTkk:mm"
+            );
+            classe.endTime = moment(classe.endTime).format(
+              "YYYY-MM-DDTkk:mm"
+            );
             AXIOS.post("/api/class/getClassTimeslots", params)
               .then((response) => {
                 var timeslots = response.data;

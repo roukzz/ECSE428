@@ -182,10 +182,10 @@ export default {
     },
     controls_panels_on (item, event) {
 
-      var xpos = event.clientX;
-      var ypos = event.clientY;
+      var xpos = event.clientX - 380 * window.innerWidth/1536;
+      var ypos = event.clientY - 60 * window.innerWidth/1536;
 
-      document.getElementById("controls_panel").style = "display: block; left:" + (xpos - 380) + "px; top:" + (ypos - 60) + "px;";
+      document.getElementById("controls_panel").style = "display: block; left:" + (xpos) + "px; top:" + (ypos) + "px;";
 
       if (item.type == "task") {
         this.task_selection= item;
