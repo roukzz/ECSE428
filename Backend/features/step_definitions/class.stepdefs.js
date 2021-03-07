@@ -6,6 +6,8 @@ const app = require("../../server");
 const Student = require("../../Models/student");
 const { connect, clearDatabase, closeDatabase } = require("../../testdb");
 
+var classes = {};
+
 Given(
   "the user with an username {string} and password {string} is logged in",
   async function (username, password) {

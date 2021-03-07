@@ -5,54 +5,42 @@ Feature: update a class
   So that my calendar will always be up to date
 
   Background:
-    Given that we have the following class in our database:
-	    | class_title | class_id | start_time | end_time | description  | location
-            | ECSE 429    | class001 | 18:00:00   | 21:00:00 | Test class 1 | Montreal
+    Given the following users with username "GordonRamsay" and password "iloverawsteak" are registered in the system
+    Given the user with an username "GordonRamsay" and password "iloverawsteak" is logged in
+    Given that we have the following class with title "COMP251" and description "ALGO&DS" and startTime "2021-03-29T13:34:00.000" and endTime "2021-05-29T13:34:00.000" and I am username "GordonRamsay"
 
   Scenario Outline: Authenticated User Update Their Class title (Normal Flow)
 
-    Given that user "Test Subject" is logged into mySchedule
-    When user "Test Subject" changes <class_title> of <class_id> to "ECSE 428"
-    Then the class <class_id> becomes:
-	    | class_title | class_id | start_time | end_time | description  | location
-            | ECSE 428    | class001 | 18:00:00   | 21:00:00 | Test class 1 | Montreal
+    When the user attemps to update a class with title "<title>", description "<description>", startTime "<startTime>" and endTime "<endTime>" and I am username "<username>"
+    Then  the current user should receive a confirmation that the operation was successful with status code "200"
+    Examples:
+      | title      | description | startTime               | endTime                 | username     |
+      | COMP251-01 | ALGO&DS     | 2021-03-29T13:34:00.000 | 2021-05-29T13:34:00.000 | GordonRamsay |
 
   Scenario Outline: Authenticated User Update Their Class description (Alternative Flow)
 
-    Given that user "Test Subject" is logged into mySchedule
-    When user "Test Subject" changes <description> of <class_id> to "Software Validation"
-    Then the class <class_id> becomes:
-	    | class_title | class_id | start_time | end_time | description         | location
-            | ECSE 429    | class001 | 18:00:00   | 21:00:00 | Software Validation | Montreal
+    When the user attemps to update a class with title "<title>", description "<description>", startTime "<startTime>" and endTime "<endTime>" and I am username "<username>"
+    Then  the current user should receive a confirmation that the operation was successful with status code "200"
+    Examples:
+      | title      | description | startTime               | endTime                 | username     |
+      | COMP251-01 | ALGO&DS-DP  | 2021-03-29T13:34:00.000 | 2021-05-29T13:34:00.000 | GordonRamsay |
 
   Scenario Outline: Authenticated user Update Class End Time to be Earlier than Class Start Time (Error Flow)
 
-    Given that user "Test Subject" is logged into mySchedule
-    When user "Test Subject" changes <end_time> of class <class_id> to "17:00:00"
-    Then the class <class_id> is not updated
-    And the system throws an "End Time cannot be before the Start Time" error
+    When the user attemps to update a class with title "<title>", description "<description>", startTime "<startTime>" and endTime "<endTime>" and I am username "<username>"
+    Then  the current user should receive a confirmation that the operation was not successful with status code "400"
+    Examples:
+      | title      | description | startTime               | endTime                 | username     |
+      | COMP251-01 | ALGO&DS     | 2021-09-29T13:34:00.000 | 2021-03-29T13:34:00.000 | GordonRamsay |
 
-	    | class_title | class_id | start_time | end_time | description  | location
-            | ECSE 429    | class001 | 18:00:00   | 21:00:00 | Test class 1 | Montreal
+  Scenario Outline: The user updates a class when he is not logged in(Error Flow)
 
-  Scenario Outline: Authenticated user Update Class Location to an Invalid Location (Error Flow)
+    Given the user with username "<username>" logs out from his account
+    When the user attemps to update a class with title "<title>", description "<description>", startTime "<startTime>" and endTime "<endTime>" and I am username "<username>"
+    Then  the current user should receive a confirmation that the operation was not successful with status code "400"
 
-    Given that user "Test Subject" is logged into mySchedule
-    When user "Test Subject" changes <location> of class <class_id> to "NoSuchLocation"
-    Then the class <class_id> is not updated
-    And the system throws an "Invalid Location" error
+    Examples:
+      | title   | description    | startTime               | endTime                 | username     |
+      | COMP251 | 429Description | 2021-03-29T13:34:00.000 | 2021-05-29T13:34:00.000 | GordonRamsay |
 
-	    | class_title | class_id | start_time | end_time | description  | location
-            | ECSE 429    | class001 | 18:00:00   | 21:00:00 | Test class 1 | Montreal
 
-  Scenario Outline: Authenticated user Update Class Title to an Existing Class Title (Error Flow)
-    Given that we also have the following class in our database:
-	    | class_title | class_id | start_time | end_time | description  | location
-            | ECSE 420    | class002 | 16:00:00   | 18:00:00 | Test class 2 | Montreal
-    And that user "Test Subject" is logged into mySchedule
-    When user "Test Subject" changes <class_title> of class <class_id> to "ECSE 420"
-    Then the class <class_id> is not updated
-    And the system throws an "Duplicate Class Name" error
-
-	    | class_title | class_id | start_time | end_time | description  | location
-            | ECSE 429    | class001 | 18:00:00   | 21:00:00 | Test class 1 | Montreal
