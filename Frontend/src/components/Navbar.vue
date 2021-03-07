@@ -4,6 +4,7 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+  <button @click="reminderClick()"> Reminders</button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <!-- <ul class="navbar-nav">
       <li class="nav-item active">
@@ -47,6 +48,9 @@ export default {
     },
     helpClick() {
       document.getElementById("helpSupport").classList.toggle("active");
+    },
+    reminderClick() {
+      document.getElementById("reminder").classList.toggle("active");
     },
     async signOut() {
       localStorage.clear();

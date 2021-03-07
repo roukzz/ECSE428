@@ -145,6 +145,9 @@
       <button id="createClassButton" v-on:click="togglePopupCreateClass()">
         Create Class
       </button>
+      <button id="createReminderButton" v-on:click="togglePopupCreateReminder()">
+        Create Reminder
+      </button>
     </div>
 
     <div class="popup" id="popup-create">
@@ -1082,6 +1085,279 @@
         </div>
       </div>
     </div>
+
+    <div class="popup" id="popup-create-reminder">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupCreateReminder()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Create a new reminder
+        </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateReminder"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateReminder }}
+          </div>
+          <div
+            v-if="successCreateReminder"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateReminder }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <div v-if="errorCreateReminder && !title" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="title"
+            placeholder="Reminder Title"
+            v-model="title"
+          />
+          <div v-if="errorCreateReminder && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="description"
+            placeholder="Description"
+            v-model="description"
+          />
+          <div v-if="errorCreateReminder && !deadline" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="datetime-local"
+            id="deadline"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="deadline"
+          />
+
+          <button
+            class="inpbox"
+            id="createbtn"
+            type="button"
+            @click="addNewReminder()"
+          >
+            Create Reminder
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="reminder">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupReminder()">&times;</div>
+        Reminders
+        <br />
+
+      <div id="Reminders" style="height: 250px; width: 650px; overflow-y:auto">
+      <table>
+        <tr
+          class="tasklistitems"
+          v-for="reminder in reminderlist"
+          v-bind:id="reminder._id"
+          v-bind:key="reminder._id"
+        >
+          <td>
+            {{ reminder.title }}
+          </td>
+          <td>
+            {{ reminder.description }}
+          </td>
+          <td>
+            {{ reminder.reminderDate }}
+          </td>
+          <td>
+            <button
+              id="eReminderButton"
+              type="button"
+              class="editbutton"
+              @click="togglePopupEditReminder(reminder)"
+            >
+              Edit
+            </button>
+          </td>
+          <td>
+            <button
+              id="deleteReminderButton"
+              type="button"
+              class="btn btn-danger"
+              @click="togglePopupDeleteReminder(reminder)"
+            >
+              Delete Reminder
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+      </div>
+    </div>
+
+        <div class="popup" id="popup-edit-reminder">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupEditReminder()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Edit Reminder
+        </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateReminder"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateReminder }}
+          </div>
+          <div
+            v-if="successCreateReminder"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateReminder }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <div v-if="errorCreateReminder && !title" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="titleEdit"
+            :placeholder="[[title]]"
+            v-model="title"
+          />
+          <div v-if="errorCreateReminder && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="descriptionEdit"
+            :placeholder="[[description]]"
+            v-model="description"
+          />
+          <div v-if="errorCreateReminder && !reminderDate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="datetime-local"
+            id="deadlineEdit"
+            :placeHolder="[[reminderDate]]"
+            maxlength="10"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="deadline"
+          />
+          <button
+            id="updateChanges"
+            class="inpbox"
+            type="button"
+            @click="editReminder()"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="popup-delete-reminder">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupDeleteReminder()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          You are about to delete the reminder: {{ title }}.
+          <br />
+          Please confirm.
+        </div>
+        <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorCreateReminder"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorCreateReminder }}
+          </div>
+          <div
+            v-if="successCreateReminder"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successCreateReminder }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          <button
+            class="inpbox"
+            type="button"
+            id="btndelete"
+            @click="deleteReminder()"
+          >
+            Confirm Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -1117,6 +1393,7 @@ export default {
       tasklist: [],
       timeslotlist: [],
       classeslist: [],
+      reminderlist: [],
       tasktype: "",
       description: "",
       location: "",
@@ -1148,6 +1425,12 @@ export default {
       successEditClass: "",
       errorDeleteClass: "",
       successDeleteClass: "",
+      successCreateReminder: "",
+      errorCreateReminder: "",
+      successEditReminder: "",
+      errorEditReminder: "",
+      successDeleteReminder: "",
+      errorDeleteReminder: "",
       currenttask: null,
       curClass: null,
     };
@@ -1166,6 +1449,7 @@ export default {
       .then((response) => {
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
+        this.reminderlist = response.data.reminders;
         this.timeslotlist = [];
         for (let task of this.tasklist) {
           let params = {
@@ -1746,6 +2030,127 @@ export default {
           });
       }
     },
+    addNewReminder() {
+      if (!this.title || !this.description || !this.deadline) {
+        this.errorCreateReminder =
+          "Missing fields. Please fill in all required fields";
+        this.successCreateReminder = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        title: this.title,
+        description: this.description,
+        reminderDate: this.deadline,
+      };
+
+      AXIOS.post("/api/reminder/addReminderToStudent", params)
+        .then((response) => {
+          this.errorCreateReminder = "";
+          this.successCreateReminder = "Successfully created reminder";
+          console.log("Worked");
+
+          this.updatePage();
+
+          this.title = "";
+          this.description = "";
+          this.deadline = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateReminder = e;
+          this.successCreateReminder = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupCreateReminder();
+    },
+    editReminder() {
+      if (!this.title || !this.description || !this.reminderDate) {
+        this.errorCreateReminder =
+          "Missing fields. Please fill in all required fields";
+        this.successCreateReminder = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        reminderId: this.currentReminder._id,
+        title: this.title,
+        description: this.description,
+        reminderDate: this.reminderDate,
+      };
+      //console.log(this.currenttask);
+      console.log(this.currentReminder._id);
+      AXIOS.post("/api/reminder/updateStudentReminder", params)
+        .then((response) => {
+          this.errorCreateReminder = "";
+          this.successCreateReminder = "Successful edit of reminder";
+          console.log("Edit successful");
+
+          this.updatePage();
+
+          this.title = "";
+          // this.tasktype = "";
+          this.description = "";
+          //this.location = "";
+          this.reminderDate = "";
+          this.currentReminder = null;
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateReminder = e;
+          this.successCreateReminder = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupEditReminder();
+    },
+    deleteReminder() {
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        reminderId: this.currentReminder._id,
+      };
+
+      AXIOS.post("/api/reminder/deleteStudentReminder", params)
+        .then((response) => {
+          this.errorCreateReminder = "";
+          this.successCreateReminder = "Successful deletion of reminder";
+          console.log("Delete successful");
+
+          this.updatePage();
+
+          this.title = "";
+          this.description = "";
+          this.reminderDate = "";
+          this.currentReminder = null;
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateReminder = e;
+          this.successCreateReminder = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupDeleteReminder();
+    },
     togglePopupCreate() {
       this.errorCreateTask = "";
       this.successCreateTask = "";
@@ -1885,6 +2290,55 @@ export default {
       
       document.getElementById("popup-delete-class").classList.toggle("active");
     },
+    togglePopupCreateReminder() {
+      this.errorCreateTimeSlot = "";
+      this.successCreateTimeSlot = "";
+      document
+        .getElementById("popup-create-reminder")
+        .classList.toggle("active");
+    },
+    togglePopupReminder() {
+      document.getElementById("reminder").classList.toggle("active");
+    },
+    togglePopupEditReminder(reminder) {
+      this.errorCreateReminder = "";
+      this.successCreateReminder = "";
+      //console.log(task);
+      //console.log(this.title);
+      if (reminder != null) {
+        this.title = reminder.title;
+        this.currentReminder = reminder;
+        this.description = reminder.description;
+        this.reminderDate = reminder.reminderDate;
+      } else {
+        this.title = "";
+        this.description = "";
+        //       this.index = -1;
+        // this.currenttask = null;
+        this.deadline = "";
+        this.reminderDate = "";
+      }
+      //console.log(this.title);
+      document.getElementById("popup-edit-reminder").classList.toggle("active");
+    },
+    togglePopupDeleteReminder(reminder) {
+      this.errorCreateReminder = "";
+      this.successCreateReminder = "";
+      //console.log(task);
+      //console.log(this.title);
+      if (reminder != null) {
+        this.title = reminder.title;
+        this.currentReminder = reminder;
+      }
+      // else {
+      //   this.title = "";
+      //   this.description = "";
+      //   this.index = -1;
+      //   this.currenttask = null;
+      // }
+      //console.log(this.title);
+      document.getElementById("popup-delete-reminder").classList.toggle("active");
+    },
     updatePage() {
       let AXIOS = axios.create({
         baseURL: backendUrl,
@@ -1898,6 +2352,7 @@ export default {
         .then((response) => {
           this.tasklist = response.data.tasks;
           this.classeslist = response.data.classes;
+          this.reminderlist = response.data.reminders;
           this.timeslotlist = [];
           for (let task of this.tasklist) {
             let params = {
@@ -1981,6 +2436,10 @@ export default {
   left: 0px;
   right: 0px;
 }
+#reminder {
+  height: 300px !important;
+  width: 600px !important;
+}
 .popup .overlay {
   position: fixed;
   top: 0px;
@@ -1997,8 +2456,8 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
   background: #fff;
-  width: 500px;
-  /**height: 300px;**/
+  width: 700px;
+  /* height: 300px; */
   z-index: 2;
   text-align: center;
   padding: 20px;
