@@ -23,7 +23,7 @@ So that I can organize my schedule based on an upcoming task
   Scenario Outline: Create a time slot for an invalid task (Error Flow)
 
     When user requests to update a time slot for a non-existing task with start time "<start>", end time "<end>", location "<loc>", and description "<description>"
-    Then the system throws "Task does not exist"
+    Then the system throws "Timeslot does not exist"
     
     Examples:
       | start                | end                  | loc      | description    |
