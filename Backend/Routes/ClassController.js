@@ -395,7 +395,7 @@ route.post("/addTimeslotToClass", verify, function (req, res) {
 });
 
 // Update existing timeslots of a classes
-route.post("/updateTimeSlotOfClass", verify, async function (req, res) {
+route.post("/updateTimeSlotClass", verify, async function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
   }
