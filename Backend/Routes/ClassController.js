@@ -117,7 +117,7 @@ route.post("/addPeriodToClass", verify, function (req, res) {
     if (!err) {
       let classIDIsValid = false;
       student.classes.forEach((element) => {
-        if ((element.id = req.body.classID)) {
+        if (element._id.toString() === req.body.classID.toString()) {
           classIDIsValid = true;
           const startPeriod = new Date(req.body.startTime);
           const endPeriod = new Date(req.body.endTime);
@@ -181,7 +181,7 @@ route.post("/updateClass", verify, function (req, res) {
     if (!err) {
       let classIDIsValid = false;
       student.classes.forEach((element) => {
-        if ((element.id = req.body.classID)) {
+        if (element._id.toString() === req.body.classID.toString()) {
           classIDIsValid = true;
           element.title = req.body.title;
           element.description = req.body.description;
@@ -226,7 +226,7 @@ route.post("/deleteClass", verify, function (req, res) {
       let classIDIsValid = false;
       const classID = req.body.classID;
       let classToBeDeleted;
-      studentClasses = student.classes;
+      let studentClasses = student.classes;
       studentClasses.forEach((studentClass) => {
         if (studentClass._id.toString() === classID.toString()) {
           classIDIsValid = true;
