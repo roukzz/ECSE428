@@ -12,14 +12,14 @@
         </div>
 
         <div class="day-content" v-for="item in day.items" v-bind:key="item._id" v-bind:id="item._id">
-          <table v-if="item.type == 'timeslot'" style="background-color: #99ccff" v-on:click="controls_panels_on(item)">
+          <table v-if="item.type == 'timeslot'" style="background-color: #99ccff" v-on:click="controls_panels_on(item, $event)">
             <tr>
               <th>{{ item.startTime.split("T")[1] }} <br/> | <br/>  {{ item.endTime.split("T")[1] }}</th>
               <td>{{ item.description }} <br/> {{ item.location }}</td>
             </tr>
           </table>
 
-          <table v-if="item.type == 'task'" style="background-color: #ff9999" v-on:click="controls_panels_on(item)">
+          <table v-if="item.type == 'task'" style="background-color: #ff9999" v-on:click="controls_panels_on(item, $event)">
             <tr>
               <th>{{ item.dueDate.split("T")[1] }}</th>
               <td>{{ item.title }} <br/> {{ item.description }}</td>
@@ -180,12 +180,12 @@ export default {
       }
       return true;
     },
-    controls_panels_on (item) {
+    controls_panels_on (item, event) {
 
-      var xpos = window.event.screenX;
-      var ypos = window.event.screenY;
+      var xpos = event.clientX;
+      var ypos = event.clientY;
 
-      document.getElementById("controls_panel").style = "display: block; left:" + (xpos - 380) + "px; top:" + (ypos - 120) + "px;";
+      document.getElementById("controls_panel").style = "display: block; left:" + (xpos - 380) + "px; top:" + (ypos - 60) + "px;";
 
       if (item.type == "task") {
         this.task_selection= item;
