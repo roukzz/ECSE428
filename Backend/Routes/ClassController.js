@@ -169,10 +169,20 @@ route.post("/addPeriodToClass", verify, function (req, res) {
   });
 });
 
-// TODO: FIX
+// TODO: fix err handlings
 route.post("/updateClass", verify, function (req, res) {
   if (!req.body.username) {
     return res.status(400).send("Please provide an username");
+  }
+  if (!req.body.classID) {
+    return res.status(400).send("Please provide a classID");
+  }
+  if (req.body.startTime && req.body.endTime) {
+    if (req.body.startTime > req.body.endTime) {
+      return res
+        .status(400)
+        .send("Start of class cannot be after end of class");
+    }
   }
   Student.findOne({ username: req.body.username }, function (err, student) {
     if (!student) {

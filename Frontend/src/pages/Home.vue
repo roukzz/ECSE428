@@ -998,7 +998,7 @@
           <input
             class="inpbox"
             type="text"
-            id="title"
+            id="titleReminder"
             placeholder="Reminder Title"
             v-model="title"
           />
@@ -1008,7 +1008,7 @@
           <input
             class="inpbox"
             type="text"
-            id="description"
+            id="descriptionReminder"
             placeholder="Description"
             v-model="description"
           />
@@ -1018,7 +1018,7 @@
           <input
             class="inpbox"
             type="datetime-local"
-            id="deadline"
+            id="deadlineReminder"
             placeHolder="YYYY-MM-DD"
             maxlength="10"
             min="2021-01-01"
@@ -1028,7 +1028,7 @@
 
           <button
             class="inpbox"
-            id="createbtn"
+            id="createbtnReminder"
             type="button"
             @click="addNewReminder()"
           >
@@ -1216,7 +1216,7 @@
           <button
             class="inpbox"
             type="button"
-            id="btndelete"
+            id="btndeleteReminder"
             @click="deleteReminder()"
           >
             Confirm Delete
@@ -1320,6 +1320,11 @@ export default {
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
         this.reminderlist = response.data.reminders;
+        for(let reminder of this.reminderlist){
+          reminder.reminderDate = moment(reminder.reminderDate).format(
+            "YYYY-MM-DDTkk:mm"
+          );
+        }
         this.timeslotlist = [];
         for (let task of this.tasklist) {
           let params = {
@@ -1354,6 +1359,12 @@ export default {
             username: localStorage.getItem("username"),
             classID: classe._id,
           };
+          classe.startTime = moment(classe.startTime).format(
+            "YYYY-MM-DDTkk:mm"
+          );
+          classe.endTime = moment(classe.endTime).format(
+            "YYYY-MM-DDTkk:mm"
+          );
           AXIOS.post("/api/class/getClassTimeslots", params)
             .then((response) => {
               var timeslots = response.data;
@@ -2217,6 +2228,11 @@ export default {
           this.tasklist = response.data.tasks;
           this.classeslist = response.data.classes;
           this.reminderlist = response.data.reminders;
+          for(let reminder of this.reminderlist){
+          reminder.reminderDate = moment(reminder.reminderDate).format(
+            "YYYY-MM-DDTkk:mm"
+          );
+        }
           this.timeslotlist = [];
           for (let task of this.tasklist) {
             let params = {
@@ -2251,6 +2267,12 @@ export default {
               username: localStorage.getItem("username"),
               classID: classe._id,
             };
+            classe.startTime = moment(classe.startTime).format(
+              "YYYY-MM-DDTkk:mm"
+            );
+            classe.endTime = moment(classe.endTime).format(
+              "YYYY-MM-DDTkk:mm"
+            );
             AXIOS.post("/api/class/getClassTimeslots", params)
               .then((response) => {
                 var timeslots = response.data;

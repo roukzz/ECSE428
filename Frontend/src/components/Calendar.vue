@@ -47,8 +47,8 @@
       <div class="close-btn" v-on:click="controls_panels_off()">
         &times;
       </div>
-      <button v-on:click="trigger_edit()">Edit</button>
-      <button v-on:click="trigger_delete()">Delete</button>
+      <button v-on:click="trigger_edit()" id="editButton">Edit</button>
+      <button v-on:click="trigger_delete()" id="deleteButton">Delete</button>
     </div>
     
   </div> 
