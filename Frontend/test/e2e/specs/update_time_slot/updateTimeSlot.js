@@ -13,7 +13,7 @@ module.exports = {
     {
         title: "TimeSlotTask",
         description: "TimeSlotTask",
-        deadline : "12-07-2021"
+        deadline : "2021\t03061100a"
     },
     ];
 
@@ -53,20 +53,20 @@ module.exports = {
           .pause(config.time.pause)
       }
 
-      // create time slot by given task
+      // create time slot of given task
       client
         .click(config.id.createTimeSlot)
         .pause(config.time.pause)
         .verify.visible('input[id="taskForTimeSlot"]', 'Task')
         .click('#taskForTimeSlot')
         .pause(config.time.pause)
-        .setValue(config.id.timeSlotWidget.startTime, "12.07.2021\t10.10")
+        .setValue(config.id.timeSlotWidget.startTime, "2021\t03061000a")
         .pause(config.time.pause)
-        .setValue(config.id.timeSlotWidget.endTime, "12.08.2021\t10.10")
+        .setValue(config.id.timeSlotWidget.endTime, "2021\t03061030a")
         .pause(config.time.pause)
         .setValue(config.id.timeSlotWidget.descriptionTimeSlot, "TimeSlotDescription")
         .pause(config.time.pause)
-        .setValue(config.id.timeSlotWidget.locationTimeSlot, "MainTeam")
+        .setValue(config.id.timeSlotWidget.locationTimeSlot, "TimeSlotLocation")
         .pause(config.time.pause)
         .setValue('#task','TimeSlotTask')
         .pause(config.time.pause)
@@ -75,24 +75,24 @@ module.exports = {
         .waitForElementVisible('body', config.time.visible)
         .pause(config.time.pause)
 
-    // update time slot by given task
+    // update time slot of given task
     client
-        .click(config.id.createTimeSlot)
+        .useXpath().click("//*[contains(text(), 'TimeSlotDescription')]")
+        .useCss()
         .pause(config.time.pause)
-        .verify.visible('input[id="taskForTimeSlot"]', 'Task')
-        .click('#taskForTimeSlot')
+        .click('#editButton')
         .pause(config.time.pause)
-        .setValue(config.id.timeSlotWidget.startTime, "12.07.2021\t10.10")
+        .setValue('#startTimeEdit', "2021\t03061030a")
         .pause(config.time.pause)
-        .setValue(config.id.timeSlotWidget.endTime, "12.08.2021\t10.10")
+        .setValue('#endTimeEdit', "2021\t03061100a")
         .pause(config.time.pause)
-        .setValue(config.id.timeSlotWidget.descriptionTimeSlot, "TimeSlotDescription")
+        .clearValue('#descriptionEditTimeSlot')
+        .setValue('#descriptionEditTimeSlot', "TimeSlotNewDescription")
         .pause(config.time.pause)
-        .setValue(config.id.timeSlotWidget.locationTimeSlot, "MainTeam")
+        .clearValue('#locationEditTimeSlot')
+        .setValue('#locationEditTimeSlot', "TimeSlotNewLocation")
         .pause(config.time.pause)
-        .setValue('#task','TimeSlotTask')
-        .pause(config.time.pause)
-        .click(config.id.timeSlotWidget.createbtnTimeSlot)
+        .click('#editbtnTimeSlot')
         .pause(config.time.pause)
         .waitForElementVisible('body', config.time.visible)
         .pause(config.time.pause)
@@ -101,10 +101,12 @@ module.exports = {
       // Delete tasks
       for (var i = 0; i < tasks.length; i++) {
         client
-          .click(config.id.deleteTask)
+          .useXpath().click("//*[contains(text(), 'TimeSlotTask')]")
+          .useCss()
           .pause(config.time.pause)
-          .click(config.id.delete)
+          .click('#deleteButton')
           .pause(config.time.pause)
+          .click('#btndelete')
           .waitForElementVisible('body', config.time.visible)
       }
       
