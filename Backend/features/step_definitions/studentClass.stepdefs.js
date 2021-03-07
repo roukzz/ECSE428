@@ -82,7 +82,6 @@ Given(
 When(
   "the user attemps to delete a class with title {string} and the user is {string}",
   async function (title, username) {
-    console.log(classes[title]);
     const res = await request(app)
       .post("/api/class/deleteClass")
       .send({
