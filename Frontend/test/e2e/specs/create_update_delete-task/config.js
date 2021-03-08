@@ -30,7 +30,7 @@ const config = {
       newTask: "#task._id"
     },
     time: {
-      pause: 4500,
+      pause: 1500,
       visible: 1500
     }
   }
