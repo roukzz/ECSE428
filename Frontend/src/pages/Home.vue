@@ -1133,7 +1133,7 @@
           <input
             class="inpbox"
             type="text"
-            id="titleEdit"
+            id="titleEditReminder"
             :placeholder="[[title]]"
             v-model="title"
           />
@@ -1143,7 +1143,7 @@
           <input
             class="inpbox"
             type="text"
-            id="descriptionEdit"
+            id="descriptionEditReminder"
             :placeholder="[[description]]"
             v-model="description"
           />
@@ -1153,7 +1153,7 @@
           <input
             class="inpbox"
             type="datetime-local"
-            id="deadlineEdit"
+            id="deadlineEditReminder"
             :placeHolder="[[reminderDate]]"
             maxlength="10"
             min="2021-01-01"
@@ -1161,7 +1161,7 @@
             v-model="deadline"
           />
           <button
-            id="updateChanges"
+            id="updateChangesReminder"
             class="inpbox"
             type="button"
             @click="editReminder()"
