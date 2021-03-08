@@ -228,7 +228,6 @@ export default {
             this.signupSuccess = "Successfully Registered!";
             AXIOS.post("/api/authentication/login", params)
               .then((response) => {
-                console.log("Logged in successfully.");
                 this.auth_key = response.data;
                 // Add the auth_key and the username to current to be able to access it
                 localStorage.setItem("auth_key", this.auth_key);
@@ -236,7 +235,6 @@ export default {
                 this.$router.push({ name: "Home" });
               })
               .catch((e) => {
-                console.log("Log in failed.");
                 e = e.response.data ? e.response.data : e;
                 console.log(e);
                 return;
@@ -266,7 +264,6 @@ export default {
             this.signupSuccess = "Successfully Registered!";
             AXIOS.post("/api/authentication/login", params)
               .then((response) => {
-                console.log("Logged in successfully.");
                 this.auth_key = response.data;
                 // Add the auth_key and the username to current to be able to access it
                 localStorage.setItem("auth_key", this.auth_key);
@@ -274,7 +271,6 @@ export default {
                 this.$router.push({ name: "Home" });
               })
               .catch((e) => {
-                console.log("Log in failed.");
                 e = e.response.data ? e.response.data : e;
                 console.log(e);
                 return;
