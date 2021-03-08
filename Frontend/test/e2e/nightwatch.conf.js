@@ -36,7 +36,8 @@ module.exports = {
         chromeOptions: {
           prefs: {
             'intl.accept_languages': 'en-CA, fr-CA, en_CA, fr_CA, en'
-          }
+          },
+          args: ["--lang=en-CA"]
         }
       }
     },

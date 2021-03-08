@@ -24,9 +24,6 @@ module.exports = {
         },
       ];
   
-
-      console.log(client);
-
       client.windowMaximize()
   
       // Login before creating tasks

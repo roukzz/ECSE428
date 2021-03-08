@@ -1416,7 +1416,6 @@ export default {
         .then((response) => {
           this.errorCreateTask = "";
           this.successCreateTask = "Successful new task";
-          console.log("Worked");
 
           this.updatePage();
 
@@ -1453,20 +1452,15 @@ export default {
         description: this.description,
         dueDate: this.deadline,
       };
-      //console.log(this.currenttask);
-      console.log(this.currentTask._id);
       AXIOS.post("/api/student/updateStudentTask", params)
         .then((response) => {
           this.errorCreateTask = "";
           this.successCreateTask = "Successful edit of task";
-          console.log("Edit successful");
 
           this.updatePage();
 
           this.title = "";
-          // this.tasktype = "";
           this.description = "";
-          //this.location = "";
           this.deadline = "";
           this.currentTask = null;
         })
@@ -1495,7 +1489,6 @@ export default {
         .then((response) => {
           this.errorCreateTask = "";
           this.successCreateTask = "Successful deletion of task";
-          console.log("Delete successful");
 
           this.updatePage();
 
@@ -1519,7 +1512,7 @@ export default {
         !this.description ||
         !this.location ||
         !this.startdate ||
-        !this.enddate /*|| !this.timeslot*/
+        !this.enddate
       ) {
         this.errorCreateClass =
           "Missing fields. Please fill in all required fields";
@@ -1545,7 +1538,6 @@ export default {
         .then((response) => {
           this.errorCreateClass = "";
           this.successCreateClass = "Successful new class";
-          console.log("class created");
 
           this.updatePage();
 
@@ -1571,7 +1563,7 @@ export default {
         !this.description ||
         !this.location ||
         !this.startdate ||
-        !this.enddate /*|| !this.timeslot*/
+        !this.enddate
       ) {
         this.errorEditClass =
           "Missing fields. Please fill in all required fields";
@@ -1598,7 +1590,6 @@ export default {
         .then((response) => {
           this.errorEditClass = "";
           this.successEditClass = "Successful update class";
-          console.log("class updated");
 
           this.updatePage();
 
@@ -1634,7 +1625,6 @@ export default {
         .then((response) => {
           this.errorDeleteTask = "";
           this.successDeleteTask = "Successful deletion of class";
-          console.log("Delete successful");
 
           this.updatePage();
 
@@ -1656,14 +1646,11 @@ export default {
         headers: { "auth-token": localStorage.getItem("auth_key") },
         // headers: {'Access-Control-Allow-Origin': frontendUrl}
       });
-      console.log(localStorage.getItem("username"));
       let params = {
         username: localStorage.getItem("username"),
       };
-      console.log(params.username),
         AXIOS.post("/api/student/deleteStudentAccount", params)
           .then((response) => {
-            console.log("Account deleted succesfully: " + params.username);
           })
           .catch((e) => {
             e = e.response.data ? e.response.data : e;
@@ -1791,7 +1778,6 @@ export default {
           startTime: this.startTime,
           endTime: this.endTime,
         };
-        console.log(params);
         AXIOS.post("/api/student/updateTimeSlotTask", params)
           .then((response) => {
             this.errorEditTimeSlot = "";
@@ -1939,7 +1925,6 @@ export default {
         .then((response) => {
           this.errorCreateReminder = "";
           this.successCreateReminder = "Successfully created reminder";
-          console.log("Worked");
 
           this.updatePage();
 
@@ -1976,20 +1961,15 @@ export default {
         description: this.description,
         reminderDate: this.deadline,
       };
-      //console.log(this.currenttask);
-      console.log(this.currentReminder._id);
       AXIOS.post("/api/reminder/updateStudentReminder", params)
         .then((response) => {
           this.errorCreateReminder = "";
           this.successCreateReminder = "Successful edit of reminder";
-          console.log("Edit successful");
 
           this.updatePage();
 
           this.title = "";
-          // this.tasktype = "";
           this.description = "";
-          //this.location = "";
           this.deadline = "";
           this.currentReminder = null;
         })
@@ -2018,7 +1998,6 @@ export default {
         .then((response) => {
           this.errorCreateReminder = "";
           this.successCreateReminder = "Successful deletion of reminder";
-          console.log("Delete successful");
 
           this.updatePage();
 
@@ -2054,19 +2033,17 @@ export default {
     togglePopupEditTask(task) {
       this.errorCreateTask = "";
       this.successCreateTask = "";
-      //console.log(task);
-      //console.log(this.title);
       if (task != null) {
         this.title = task.title;
         this.currentTask = task;
         this.description = task.description;
+        this.deadline = task.dueDate;
       } else {
         this.title = "";
         this.description = "";
         this.currentTask = null;
         this.deadline = "";
       }
-      //console.log(this.title);
       document.getElementById("popup-edit").classList.toggle("active");
     },
     togglePopupDeleteTask(task) {
@@ -2178,40 +2155,26 @@ export default {
     togglePopupEditReminder(reminder) {
       this.errorCreateReminder = "";
       this.successCreateReminder = "";
-      //console.log(task);
-      //console.log(this.title);
       if (reminder != null) {
         this.title = reminder.title;
         this.currentReminder = reminder;
         this.description = reminder.description;
-        this.reminderDate = reminder.reminderDate;
+        this.deadline = reminder.reminderDate;
       } else {
         this.title = "";
         this.description = "";
-        //       this.index = -1;
-        // this.currenttask = null;
         this.deadline = "";
         this.reminderDate = "";
       }
-      //console.log(this.title);
       document.getElementById("popup-edit-reminder").classList.toggle("active");
     },
     togglePopupDeleteReminder(reminder) {
       this.errorCreateReminder = "";
       this.successCreateReminder = "";
-      //console.log(task);
-      //console.log(this.title);
       if (reminder != null) {
         this.title = reminder.title;
         this.currentReminder = reminder;
       }
-      // else {
-      //   this.title = "";
-      //   this.description = "";
-      //   this.index = -1;
-      //   this.currenttask = null;
-      // }
-      //console.log(this.title);
       document.getElementById("popup-delete-reminder").classList.toggle("active");
     },
     updatePage() {
@@ -2316,7 +2279,6 @@ export default {
 #timeSlotHolder {
   width: 60%;
   height: 150%;
-  /*border: 1px solid black;*/
   margin-left: 30%;
   margin-top: 10%;
 }
@@ -2356,7 +2318,6 @@ export default {
   transform: translate(-50%, -50%) scale(0);
   background: #fff;
   width: 700px;
-  /* height: 300px; */
   z-index: 2;
   text-align: center;
   padding: 20px;
@@ -2421,11 +2382,5 @@ export default {
 #tasklistitemholder {
   float: left;
 }
-/*
-#editButton {
-    display: none;
-    float: right;
-    margin-left: 40px;
-}
-*/
+
 </style>
