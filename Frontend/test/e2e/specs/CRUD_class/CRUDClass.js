@@ -20,7 +20,7 @@ module.exports = {
       {
         name: "ECSE 321",
         start : "2021-03-04",
-        end : "2021-03-06",
+        end : "2021-03-07",
         description: "DeleteClassTest2",
         location: "McGill University"
       }
@@ -100,21 +100,27 @@ module.exports = {
           .click('#editButton')
           .pause(config.time.pause)
           .assert.visible(config.id.editClassPopup.classname)
+          .clearValue(config.id.editClassPopup.classname)
           .setValue(config.id.editClassPopup.classname, edits[i].name)
           .pause(config.time.pause)
           .assert.visible(config.id.editClassPopup.start)
+          .clearValue(config.id.editClassPopup.start)
           .setValue(config.id.editClassPopup.start, edits[i].start)
           .pause(config.time.pause)
           .assert.visible(config.id.editClassPopup.end)
+          .clearValue(config.id.editClassPopup.end)
           .setValue(config.id.editClassPopup.end, edits[i].end)
           .pause(config.time.pause)
           .assert.visible(config.id.editClassPopup.description)
+          .clearValue(config.id.editClassPopup.description)
           .setValue(config.id.editClassPopup.description, edits[i].description)
           .pause(config.time.pause)
           .assert.visible(config.id.editClassPopup.location)
+          .clearValue(config.id.editClassPopup.location)
           .setValue(config.id.editClassPopup.location, edits[i].location)
           .pause(config.time.pause)
           .assert.visible(config.id.editClassPopup.edit)
+          .clearValue(config.id.editClassPopup.edit)
           .click(config.id.editClassPopup.edit)
           .pause(config.time.pause)
           .waitForElementVisible('body', config.time.visible)
@@ -133,6 +139,7 @@ module.exports = {
           .assert.visible('#btndeleteclass')
           .click('#btndeleteclass')
           .waitForElementVisible('body', config.time.visible)
+          .pause(config.time.pause)
       }
       
       client.end();
