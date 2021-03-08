@@ -2037,6 +2037,7 @@ export default {
         this.title = task.title;
         this.currentTask = task;
         this.description = task.description;
+        this.deadline = task.dueDate;
       } else {
         this.title = "";
         this.description = "";
