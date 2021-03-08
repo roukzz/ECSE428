@@ -1,5 +1,5 @@
 const config = {
-    name: "Create reminder",
+    name: "Crud reminder",
     urls: {
       login: "http://127.0.0.1:8087/#/Login",
       signup: "http://127.0.0.1:8087/#/Signup",
@@ -29,10 +29,14 @@ const config = {
         deleteTask: "#deleteTaskButton",
         description: "#descriptionReminder",
         deadline : "#deadlineReminder",
+        deadlineEditReminder : "#deadlineEditReminder",
         title : "#titleReminder",
-        titleEdit: "#titleEdit",
-        descriptionEdit: "#descriptionEdit",
+        titleEditReminder : "#titleEditReminder",
+        titleEdit: "#titleEditReminder",
+        descriptionEditReminder: "#descriptionEditReminder",
+        createReminder: "#createReminderButton",
         create: "#createbtnReminder",
+        update: "#updateChangesReminder",
         delete: "#btndeleteReminder",
         newTask: "#task._id"
     },
