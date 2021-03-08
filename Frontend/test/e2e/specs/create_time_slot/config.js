@@ -26,6 +26,10 @@ const config = {
         descriptionTimeSlot : "#descriptionTimeSlot",
         locationTimeSlot : "#locationTimeSlot"
       },
+      popup:{
+        deleteButton : "#deleteButton",
+        confirmDelete : "#btndelete"
+      },
       deleteTask: "#deleteTaskButton",
       description: "#description",
       deadline : "#deadline",
