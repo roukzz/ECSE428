@@ -2159,7 +2159,7 @@ export default {
         this.title = reminder.title;
         this.currentReminder = reminder;
         this.description = reminder.description;
-        this.reminderDate = reminder.reminderDate;
+        this.deadline = reminder.reminderDate;
       } else {
         this.title = "";
         this.description = "";
