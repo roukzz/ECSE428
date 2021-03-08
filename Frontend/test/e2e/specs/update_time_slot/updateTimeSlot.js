@@ -1,26 +1,26 @@
 const config = require('./config.js');
 
 module.exports = {
-    'Test update time slot': function (client) {
-    const users = [
-    {
-        username: "haluk",
-        password: "124563a"
-    }
-    ];
+    'Test CRUD timeslot': function (client) {
+      const users = [
+      {
+          username: "Maxime",
+          password: "Maxime"
+      }
+      ];
 
-    const tasks = [
-    {
-        title: "TimeSlotTask",
-        description: "TimeSlotTask",
-        deadline : "2021\t03061100a"
-    },
-    ];
+      const tasks = [
+      {
+          title: "TimeSlotTask",
+          description: "TimeSlotTask",
+          deadline : "2021\t03061100a"
+      },
+      ];
 
-    client.windowMaximize()
-  
-    // Login before creating tasks
-    client
+      client.windowMaximize()
+    
+      // Login before creating tasks
+      client
         .url(config.urls.login)
         .waitForElementVisible('body', config.time.visible)
         .assert.visible(config.id.username)
@@ -35,7 +35,7 @@ module.exports = {
         .waitForElementVisible('body', config.time.visible)
         .assert.urlEquals(config.urls.home)
 
-        
+          
       // Create tasks
       for (var i = 0; i < tasks.length; i++) {
         client
@@ -60,14 +60,19 @@ module.exports = {
         .verify.visible('input[id="taskForTimeSlot"]', 'Task')
         .click('#taskForTimeSlot')
         .pause(config.time.pause)
+        .assert.visible(config.id.timeSlotWidget.startTime)
         .setValue(config.id.timeSlotWidget.startTime, "2021\t03061000a")
         .pause(config.time.pause)
+        .assert.visible(config.id.timeSlotWidget.endTime)
         .setValue(config.id.timeSlotWidget.endTime, "2021\t03061030a")
         .pause(config.time.pause)
+        .assert.visible(config.id.timeSlotWidget.descriptionTimeSlot)
         .setValue(config.id.timeSlotWidget.descriptionTimeSlot, "TimeSlotDescription")
         .pause(config.time.pause)
+        .assert.visible(config.id.timeSlotWidget.locationTimeSlot)
         .setValue(config.id.timeSlotWidget.locationTimeSlot, "TimeSlotLocation")
         .pause(config.time.pause)
+        .assert.visible('#task')
         .setValue('#task','TimeSlotTask')
         .pause(config.time.pause)
         .click(config.id.timeSlotWidget.createbtnTimeSlot)
@@ -75,8 +80,8 @@ module.exports = {
         .waitForElementVisible('body', config.time.visible)
         .pause(config.time.pause)
 
-    // update time slot of given task
-    client
+      // update time slot of given task
+      client
         .useXpath().click("//*[contains(text(), 'TimeSlotDescription')]")
         .useCss()
         .pause(config.time.pause)
@@ -97,6 +102,19 @@ module.exports = {
         .waitForElementVisible('body', config.time.visible)
         .pause(config.time.pause)
 
+      // Delete timeslot
+      client
+        .useXpath().click("//*[contains(text(), 'TimeSlotNewDescription')]")
+        .useCss()
+        .pause(config.time.pause)
+        .assert.visible('#deleteButton')
+        .click('#deleteButton')
+        .pause(config.time.pause)
+        .assert.visible('#btndeleteclass')
+        .click('#btndeleteclass')
+        .waitForElementVisible('body', config.time.visible)
+        .pause(config.time.pause)
+
       // clear generated tasks
       // Delete tasks
       for (var i = 0; i < tasks.length; i++) {
@@ -110,6 +128,6 @@ module.exports = {
           .waitForElementVisible('body', config.time.visible)
       }
       
-      client.end();
+        client.end();
     },
   }

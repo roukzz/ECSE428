@@ -1,5 +1,5 @@
 const config = {
-    name: "Update time slot",
+    name: "Test CRUD timeslot",
     urls: {
       login: "http://127.0.0.1:8087/#/Login",
       signup: "http://127.0.0.1:8087/#/Signup",

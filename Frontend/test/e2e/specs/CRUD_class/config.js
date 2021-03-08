@@ -1,5 +1,5 @@
 const config = {
-  name: "CRUD Class",
+  name: "Test CRUD Class",
   urls: {
     login: "http://127.0.0.1:8087/#/Login",
     home: "http://127.0.0.1:8087/#/Home"
