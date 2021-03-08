@@ -10,17 +10,26 @@ module.exports = {
         }
       ];
 
-      let today = moment().format(" -MM-dd");
+      let tomorrowDate  = moment().add('days',1);
+      let taskDueDate  = "09:00";
+      let slotStartTime = "10:10";
+      let slotEndTime = "11:10";
 
-      let daaayss = moment().format(
-        "YYYY-MM-DDTkk:mm"
-      )
+      let tomorrow = tomorrowDate.format("DD-MM-YYYY");
+      let taskTime = tomorrow + "\t" + taskDueDate;
+      let taskId = "#task"+tomorrowDate.format("YYYY-MM-DD")+"T" + taskDueDate
+
+      let startTimeSlot = tomorrow+"\t"+slotStartTime
+      let endTimeSlot = tomorrow+"\t" + slotEndTime
+      let timeSlotId = "#timeslot"+tomorrowDate.format("YYYY-MM-DD")+"T"+slotStartTime
+      
+      
 
       const tasks = [
         {
           title: "TimeSlotTask",
           description: "TimeSlotTask",
-          deadline : "12-07-2021"
+          deadline : taskTime
         },
       ];
   
@@ -72,9 +81,9 @@ module.exports = {
       .verify.visible('input[id="taskForTimeSlot"]', 'Task')
       .click('#taskForTimeSlot')
       .pause(config.time.pause)
-      .setValue(config.id.timeSlotWidget.startTime, "12.07.2021\t10.10")
+      .setValue(config.id.timeSlotWidget.startTime, startTimeSlot)
       .pause(config.time.pause)
-      .setValue(config.id.timeSlotWidget.endTime, "12.08.2021\t10.10")
+      .setValue(config.id.timeSlotWidget.endTime, endTimeSlot)
       .pause(config.time.pause)
       .setValue(config.id.timeSlotWidget.descriptionTimeSlot, "TimeSlotDescription")
       .pause(config.time.pause)
@@ -88,22 +97,39 @@ module.exports = {
       // .assert.urlEquals(config.destinationUrl_Home);
       .pause(config.time.pause)
       // .assert.visible(config.newTask)
+      
+      //
 
-      // clear generated tasks
-      // Delete tasks
-      for (var i = 0; i < tasks.length; i++) {
-        client
-          // .url(config.url)
-          // .waitForElementVisible('body', config.time.visible)
-          .click(config.id.deleteTask)
+      console.log(timeSlotId);
+      //delete time slot
+      client
+          .url(config.url)
+          .waitForElementVisible('body', config.time.visible)
+          .click("#timeslot-created")
           .pause(config.time.pause)
-          .click(config.id.delete)
+          .click(config.id.popup.deleteButton)
+          .pause(config.time.pause)
+          .click(config.id.popup.confirmDelete)
           .pause(config.time.pause)
           .waitForElementVisible('body', config.time.visible)
-          // .assert.urlEquals(config.destinationUrl_Home);
-          // .assert.visible(config.newTask)
-      }
-      
+
+
+          /*
+      //delete created task
+      client
+      .url(config.urls.home)
+      .waitForElementVisible('body', config.time.visible)
+      .click("#task-created")
+      .pause(config.time.pause)
+      .click(config.id.popup.deleteButton)
+      .pause(config.time.pause)
+      .click(config.id.popup.confirmDelete)
+      .pause(config.time.pause)
+      .waitForElementVisible('body', config.time.visible)
+
+      */
+
+  
       client.end();
     },
   }

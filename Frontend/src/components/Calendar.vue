@@ -12,14 +12,14 @@
         </div>
 
         <div class="day-content" v-for="item in day.items" v-bind:key="item._id" v-bind:id="item._id">
-          <table v-if="item.type == 'timeslot'" style="background-color: #99ccff" v-on:click="controls_panels_on(item, $event)">
+          <table v-if="item.type == 'timeslot'" style="background-color: #99ccff" v-bind:id="`timeslot-created`" v-on:click="controls_panels_on(item, $event)">
             <tr>
               <th>{{ item.startTime.split("T")[1] }} <br/> | <br/>  {{ item.endTime.split("T")[1] }}</th>
               <td>{{ item.description }} <br/> {{ item.location }}</td>
             </tr>
           </table>
 
-          <table v-if="item.type == 'task'" style="background-color: #ff9999" v-on:click="controls_panels_on(item, $event)">
+          <table v-if="item.type == 'task'" style="background-color: #ff9999" v-bind:id="`task-created`" v-on:click="controls_panels_on(item, $event)">
             <tr>
               <th>{{ item.dueDate.split("T")[1] }}</th>
               <td>{{ item.title }} <br/> {{ item.description }}</td>
