@@ -24,7 +24,8 @@ module.exports = {
       silent: true,
       globals: {
         devServerURL: 'http://localhost:' + (process.env.PORT || config.dev.port) + '/#/app'
-      }
+      },
+      webStorageEnabled: true
     },
 
     chrome: {
@@ -35,7 +36,8 @@ module.exports = {
         chromeOptions: {
           prefs: {
             'intl.accept_languages': 'en-CA, fr-CA, en_CA, fr_CA, en'
-          }
+          },
+          args: ["--lang=en-CA"]
         }
       }
     },

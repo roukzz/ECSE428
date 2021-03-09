@@ -11,9 +11,9 @@ app.use(
 );
 
 require("dotenv").config();
-var cors = require('cors')
+var cors = require("cors");
 
-app.use(cors()) // Use this after the variable declaration
+app.use(cors()); // Use this after the variable declaration
 
 // ===== Authentication routes =====
 // =================================
@@ -23,4 +23,13 @@ app.use("/api/authentication", require("./Routes/AuthController"));
 // ===========================================
 app.use("/api/student", require("./Routes/StudentController"));
 
-module.exports = app
+// ===== Class / Modify Tasks routes =====
+// ===========================================
+app.use("/api/class", require("./Routes/ClassController"));
+
+// ===== Reminder / reminders student route =====
+// ===========================================
+
+app.use("/api/reminder", require("./Routes/ReminderController"));
+
+module.exports = app;

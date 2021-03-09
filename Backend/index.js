@@ -1,7 +1,14 @@
 const connectDB = require("./DBConnection/connection");
-const app = require('./server');
+
+
+const app = require("./server");
+const sendReminders = require("./Mailing/mailer");
+
 
 connectDB();
+// sendReminders();
+
+//notifier();
 
 const port = 3000;
 

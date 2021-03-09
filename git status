@@ -1,0 +1,284 @@
+[33mcommit 1cda80a36e0e42c1faa84ab70232633dff65285a[m[33m ([m[1;36mHEAD -> [m[1;32mfarouk[m[33m, [m[1;31morigin/farouk[m[33m)[m
+Author: roukzz <arabfarouk@hotmail.com>
+Date:   Mon Feb 8 12:16:11 2021 -0500
+
+    delete specific task, get specific task
+
+[33mcommit d127be0e0e2e4802fe2d4224cff9e2d74015f912[m
+Author: roukzz <arabfarouk@hotmail.com>
+Date:   Sat Feb 6 13:17:14 2021 -0500
+
+    create task
+
+[33mcommit 6b0a9ed07df7e466a66bed134feaf4cc799cb61b[m[33m ([m[1;32mmain[m[33m)[m
+Author: chaggysen <sen.wang@mail.mcgill.ca>
+Date:   Mon Feb 1 20:24:19 2021 -0500
+
+    implement auth0
+
+[33mcommit 2545091751b3a9ae79c2de873200e0c0109aa878[m
+Author: chaggysen <sen.wang@mail.mcgill.ca>
+Date:   Mon Feb 1 13:01:17 2021 -0500
+
+    create backend project
+
+[33mcommit 2cfd97ee8db8202837ec3eedcac4ed0aa9e0b22e[m
+Author: Noah Chamberland <59708478+SpaciousFish@users.noreply.github.com>
+Date:   Sat Jan 30 17:31:55 2021 -0500
+
+    Basic signup form
+
+[33mcommit ff12100ec9c07158a08f5db438101dcd3b02440f[m
+Author: Noah Chamberland <59708478+SpaciousFish@users.noreply.github.com>
+Date:   Sat Jan 30 15:41:25 2021 -0500
+
+    Frontend template
+
+[33mcommit 0549b1119be06470715281638d17fb3a97e4cde7[m
+Author: chaggysen <sen.wang@mail.mcgill.ca>
+Date:   Sun Jan 24 14:53:49 2021 -0500
+
+    refactor
+
+[33mcommit 9ffadde06575b82a814e8b6500323bed6a564836[m
+Author: chaggysen <sen.wang@mail.mcgill.ca>
+Date:   Sun Jan 24 14:42:39 2021 -0500
+
+    changes
+
+[33mcommit 7200455b965172e45397928b5833228f7f1cae5c[m
+Author: chaggysen <sen.wang@mail.mcgill.ca>
+Date:   Sun Jan 24 14:39:05 2021 -0500
+
+    format register
+
+[33mcommit bce6a358fd17926d3863e5d6c4621f03984c17ae[m
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 14:13:42 2021 -0500
+
+    Added correlation between 3 and 4
+
+[33mcommit 4c1aad1b9e31a67ab90792cefd75fb1cc89dd70e[m
+Merge: e71c6de 1a7b331
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 14:10:54 2021 -0500
+
+    Merge branch 'main' of https://github.com/roukzz/ECSE428
+    Merge
+
+[33mcommit e71c6deef032dfc1c13ce131d5140cf16aeee4f4[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 14:10:35 2021 -0500
+
+    reformat
+
+[33mcommit 1a7b33187d5367ad6cb8ac69be9047531a430f53[m
+Author: oli-norms <oli.norms@gmail.com>
+Date:   Sun Jan 24 14:06:39 2021 -0500
+
+    Format
+
+[33mcommit b55d885ed234495ea868c69851a77f7528173722[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 14:06:21 2021 -0500
+
+    add ID001
+
+[33mcommit 8ebeeb4ed6f419cd356ee22c614a1dd018ee1e0b[m
+Merge: 4551b76 010d164
+Author: oli-norms <oli.norms@gmail.com>
+Date:   Sun Jan 24 13:54:30 2021 -0500
+
+    Merge branch 'main' of https://github.com/roukzz/ECSE428 into main
+
+[33mcommit 4551b765cd9381c977f31abbb5ba5101e87f7deb[m
+Author: oli-norms <oli.norms@gmail.com>
+Date:   Sun Jan 24 13:54:25 2021 -0500
+
+    Format
+
+[33mcommit 010d1643c388143ece905cf4e8a6c69fe858a436[m
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 13:52:53 2021 -0500
+
+    Changed a username to email
+
+[33mcommit 468903963dd89df9cb319c028318748bf017aa2c[m
+Merge: 938b2b7 d035955
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 13:46:19 2021 -0500
+
+    Merge branch 'main' of https://github.com/roukzz/ECSE428 into main
+
+[33mcommit 938b2b7c3b28eba694634c3709d2da3182a33d1f[m
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 13:46:13 2021 -0500
+
+    Changed User to email
+
+[33mcommit d0359559b0eeb4c63d8bcab98a4674412ae3cc4b[m
+Author: oli-norms <oli.norms@gmail.com>
+Date:   Sun Jan 24 13:42:44 2021 -0500
+
+    Format
+
+[33mcommit 2410a895fa86546c1314f448d5c640e81ccb1682[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 13:36:22 2021 -0500
+
+    reformat
+
+[33mcommit b0e7f9e6d1a55285c056a19932c7e984707dfb16[m
+Author: Maxime Cardinal <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 13:34:16 2021 -0500
+
+    Delete ID004_Logout.feature
+    
+    duplicate
+
+[33mcommit 595cb3b2014e04da13601fbede2a6c362989c8bf[m
+Merge: 2b2ec9c 53d61d4
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 13:32:03 2021 -0500
+
+    merge
+
+[33mcommit 2b2ec9c47c5100abb191edb8c2d7009b40d8bcfb[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 13:31:18 2021 -0500
+
+    reformat
+
+[33mcommit 53d61d4dd88a6768e85b1aec6059f9f5d766c2e7[m
+Author: awpan <aw.panzini@gmail.com>
+Date:   Sun Jan 24 13:26:15 2021 -0500
+
+    Moved id004
+
+[33mcommit baaa58a243c3e37aa140acbf5073ce976e853a03[m
+Author: awpan <aw.panzini@gmail.com>
+Date:   Sun Jan 24 13:20:37 2021 -0500
+
+    Added gherkin ID004 logout
+
+[33mcommit cf6b390330851da1013cea2296604854f058a34d[m
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 13:12:02 2021 -0500
+
+    Update ID003_Log_In.feature
+
+[33mcommit 8f237d16af402ea6b472cb6481326b93e3e9d7e2[m
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 13:08:16 2021 -0500
+
+    Further Formatting
+
+[33mcommit 735bc510bdbc5f7d22ce16d3b869b07f67b8b184[m
+Merge: d82eec5 61e7f08
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 13:06:10 2021 -0500
+
+    Merge branch 'main' of https://github.com/roukzz/ECSE428
+    
+    Merge
+
+[33mcommit 61e7f08cab60f433a418628382ff005e55fe4a03[m
+Author: Farouk Arab <35463008+roukzz@users.noreply.github.com>
+Date:   Sun Jan 24 13:05:44 2021 -0500
+
+    remove double quotes
+
+[33mcommit d82eec5be2b48aa69e6667069855a955a4d7c579[m
+Merge: 225bf17 7dd102e
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 13:05:37 2021 -0500
+
+    Merge branch 'main' of https://github.com/roukzz/ECSE428
+    Merrrrgggeeee
+
+[33mcommit 225bf17c3ba72b15aafb5907828a5955f86bc7e5[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sun Jan 24 13:05:32 2021 -0500
+
+    modififed variables format
+
+[33mcommit 7dd102e17d2d2e64c31b2facdd24c76185c14cb0[m
+Author: chaggysen <sen.wang@mail.mcgill.ca>
+Date:   Sun Jan 24 13:05:03 2021 -0500
+
+    reformat
+
+[33mcommit c9a2bb9405ad4bde83c51e56706ae6aa6e214fee[m
+Author: chaggysen <sen.wang@mail.mcgill.ca>
+Date:   Sun Jan 24 13:02:16 2021 -0500
+
+    feature8
+
+[33mcommit 36ecbb7fb8e0f69678d3ee52ef9c831502f7b025[m
+Merge: fc85a29 7585df9
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 12:36:53 2021 -0500
+
+    Merge branch 'main' of https://github.com/roukzz/ECSE428 into main
+
+[33mcommit fc85a2927ed8f42fa26f2aefe9621555f8d45ad0[m
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 12:36:44 2021 -0500
+
+    Changed name and adapted it to feature 005
+
+[33mcommit 7585df912cde573cf5d6a88e21fb04ed02e54001[m
+Author: Farouk Arab <35463008+roukzz@users.noreply.github.com>
+Date:   Sun Jan 24 12:22:58 2021 -0500
+
+    Rename createTask.feature to ID006_Create_Task.feature
+
+[33mcommit 86a2cad4870cb8282c84a606dd8de08140f0b9e1[m
+Author: Legrandj <legrandj09@gmail.com>
+Date:   Sun Jan 24 12:14:51 2021 -0500
+
+    Create login.feature
+
+[33mcommit e8a80736313a7218df616d73ef74e670ced38ab7[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sat Jan 23 23:42:41 2021 -0500
+
+    added background info
+
+[33mcommit 7dc5b1ec09bcc0b7bb66cc91cc8aa834327b3cec[m
+Merge: 73071b9 c52ec6c
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sat Jan 23 23:32:33 2021 -0500
+
+    Merge branch 'main' of https://github.com/roukzz/ECSE428
+    Merge is necessary because changes were made to separate files.
+
+[33mcommit 73071b91de69c4a098036f98e7e54e8c250011ad[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sat Jan 23 23:32:30 2021 -0500
+
+    added alternative flow scenario
+
+[33mcommit c52ec6c0e1bd1ce285dc77e7dfa83fa225e4fd50[m
+Author: Farouk Arab <35463008+roukzz@users.noreply.github.com>
+Date:   Sat Jan 23 23:29:30 2021 -0500
+
+    create task feature
+
+[33mcommit de17f901e2b2b67b1682dafc068b8020844c31bb[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sat Jan 23 23:23:21 2021 -0500
+
+    Delete an account gherkin file
+
+[33mcommit 2b6acf4560569b1aee35411a5b7a15dc9de7cea3[m
+Author: Maxime <maxime_cardinal@outlook.com>
+Date:   Sat Jan 23 21:58:33 2021 -0500
+
+    Created folder for preparation gherkin files
+
+[33mcommit 3f8b083c154bcc9ca21fe51379ad9ac5eb5f08e7[m
+Author: Farouk Arab <35463008+roukzz@users.noreply.github.com>
+Date:   Sat Jan 23 17:55:02 2021 -0500
+
+    Initial commit

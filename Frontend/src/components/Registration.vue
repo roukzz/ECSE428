@@ -115,7 +115,7 @@
         </div>
         <hr />
 
-        <button type="button" class="cancelbtn">Cancel</button>
+        <button @click="toLogin()" class="cancelbtn">Cancel</button>
         <button
           @click="
             signup(name, email, psw, pswRepeat, school, studentID, userType)
@@ -166,7 +166,7 @@ export default {
       userType: "",
       errorSignup: "",
       signupSuccess: "",
-      response: [],
+      auth_key: "",
     };
   },
   created: function () {},
@@ -182,12 +182,17 @@ export default {
       userType
     ) {
       var letters = /^[a-z\d\-_\s]+$/i;
+      var lettersEmail = /^[a-z\d\-_\s@.]+$/i;
       if (!name.match(letters)) {
         this.errorSignup = "The name must have alphanumeric characters";
         this.signupSuccess = "";
         return;
       } else if (!email.includes("@")) {
         this.errorSignup = "The email is incorrect";
+        this.signupSuccess = "";
+        return;
+      } else if (!email.match(lettersEmail)) {
+        this.errorSignup = "The email must have alphanumeric characters";
         this.signupSuccess = "";
         return;
       } else if (psw.length < 4 || psw.length > 14) {
@@ -220,6 +225,20 @@ export default {
         AXIOS.post("/api/authentication/register", params)
           .then((response) => {
             this.errorSignup = "";
+            this.signupSuccess = "Successfully Registered!";
+            AXIOS.post("/api/authentication/login", params)
+              .then((response) => {
+                this.auth_key = response.data;
+                // Add the auth_key and the username to current to be able to access it
+                localStorage.setItem("auth_key", this.auth_key);
+                localStorage.setItem("username", this.name);
+                this.$router.push({ name: "Home" });
+              })
+              .catch((e) => {
+                e = e.response.data ? e.response.data : e;
+                console.log(e);
+                return;
+              });
           })
           .catch((e) => {
             e = e.response.data ? e.response.data : e;
@@ -242,6 +261,20 @@ export default {
         AXIOS.post("/api/authentication/register", params)
           .then((response) => {
             this.errorSignup = "";
+            this.signupSuccess = "Successfully Registered!";
+            AXIOS.post("/api/authentication/login", params)
+              .then((response) => {
+                this.auth_key = response.data;
+                // Add the auth_key and the username to current to be able to access it
+                localStorage.setItem("auth_key", this.auth_key);
+                localStorage.setItem("username", this.name);
+                this.$router.push({ name: "Home" });
+              })
+              .catch((e) => {
+                e = e.response.data ? e.response.data : e;
+                console.log(e);
+                return;
+              });
           })
           .catch((e) => {
             e = e.response.data ? e.response.data : e;
@@ -251,7 +284,9 @@ export default {
             return;
           });
       }
-      this.signupSuccess = "Sucessfully Registered!";
+    },
+    toLogin: function () {
+      this.$router.push("Login");
     },
   },
 };
