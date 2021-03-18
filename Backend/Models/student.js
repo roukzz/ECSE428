@@ -16,6 +16,10 @@ const student = new mongoose.Schema({
   email: {
     type: String,
   },
+  resetLink: {
+    data: String,
+    default: "",
+  },
   tasks: {
     type: Array,
     default: [],
