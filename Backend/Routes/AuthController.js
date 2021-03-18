@@ -8,7 +8,6 @@ const _ = require("lodash");
 // ===== Data Validation =====
 // ===========================
 // validation
-// TODO: Add more validation criterias so they match with gerkins
 const Joi = require("joi");
 const { func } = require("joi");
 
@@ -28,14 +27,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.APP_EMAIL_PASS,
   },
 });
-
-// // password encyption
-// async function encryptPassword(newPassword, next) {
-//   const salt = await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(newPassword, salt);
-//   next();
-//   return hashedPassword;
-// }
 
 // ===== register a new student =====
 // ==================================
@@ -57,8 +48,7 @@ router.post("/register", async (req, res) => {
 
   // create new student
   const student = new Student(req.body);
-  //console.log('------------------------------------------------------');
-  //console.log(student);
+
   // save new student
   try {
     const savedStudent = await student.save();
@@ -95,6 +85,8 @@ router.post("/login", async (req, res) => {
   res.header("auth-token", token).send(token);
 });
 
+// ===== forgot password (send email) =====
+// ========================================
 router.post("/forgotPassword", async (req, res) => {
   // err handlings
   if (!req.body.email) {
@@ -140,6 +132,9 @@ router.post("/forgotPassword", async (req, res) => {
   });
 });
 
+// ===== reset password =====
+// ==========================
+
 router.post("/resetPassword", async (req, res) => {
   // err handlings
   if (!req.body.resetLink) {
@@ -165,7 +160,7 @@ router.post("/resetPassword", async (req, res) => {
         if (err || !student) {
           return res.status(400).send("Student with this token does not exist");
         }
-        // const newEncryptedPass = encryptPassword(newPassword);
+
         const newPassObj = {
           password: newPassword,
           resetLink: "",
