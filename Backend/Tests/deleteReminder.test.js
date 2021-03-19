@@ -17,17 +17,13 @@ beforeEach(async (done) => {
   });
   await student.save();
 
-
-
   let reminder = Reminder({
     title: "reminderTitle",
     description: "reminderDescription",
-    reminderDate :  '2021-12-12 12:11:11'
+    reminderDate: "2021-12-12 12:11:11",
   });
 
-
   await reminder.save();
-
 
   student.reminders.push(reminder);
   await student.save();
@@ -53,6 +49,7 @@ describe("Delete reminder Test", () => {
       username: "student",
       password: "password",
     });
+    console.log(res1);
     const res2 = await request(app)
       .post("/api/reminder/deleteStudentReminder")
       .set("auth-token", res1.headers["auth-token"])
@@ -64,10 +61,12 @@ describe("Delete reminder Test", () => {
   });
 
   it("should not delete a reminder of an unauthenticated user", async () => {
-    const res = await request(app).post("/api/reminder/deleteStudentReminder").send({
-      username: "student",
-      remidnerId: this.reminder._id.toString(),
-    });
+    const res = await request(app)
+      .post("/api/reminder/deleteStudentReminder")
+      .send({
+        username: "student",
+        remidnerId: this.reminder._id.toString(),
+      });
     expect(res.statusCode).toEqual(401);
   });
 });
