@@ -49,7 +49,7 @@ describe("Delete reminder Test", () => {
       username: "student",
       password: "password",
     });
-    console.log(res1);
+    // console.log(res1);
     const res2 = await request(app)
       .post("/api/reminder/deleteStudentReminder")
       .set("auth-token", res1.headers["auth-token"])

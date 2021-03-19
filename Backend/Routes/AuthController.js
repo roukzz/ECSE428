@@ -28,6 +28,13 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+async function hashPassword(password) {
+  // hash password if the student instance is newly created or if existing student wish to change password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+}
+
 // ===== register a new student =====
 // ==================================
 router.post("/register", async (req, res) => {
@@ -161,19 +168,24 @@ router.post("/resetPassword", async (req, res) => {
           return res.status(400).send("Student with this token does not exist");
         }
 
-        const newPassObj = {
-          password: newPassword,
-          resetLink: "",
+        let newPassObj = {
+          password: null,
+          resetLink: null,
         };
 
-        student = _.extend(student, newPassObj);
+        hashPassword(newPassword).then((hash) => {
+          newPassObj.password = hash;
+          newPassObj.resetLink = "";
 
-        student.save((err, result) => {
-          if (err) {
-            return res.status(400).send("Reset password error:" + err);
-          } else {
-            return res.status(200).send("Your password has been changed");
-          }
+          student = _.extend(student, newPassObj);
+
+          student.save((err, result) => {
+            if (err) {
+              return res.status(400).send("Reset password error:" + err);
+            } else {
+              return res.status(200).send("Your password has been changed");
+            }
+          });
         });
       });
     }
