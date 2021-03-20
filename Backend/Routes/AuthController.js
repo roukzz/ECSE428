@@ -118,7 +118,7 @@ router.post("/forgotPassword", async (req, res) => {
     to: email,
     subject: "Reset Password Link (NoReply)",
     html: `<h2>Please click on given link to reset your password</h2>
-    <p>${process.env.CLIENT_URL}/resetPassword/${token}</p>`,
+    <p>${process.env.CLIENT_URL}/#/resetPassword/${token}</p>`,
   };
 
   return student.updateOne({ resetLink: token }, function (err, sucess) {
