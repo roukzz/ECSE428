@@ -52,4 +52,15 @@ route.post("/createNewEvent", verify, async function (req, res) {
   const savedEvent = await newEvent.save();
   res.send(savedEvent);
 });
+
+route.post("/getAllEvents", verify, async function (req, res) {
+  Event.find({}, function (err, docs) {
+    if (err) {
+      console.log(err);
+      assert.fail();
+    } else {
+      return res.send(docs);
+    }
+  });
+});
 module.exports = route;

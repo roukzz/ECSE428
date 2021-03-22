@@ -100,7 +100,7 @@ describe("Create New Event", () => {
       .post("/api/event/createNewEvent")
       .send({
         creatorID: savedStudent._id,
-        title: "New Event!!!",
+        title: "Other Event",
         description: "Gonna be fun!",
         startTime: new Date(Date.UTC(2021, 2, 1, 14, 30, 0)),
         endTime: new Date(Date.UTC(2021, 6, 7, 20, 0, 0)),
