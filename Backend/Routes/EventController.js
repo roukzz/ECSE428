@@ -63,4 +63,15 @@ route.post("/getAllEvents", verify, async function (req, res) {
     }
   });
 });
+
+route.post("/getStudentEvents", verify, async function (req, res) {
+  Event.find({ creatorID: req.body.creatorID }, function (err, docs) {
+    if (err) {
+      console.log(err);
+      assert.fail();
+    } else {
+      return res.send(docs);
+    }
+  });
+});
 module.exports = route;
