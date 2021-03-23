@@ -16,6 +16,10 @@ const student = new mongoose.Schema({
   email: {
     type: String,
   },
+  resetLink: {
+    data: String,
+    default: "",
+  },
   tasks: {
     type: Array,
     default: [],
@@ -35,7 +39,9 @@ const student = new mongoose.Schema({
 });
 
 student.pre("save", async function (next) {
-  // hash password if the student instance is newly created
+  // hash password if the student instance is newly created or if existing student wish to change password
+  // TODO debug
+  // if (this.isNew || this.resetLink.length != 0) {
   if (this.isNew) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
