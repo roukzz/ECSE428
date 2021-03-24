@@ -5,9 +5,9 @@ const Event = require("../Models/event");
 
 const app = require("../server");
 let savedStudent;
-let eventID;
 const { connect, closeDatabase, clearDatabase } = require("../testdb");
 let authToken;
+let eventID;
 
 // setup mock database connection before each test case
 // create a student before each test case
@@ -37,6 +37,14 @@ beforeEach(async (done) => {
     })
     .set("auth-token", authToken);
   eventID = JSON.parse(res2.text)._id;
+
+  const res3 = await request(app)
+    .post("/api/event/joinEvent")
+    .send({
+      eventID: eventID,
+      attendeeID: 5,
+    })
+    .set("auth-token", authToken);
   done();
 });
 
@@ -52,16 +60,17 @@ afterAll(async (done) => {
   done();
 });
 
-describe("Join New Event", () => {
+describe("Create New Event", () => {
   //Normal task that should succeed
-  it("Should succeed to get join the event", async () => {
+  it("Should succeed to get all events", async () => {
     const res = await request(app)
-      .post("/api/event/joinEvent")
+      .post("/api/event/getAttendedEvents")
       .send({
         eventID: eventID,
-        attendeeID: savedStudent._id,
+        attendeeID: 5,
       })
       .set("auth-token", authToken);
+
     expect(res.statusCode).toEqual(200);
     expect(JSON.parse(res.text).length).toEqual(1);
   });

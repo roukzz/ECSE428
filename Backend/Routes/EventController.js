@@ -104,7 +104,7 @@ route.post("/getAttendedEvents", verify, async function (req, res) {
       console.log(err);
       assert.fail();
     } else {
-      let attendedEvents;
+      let attendedEvents = [];
       docs.forEach((event) => {
         if (event.attendeesIDs.includes(req.body.attendeeID)) {
           attendedEvents.push(event);
