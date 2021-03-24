@@ -426,7 +426,7 @@
           </div>
           <input
             class="inpbox"
-            type="text"
+            type="password"
             id="passwordEdit"
             :placeholder="[[password]]"
             v-model="password"
@@ -1660,7 +1660,7 @@ export default {
         console.log(this.studentid);
         this.email = response.data.email;
         console.log(this.email);
-        this.password = response.data.password;
+        this.password = "password";
         // console.log(this.password);
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
@@ -2032,8 +2032,7 @@ export default {
         // headers: {'Access-Control-Allow-Origin': frontendUrl}
       });
       let params = {
-        // email: localStorage.getItem("email"),
-        username: this.username,
+        username: localStorage.getItem("username"),
         newEmail: this.email,
         newPassword: this.password,
       };
