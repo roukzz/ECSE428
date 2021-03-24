@@ -12,6 +12,7 @@ route.post("/createNewEvent", verify, async function (req, res) {
     endTime: req.body.endTime,
     location: req.body.location,
     creatorID: req.body.creatorID,
+    attendeesIDs: [],
   });
   if (newEvent.startTime > newEvent.endTime) {
     return res.status(400).send("Start of class cannot be after end of class");
@@ -29,7 +30,7 @@ route.post("/createNewEvent", verify, async function (req, res) {
       for (let i = 0; i < docs.length; i++) {
         let element = docs[i];
         if (element.title == newEvent.title) {
-          error = "error";
+          error = "Title is already used!";
         }
         if (
           (newEvent.startTime > element.startTime &&
@@ -39,14 +40,15 @@ route.post("/createNewEvent", verify, async function (req, res) {
           (newEvent.startTime < element.startTime &&
             newEvent.endTime > element.endTime)
         ) {
-          error = "error";
+          error =
+            "This event is overlapping in its time with another created by you!";
         }
       }
     }
   });
 
-  if (error === "error") {
-    return res.status(400).send("Error");
+  if (error) {
+    return res.status(400).send(error);
   }
 
   const savedEvent = await newEvent.save();
@@ -63,6 +65,28 @@ route.post("/getAllEvents", verify, async function (req, res) {
     }
   });
 });
+route.post("/joinEvent", verify, async function (req, res) {
+  Event.find({ _id: req.body.eventID }, function (err, docs) {
+    if (err) {
+      console.log(err);
+      assert.fail();
+    } else {
+      docs[0].attendeesIDs.push(req.body.attendeeID);
+      Event.updateOne(
+        { _id: req.body.eventID },
+        { attendeesIDs: docs[0].attendeesIDs },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Got in update");
+            res.send(docs[0].attendeesIDs);
+          }
+        }
+      );
+    }
+  });
+});
 
 route.post("/getStudentEvents", verify, async function (req, res) {
   Event.find({ creatorID: req.body.creatorID }, function (err, docs) {
@@ -71,6 +95,28 @@ route.post("/getStudentEvents", verify, async function (req, res) {
       assert.fail();
     } else {
       return res.send(docs);
+    }
+  });
+});
+route.post("/getAttendedEvents", verify, async function (req, res) {
+  Event.find({}, function (err, docs) {
+    if (err) {
+      console.log(err);
+      assert.fail();
+    } else {
+      let attendedEvents;
+      docs.forEach((event) => {
+        if (event.attendeesIDs.includes(req.body.attendeeID)) {
+          attendedEvents.push(event);
+        }
+      });
+      if (attendedEvents) {
+        return res.send(attendedEvents);
+      } else {
+        return res
+          .status(400)
+          .send("No events are being attended by this individual");
+      }
     }
   });
 });
