@@ -66,7 +66,6 @@ describe("Create New Event", () => {
     const res = await request(app)
       .post("/api/event/getAttendedEvents")
       .send({
-        eventID: eventID,
         attendeeID: 5,
       })
       .set("auth-token", authToken);
