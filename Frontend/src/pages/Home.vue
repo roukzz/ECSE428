@@ -381,10 +381,67 @@
         <div class="close-btn" @click="togglePopupProfile()">&times;</div>
         Profile
         <br /><br />
-        Name
+        
+                <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorEditCredentials"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorEditCredentials }}
+          </div>
+          <div
+            v-if="successEditCredentials"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successEditCredentials }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          Email
+          <br />
+          <div v-if="errorEditCredentials && !email" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="emailEdit"
+            :placeholder="[[email]]"
+            v-model="email"
+          />
+          <br /><br />
+          Password
+          <br />
+          <div v-if="errorEditTask && !password" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="passwordEdit"
+            :placeholder="[[password]]"
+            v-model="password"
+          />
+        </div>
         <br /><br />
-        Non-Partner University Student
-        <br /><br /><br /><br />
+        <button
+          type="button"
+          class="button"
+          v-on:click="editUserCredentials()"
+          id="updateUserCredentials"
+        >
+          Edit User Credentials
+        </button>
+        <br /><br />
         <button
           type="button"
           class="btn btn-danger"
@@ -1527,6 +1584,8 @@ export default {
   data() {
     return {
       studentid: "",
+      email : "",
+      password : "",
       title: "",
       tasklist: [],
       timeslotlist: [],
@@ -1577,6 +1636,8 @@ export default {
       errorEditEvent: "",
       successDeleteEvent: "",
       errorDeleteEvent: "",
+      successEditCredentials: "",
+      errorEditCredentials: "",
       currentTask: null,
       currentTimeSlot: null,
       curClass: null,
@@ -1597,6 +1658,10 @@ export default {
       .then((response) => {
         this.studentid = response.data._id;
         console.log(this.studentid);
+        this.email = response.data.email;
+        console.log(this.email);
+        this.password = response.data.password;
+        // console.log(this.password);
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
         this.reminderlist = response.data.reminders;
@@ -1953,6 +2018,44 @@ export default {
           });
       localStorage.clear();
       this.$router.push("/Login");
+    },
+    editUserCredentials() {
+      if (!this.email || !this.password) {
+        this.errorEditCredentials =
+          "Missing fields. Please fill in all required fields";
+        this.successEditCredentials = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        // email: localStorage.getItem("email"),
+        username: this.username,
+        newEmail: this.email,
+        newPassword: this.password,
+      };
+      AXIOS.post("/api/student/editStudentInfo", params)
+        .then((response) => {
+          this.errorEditCredentials = "";
+          this.successEditCredentials = "Successful edit of user credentials";
+
+          this.updatePage();
+
+          this.email = "";
+          this.password = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorEditCredentials = e;
+          this.successEditCredentials = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupProfile();
     },
     addNewTimeSlot() {
       if (
