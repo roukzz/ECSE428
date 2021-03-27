@@ -120,4 +120,82 @@ route.post("/getAttendedEvents", verify, async function (req, res) {
     }
   });
 });
+
+
+//Update event
+route.post("/updateEvent", verify, async function (req, res) {
+
+  if (!req.body.eventID) {
+    return res.status(400).send("Please provide an event ID");
+  }
+  if (req.body.startTime > req.body.endTime) {
+    return res.status(400).send("Start of an event cannot be after end of an event");
+  }
+
+  const newEvent = new Event({
+    title: req.body.title,
+    description: req.body.description,
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    location: req.body.location,
+  });
+
+  await Event.find({ _id: req.body.eventID }, function (err, event) {
+    if(!event){
+      return res.status(400).send("Event does not exist");
+    }
+    if(!err){
+        Event.updateOne(
+            {_id: req.body.eventID},
+            { title: newEvent.title,
+              description: newEvent.description,
+              startTime: new Date(newEvent.startTime),
+              endTime: new Date(newEvent.endTime),
+              location: newEvent.location,
+            },
+            function (err) {
+              if (err) {
+                console.log(err);
+              } else {
+                //console.log("Event updated");
+                res.send(event[0]);
+              }
+            }
+        );
+    }else {
+      res.status(500).send(err);
+    }
+  });
+});
+
+//Delete Event
+route.post("/deleteEvent", verify, async function (req, res) {
+
+  if (!req.body.eventID) {
+    return res.status(400).send("Please provide an event ID");
+  }
+
+  await Event.find({ _id: req.body.eventID }, function (err, event) {
+    if(!event){
+      return res.status(400).send("Event does not exist");
+    }
+    if(!err){
+      Event.deleteOne(
+          {_id: req.body.eventID},
+          function (err) {
+            if (err) {
+              console.log(err);
+            } else {
+              //console.log("Event deleted");
+              res.send("Event has been deleted");
+            }
+          }
+      );
+    }else {
+      res.status(500).send(err);
+    }
+  });
+});
+
+
 module.exports = route;
