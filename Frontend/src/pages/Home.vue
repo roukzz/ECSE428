@@ -2663,7 +2663,6 @@ export default {
         .then((response) => {
           this.errorJoinEvent = "";
           this.successJoinEvent = "Successfully joined event";
-
           this.updatePage();
 
           this.eventSelected = "";
