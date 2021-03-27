@@ -4,34 +4,64 @@
     <!-- Intro -->
     <div>
       <!-- Name -->
-      <img src="../assets/logo.jpg" id="logo" width="500px" height="auto" alt="mySchedule" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">
+      <img
+        src="../assets/logo.jpg"
+        id="logo"
+        width="500px"
+        height="auto"
+        alt="mySchedule"
+        onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')"
+      />
 
       <!-- Description -->
       <div id="login_intro_text">
-        Welcome to mySchedule, your intelligent schedule organizer!<br/>
+        Welcome to mySchedule, your intelligent schedule organizer!<br />
         <span>
-          Use mySchedule to plan your weekly schedule, set up study sesssions <br/>
+          Use mySchedule to plan your weekly schedule, set up study sesssions
+          <br />
           with friends, get personalized schedule recommendations and much more!
         </span>
       </div>
-      
     </div>
 
     <!-- Form -->
     <div id="login_form">
-
-      <div style="width:100%; text-align:center; margin-top: 20px; font-weight: bold; font-size:20px">
+      <div
+        style="
+          width: 100%;
+          text-align: center;
+          margin-top: 20px;
+          font-weight: bold;
+          font-size: 20px;
+        "
+      >
         Log in to mySchedule
       </div>
 
       <!-- Fields -->
       <div id="login_fields">
         <div id="error_msg">{{ error_msg }}</div>
-        <input type="text" id="field_uname" placeholder="username" v-model="username">
-        <input type="password" id="field_password" placeholder="password" v-model="password">
-        <div id="password_recovery">Forgot password?</div>
-        <button id="login_button" type="button" v-on:click="login();">Log in</button>
-        <div id="create_account" v-on:click="toRegistration();">Not registered? Create account</div>
+        <input
+          type="text"
+          id="field_uname"
+          placeholder="username"
+          v-model="username"
+        />
+        <input
+          type="password"
+          id="field_password"
+          placeholder="password"
+          v-model="password"
+        />
+        <div id="password_recovery" v-on:click="toRecover()">
+          Forgot password?
+        </div>
+        <button id="login_button" type="button" v-on:click="login()">
+          Log in
+        </button>
+        <div id="create_account" v-on:click="toRegistration()">
+          Not registered? Create account
+        </div>
       </div>
     </div>
   </div>
@@ -62,58 +92,62 @@ let AXIOS = axios.create({
 
 export default {
   name: "Login",
-  data () {
+  data() {
     return {
       username: "",
       password: "",
       error_msg: "",
-      auth_key: ""
-    }
+      auth_key: "",
+    };
   },
   methods: {
     toRegistration() {
-      this.$router.push('Signup');
+      this.$router.push("Signup");
     },
-    login () {
-      
+    login() {
       // Call backend to see if user credentials are valid
-        // True -> navigate to home page with parameters (loginSuccess)
-        // False -> display error message and stay on current page (loginFailure)
-        var params = {
-          username: this.username,
-          password: this.password
-        }
+      // True -> navigate to home page with parameters (loginSuccess)
+      // False -> display error message and stay on current page (loginFailure)
+      var params = {
+        username: this.username,
+        password: this.password,
+      };
 
-        AXIOS.post("/api/authentication/login", params)
-          .then((response) => {
-            this.auth_key = response.data;
-            // Add the auth_key and the username to current to be able to access it
-            localStorage.setItem("auth_key", this.auth_key);
-            localStorage.setItem("username", this.username);
-            this.$router.push({name: 'Home'});
-          })
-          .catch((e) => {
-            e = e.response.data ? e.response.data : e;
-            if (e == "Invalid username" ||
-                  e == '"username" length must be at least 3 characters long' ||
-                    e == '"username" is not allowed to be empty') {
-              this.error_msg = "Invalid username";
-            }
-            else if (e == "Invalid password" ||
-                      e == '"password" length must be at least 6 characters long' ||
-                        e == '"password" is not allowed to be empty') {
-              this.error_msg = "Invalid password";
-            }
-            console.log(e)
-            return;
-          });
-    }
-  }
+      AXIOS.post("/api/authentication/login", params)
+        .then((response) => {
+          this.auth_key = response.data;
+          // Add the auth_key and the username to current to be able to access it
+          localStorage.setItem("auth_key", this.auth_key);
+          localStorage.setItem("username", this.username);
+          this.$router.push({ name: "Home" });
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          if (
+            e == "Invalid username" ||
+            e == '"username" length must be at least 3 characters long' ||
+            e == '"username" is not allowed to be empty'
+          ) {
+            this.error_msg = "Invalid username";
+          } else if (
+            e == "Invalid password" ||
+            e == '"password" length must be at least 6 characters long' ||
+            e == '"password" is not allowed to be empty'
+          ) {
+            this.error_msg = "Invalid password";
+          }
+          console.log(e);
+          return;
+        });
+    },
+    toRecover() {
+      this.$router.push("RecoverPassword");
+    },
+  },
 };
 </script>
 
 <style scoped>
-
 #login_intro_text {
   text-align: center;
   width: 100%;
@@ -142,7 +176,8 @@ export default {
   height: fit-content;
 }
 
-#login_fields input, #login_fields button {
+#login_fields input,
+#login_fields button {
   margin: 10px;
   width: calc(100% - 20px);
 }
@@ -170,7 +205,8 @@ export default {
   margin-top: 10px;
 }
 
-#password_recovery:hover, #create_account:hover {
+#password_recovery:hover,
+#create_account:hover {
   cursor: pointer;
   text-decoration: underline;
 }
@@ -182,5 +218,4 @@ img {
 img:hover {
   cursor: pointer;
 }
-
 </style>

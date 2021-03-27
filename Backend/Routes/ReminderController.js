@@ -44,6 +44,7 @@ route.post("/addReminderToStudent", verify, async function (req, res) {
     title: req.body.title,
     description: req.body.description,
     reminderDate: req.body.reminderDate,
+    priority: req.body.priority
   });
 
   const studentName = req.body.username;
@@ -177,6 +178,7 @@ route.post("/updateStudentReminder", verify, async function (req, res) {
     title: req.body.title,
     description: req.body.description,
     reminderDate: req.body.reminderDate,
+    priority: req.body.priority
   });
 
   const studentName = req.body.username;

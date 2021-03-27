@@ -18,6 +18,9 @@
       <button id="createReminderButton" v-on:click="togglePopupCreateReminder()">
         Create Reminder
       </button>
+      <button id="createEventButton" v-on:click="togglePopupCreateEvent()">
+        Create Event
+      </button>
     </div>
 
     <div id="calendarHolder">
@@ -270,7 +273,6 @@
             type="date"
             id="editclass-startdate"
             :placeHolder="[[startdate]]"
-            maxlength="10"
             min="2021-01-01"
             max="3000-12-31"
             v-model="startdate"
@@ -283,7 +285,6 @@
             type="date"
             id="editclass-enddate"
             :placeHolder="[[enddate]]"
-            maxlength="10"
             min="2021-01-01"
             max="3000-12-31"
             v-model="enddate"
@@ -380,10 +381,67 @@
         <div class="close-btn" @click="togglePopupProfile()">&times;</div>
         Profile
         <br /><br />
-        Name
+        
+                <!-- Messages -->
+        <div id="messages">
+          <div
+            v-if="errorEditCredentials"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error"
+          >
+            {{ errorEditCredentials }}
+          </div>
+          <div
+            v-if="successEditCredentials"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success"
+          >
+            {{ successEditCredentials }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields">
+          Email
+          <br />
+          <div v-if="errorEditCredentials && !email" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="emailEdit"
+            :placeholder="[[email]]"
+            v-model="email"
+          />
+          <br /><br />
+          Password
+          <br />
+          <div v-if="errorEditTask && !password" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="password"
+            id="passwordEdit"
+            :placeholder="[[password]]"
+            v-model="password"
+          />
+        </div>
         <br /><br />
-        Non-Partner University Student
-        <br /><br /><br /><br />
+        <button
+          type="button"
+          class="button"
+          v-on:click="editUserCredentials()"
+          id="updateUserCredentials"
+        >
+          Edit User Credentials
+        </button>
+        <br /><br />
         <button
           type="button"
           class="btn btn-danger"
@@ -1225,6 +1283,273 @@
       </div>
     </div>
 
+    <div class="popup" id="popup-create-event">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupCreateEvent()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Create a new event
+        </div>
+        <!-- Messages -->
+        <div id="messages-create-event">
+          <div
+            v-if="errorCreateEvent"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error-create-event"
+          >
+            {{ errorCreateEvent }}
+          </div>
+          <div
+            v-if="successCreateEvent"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success-create-event"
+          >
+            {{ successCreateEvent }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields-create-event">
+          <div v-if="errorCreateEvent && !classname" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="title-create-event"
+            placeholder="Event Title"
+            v-model="title"
+          />
+          <div v-if="errorCreateEvent && !startdate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="startdate-create-event"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="startdate"
+          />
+          <div v-if="errorCreateEvent && !enddate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="enddate-create-event"
+            placeHolder="YYYY-MM-DD"
+            maxlength="10"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="enddate"
+          />
+          <div v-if="errorCreateEvent && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="description-create-event"
+            placeholder="Description"
+            v-model="description"
+          />
+          <div v-if="errorCreateEvent && !location" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="location-create-event"
+            placeholder="Location"
+            v-model="location"
+          />
+
+          <button
+            class="inpbox"
+            id="createeventbtn"
+            type="button"
+            @click="addNewEvent()"
+          >
+            Create Event
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="popup-edit-event">
+      <div class="overlay"></div>
+      <div class="content" style="text-align: center">
+        <div class="close-btn" @click="togglePopupEditEvent()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Edit event
+        </div>
+        <!-- Messages -->
+        <div id="messages-edit-event">
+          <div
+            v-if="errorEditEvent"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error-edit-event"
+          >
+            {{ errorEditEvent }}
+          </div>
+          <div
+            v-if="successEditEvent"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success-edit-event"
+          >
+            {{ successEditEvent }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields-edit-event">
+          <div v-if="errorEditEvent && !classname" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="title-edit-event"
+            :placeholder="[[title]]"
+            v-model="title"
+          />
+          <div v-if="errorEditEvent && !startdate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="startdate-edit-event"
+            :placeHolder="[[startdate]]"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="startdate"
+          />
+          <div v-if="errorEditEvent && !enddate" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="date"
+            id="enddate-edit-event"
+            :placeHolder="[[enddate]]"
+            min="2021-01-01"
+            max="3000-12-31"
+            v-model="enddate"
+          />
+          <div v-if="errorEditEvent && !description" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="description-edit-event"
+            :placeholder="[[description]]"
+            v-model="description"
+          />
+          <div v-if="errorEditEvent && !location" style="color: red">
+            * Required
+          </div>
+          <input
+            class="inpbox"
+            type="text"
+            id="location-edit-event"
+            :placeholder="[[location]]"
+            v-model="location"
+          />
+
+          <button
+            class="inpbox"
+            id="editeventbtn"
+            type="button"
+            @click="editEvent()"
+          >
+            Edit Event
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" id="popup-delete-event">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupDeleteEvent()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          You are about to delete the event: {{ title }}.
+          <br />
+          Please confirm.
+        </div>
+        <!-- Messages -->
+        <div id="messages-delete-event">
+          <div
+            v-if="errorDeleteEvent"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error-delete-event"
+          >
+            {{ errorDeleteEvent }}
+          </div>
+          <div
+            v-if="successDeleteEvent"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success-delete-event"
+          >
+            {{ successDeleteEvent }}
+          </div>
+        </div>
+        <!-- Fields -->
+        <div id="create_fields-delete-event">
+          <button
+            class="inpbox"
+            type="button"
+            id="btndeleteevent"
+            @click="deleteEvent()"
+          >
+            Confirm Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -1258,11 +1583,16 @@ export default {
   },
   data() {
     return {
+      studentid: "",
+      email : "",
+      password : "",
       title: "",
       tasklist: [],
       timeslotlist: [],
       classeslist: [],
       reminderlist: [],
+      myevents: [],
+      attendedevents: [],
       tasktype: "",
       description: "",
       reminderDate: "",
@@ -1300,9 +1630,18 @@ export default {
       errorEditReminder: "",
       successDeleteReminder: "",
       errorDeleteReminder: "",
+      successCreateEvent: "",
+      errorCreateEvent: "",
+      successEditEvent: "",
+      errorEditEvent: "",
+      successDeleteEvent: "",
+      errorDeleteEvent: "",
+      successEditCredentials: "",
+      errorEditCredentials: "",
       currentTask: null,
       currentTimeSlot: null,
       curClass: null,
+      curEvent: null,
     };
   },
 
@@ -1317,6 +1656,12 @@ export default {
     };
     AXIOS.post("/api/student/getStudentByUsername", params)
       .then((response) => {
+        this.studentid = response.data._id;
+        console.log(this.studentid);
+        this.email = response.data.email;
+        console.log(this.email);
+        this.password = "password";
+        // console.log(this.password);
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
         this.reminderlist = response.data.reminders;
@@ -1385,6 +1730,20 @@ export default {
               return;
             });
         }
+        let params = {
+          creatorID: this.studentid
+        }
+        AXIOS.post("/api/event/getStudentEvents", params)
+          .then((response) => {
+            this.myevents = response.data;
+            // To be removed, for debugging
+            console.log(this.myevents);
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            console.log(e);
+            return;
+          })
       })
       .catch((e) => {
         e = e.response.data ? e.response.data : e;
@@ -1659,6 +2018,43 @@ export default {
           });
       localStorage.clear();
       this.$router.push("/Login");
+    },
+    editUserCredentials() {
+      if (!this.email || !this.password) {
+        this.errorEditCredentials =
+          "Missing fields. Please fill in all required fields";
+        this.successEditCredentials = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        username: localStorage.getItem("username"),
+        newEmail: this.email,
+        newPassword: this.password,
+      };
+      AXIOS.post("/api/student/editStudentInfo", params)
+        .then((response) => {
+          this.errorEditCredentials = "";
+          this.successEditCredentials = "Successful edit of user credentials";
+
+          this.updatePage();
+
+          this.email = "";
+          this.password = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorEditCredentials = e;
+          this.successEditCredentials = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupProfile();
     },
     addNewTimeSlot() {
       if (
@@ -2016,6 +2412,139 @@ export default {
 
       this.togglePopupDeleteReminder();
     },
+    addNewEvent() {
+      if (
+        !this.title ||
+        !this.description ||
+        !this.location ||
+        !this.startdate ||
+        !this.enddate
+      ) {
+        this.errorCreateEvent =
+          "Missing fields. Please fill in all required fields";
+        this.successCreateEvent = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        creatorID: this.studentid,
+        title: this.title,
+        description: this.description,
+        startTime: this.startdate,
+        endTime: this.enddate,
+        location: this.location
+      };
+
+      AXIOS.post("/api/event/createNewEvent", params)
+        .then((response) => {
+          this.errorCreateEvent = "";
+          this.successCreateEvent = "Successful new class";
+
+          this.updatePage();
+
+          this.title = "";
+          this.description = "";
+          this.startTime = "";
+          this.endTime = "";
+          this.location = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorCreateEvent = e;
+          this.successCreateEvent = "";
+          console.log(e);
+          return;
+        });
+
+      this.togglePopupCreateEvent();
+    },
+    editEvent() {
+      // if (
+      //   !this.title ||
+      //   !this.description ||
+      //   !this.location ||
+      //   !this.startdate ||
+      //   !this.enddate
+      // ) {
+      //   this.errorEditEvent =
+      //     "Missing fields. Please fill in all required fields";
+      //   this.successEditEvent = "";
+      //   return;
+      // }
+      // let AXIOS = axios.create({
+      //   baseURL: backendUrl,
+      //   headers: { "auth-token": localStorage.getItem("auth_key") },
+      //   // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      // });
+      // let params = {
+      //   creatorID: this.studentid,
+      //   title: this.title,
+      //   description: this.description,
+      //   startTime: this.startdate,
+      //   endTime: this.enddate,
+      //   location: this.location
+      // };
+      // AXIOS.post("/api/event/updateEvent", params)
+      //   .then((response) => {
+      //     this.errorEditEvent = "";
+      //     this.successEditEvent = "Successful update event";
+
+      //     this.updatePage();
+
+      //     this.title = "";
+      //     this.description = "";
+      //     this.startTime = "";
+      //     this.endTime = "";
+      //     this.location = "";
+      //   })
+      //   .catch((e) => {
+      //     e = e.response.data ? e.response.data : e;
+      //     this.errorEditTask = e;
+      //     this.successEditTask = "";
+      //     console.log(e);
+      //     return;
+      //   });
+
+      // this.togglePopupEditEvent();
+      console.log("Edit event feature not yet implemented in backend");
+    },
+    deleteEvent() {
+      // let AXIOS = axios.create({
+      //   baseURL: backendUrl,
+      //   headers: { "auth-token": localStorage.getItem("auth_key") },
+      //   // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      // });
+      // let params = {
+      //   username: localStorage.getItem("username"),
+      //   taskId: this.currentTask._id,
+      // };
+
+      // AXIOS.post("/api/student/deleteStudentTask", params)
+      //   .then((response) => {
+      //     this.errorCreateTask = "";
+      //     this.successCreateTask = "Successful deletion of task";
+
+      //     this.updatePage();
+
+      //     this.title = "";
+      //     this.description = "";
+      //     this.currentTask = null;
+      //   })
+      //   .catch((e) => {
+      //     e = e.response.data ? e.response.data : e;
+      //     this.errorCreateTask = e;
+      //     this.successCreateTask = "";
+      //     console.log(e);
+      //     return;
+      //   });
+
+      // this.togglePopupDeleteTask();
+      console.log("Delete event feature not yet implemented in backend");
+    },
     togglePopupCreate() {
       this.errorCreateTask = "";
       this.successCreateTask = "";
@@ -2177,6 +2706,42 @@ export default {
       }
       document.getElementById("popup-delete-reminder").classList.toggle("active");
     },
+    togglePopupCreateEvent() {
+      this.errorCreateEvent = "";
+      this.successCreateEvent = "";
+      document
+        .getElementById("popup-create-event")
+        .classList.toggle("active");
+    },
+    togglePopupEditEvent(event) {
+      this.errorCreateEvent = "";
+      this.successCreateEvent = "";
+      if (event != null) {
+        this.title = event.title;
+        this.curEvent = event;
+        this.description = event.description;
+        this.startdate = event.startTime;
+        this.enddate = event.endTime;
+        this.location = event.location;
+      } else {
+        this.title = "";
+        this.curEvent = null;
+        this.description = "";
+        this.startdate = "";
+        this.enddate = "";
+        this.location = "";
+      }
+       document.getElementById("popup-edit-event").classList.toggle("active");
+    },
+    togglePopupDeleteEvent(event) {
+      this.errorDeleteEvent = "";
+      this.successDeleteEvent = "";
+      if (event != null) {
+        this.title = event.title;
+        this.curEvent = event;
+      }
+      document.getElementById("popup-delete-event").classList.toggle("active");
+    },
     updatePage() {
       let AXIOS = axios.create({
         baseURL: backendUrl,
@@ -2256,6 +2821,17 @@ export default {
                 return;
               });
           }
+          AXIOS.post("/api/event/getStudentEvents", params)
+          .then((response) => {
+            this.myevents = response.data;
+            // To be removed, for debugging
+            console.log(this.myevents);
+          })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            console.log(e);
+            return;
+          })
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
