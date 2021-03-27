@@ -6,8 +6,25 @@ const route = express.Router();
 const verify = require("./VerifyToken");
 const Reminder = require("../Models/reminder");
 const Timeslot = require("../Models/timeslot");
+const _ = require("lodash");
+const Joi = require("joi");
+const bcrypt = require("bcryptjs");
+const { string } = require("joi");
 
 // return custom status: res.json({status : "ok"})
+
+async function hashPassword(password) {
+  // hash password if the student instance is newly created or if existing student wish to change password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+}
+
+const updateInfoSchema = Joi.object({
+  username: Joi.string().min(3).required(),
+  newPassword: Joi.string().min(6).required(),
+  newEmail: Joi.string(),
+});
 
 // ===== get a student by username =====
 // =====================================
@@ -24,6 +41,45 @@ route.post("/getStudentByUsername", verify, function (req, res) {
     } else {
       res.send(err);
     }
+  });
+});
+
+route.post("/editStudentInfo", verify, async function (req, res) {
+  // data Validation
+  try {
+    const value = await updateInfoSchema.validateAsync(req.body);
+  } catch (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  const newEmail = req.body.newEmail;
+  const newPassword = req.body.newPassword;
+
+  Student.findOne({ username: req.body.username }, function (err, student) {
+    if (!student) {
+      return res.status(400).send("Student does not exist");
+    }
+
+    let updateObj = {
+      email: newEmail,
+      password: null,
+    };
+
+    hashPassword(newPassword).then((hash) => {
+      updateObj.password = hash;
+
+      student = _.extend(student, updateObj);
+
+      student.save((err) => {
+        if (err) {
+          return res
+            .status(400)
+            .send("There was an error while updating " + err);
+        } else {
+          return res.status(200).send("Your info has been updated");
+        }
+      });
+    });
   });
 });
 
@@ -407,15 +463,15 @@ route.post("/updateTimeSlotTask", verify, async function (req, res) {
       });
 
       Student.updateOne(
-          { username: studentName },
-          { tasks: studentTasks },
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.send(timeSlotList);
-            }
+        { username: studentName },
+        { tasks: studentTasks },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(timeSlotList);
           }
+        }
       );
     } else {
       res.status(500).send(err);
@@ -470,15 +526,15 @@ route.post("/deleteTimeSlotTask", verify, async function (req, res) {
       });
 
       Student.updateOne(
-          { username: studentName },
-          { tasks: studentTasks },
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.send(timeSlotList);
-            }
+        { username: studentName },
+        { tasks: studentTasks },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send(timeSlotList);
           }
+        }
       );
     } else {
       res.status(500).send(err);

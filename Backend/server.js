@@ -27,6 +27,10 @@ app.use("/api/student", require("./Routes/StudentController"));
 // ===========================================
 app.use("/api/class", require("./Routes/ClassController"));
 
+// ===== Events / Modify event routes =====
+// ===========================================
+app.use("/api/event", require("./Routes/EventController"));
+
 // ===== Reminder / reminders student route =====
 // ===========================================
 
