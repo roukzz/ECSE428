@@ -88,6 +88,40 @@ route.post("/joinEvent", verify, async function (req, res) {
   });
 });
 
+route.post("/unjoinEvent", verify, async function (req, res) {
+
+  if (!req.body.eventID) {
+    return res.status(400).send("Please provide an event ID");
+  }
+
+  if (!req.body.attendeeID) {
+    return res.status(400).send("Please provide an attendee ID");
+  }
+
+  Event.find({ _id: req.body.eventID }, function (err, docs) {
+    if (err) {
+      console.log(err);
+      assert.fail();
+    } else {
+      const index = docs[0].attendeesIDs.indexOf(req.body.attendeeID);
+      docs[0].attendeesIDs.splice(index, 1);
+      Event.updateOne(
+          { _id: req.body.eventID },
+          { attendeesIDs: docs[0].attendeesIDs },
+          function (err) {
+            if (err) {
+              console.log(err);
+            } else {
+              //console.log("Got in update");
+              res.send(docs[0].attendeesIDs);
+            }
+          }
+      );
+    }
+  });
+});
+
+
 route.post("/getStudentEvents", verify, async function (req, res) {
   Event.find({ creatorID: req.body.creatorID }, function (err, docs) {
     if (err) {
