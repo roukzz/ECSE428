@@ -30,11 +30,7 @@
     </div>
 
     <div id="calendarHolder">
-      <Calendar
-        :tasks="this.tasklist"
-        :timeslots="timeslotlist"
-        :classes="classeslist"
-      ></Calendar>
+      <Calendar :tasks="this.tasklist" :timeslots="timeslotlist" :classes="classeslist" :myevents="myevents" :attendedevents="attendedevents"></Calendar>
     </div>
 
     <div class="popup" id="popup-create">

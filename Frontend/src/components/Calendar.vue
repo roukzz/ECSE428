@@ -26,6 +26,20 @@
             </tr>
           </table>
 
+          <table v-if="item.type == 'myevent'" style="background-color: #ffff99" v-on:click="controls_panels_on(item, $event)">
+            <tr>
+              <th>{{ item.startTime.split("T")[1] }} <br/> | <br/>  {{ item.endTime.split("T")[1] }}</th>
+              <td>{{ item.title }} <br/> {{ item.description }} <br/> {{ item.location }}</td>
+            </tr>
+          </table>
+
+          <table v-if="item.type == 'attendedevent'" style="background-color: #ffff99" v-on:click="unjoin_panel_on(item, $event)">
+            <tr>
+              <th>{{ item.startTime.split("T")[1] }} <br/> | <br/>  {{ item.endTime.split("T")[1] }}</th>
+              <td>{{ item.title }} <br/> {{ item.description }} <br/> {{ item.location }}</td>
+            </tr>
+          </table>
+
           <table v-if="item.type == 'class'" style="background-color: #99ff99" v-on:click="controls_panels_on(item, $event)">
             <tr v-if="item.spec == 'start'">
               <th rowspan="2">Start</th>
@@ -50,6 +64,13 @@
       <button v-on:click="trigger_edit()" id="editButton">Edit</button>
       <button v-on:click="trigger_delete()" id="deleteButton">Delete</button>
     </div>
+
+    <div id="unjoin_panel" style="display: none;">
+      <div class="close-btn" v-on:click="unjoin_panel_off()">
+        &times;
+      </div>
+      <button v-on:click="trigger_unjoin()" id="unjoinButton">Unjoin</button>
+    </div>
     
   </div> 
 </template>
@@ -68,7 +89,9 @@ export default {
       task_selection: null,
       timeslot_selection: null,
       class_selection: null,
+      event_selection: null,
       controls_on: false,
+      unjoin_on: false,
     };
   },
   props: {
@@ -81,6 +104,14 @@ export default {
       default: null
     },
     classes: {
+      type: Array,
+      default: null
+    },
+    myevents: {
+      type: Array,
+      default: null
+    },
+    attendedevents: {
       type: Array,
       default: null
     }
@@ -104,7 +135,7 @@ export default {
 
         for (var i = 1; i <= n; i++) {
           tmp_date.setDate(i);
-          tmp_items = this.getDailyTimeslots(tmp_date).concat(this.getDailyTasks(tmp_date), this.getDailyClasses(tmp_date));
+          tmp_items = this.getDailyTimeslots(tmp_date).concat(this.getDailyTasks(tmp_date), this.getDailyClasses(tmp_date), this.getDailyEvents(tmp_date));
           tmp_arr.push(
             {
               "num": this.ordinal_suffix_of(i),
@@ -191,6 +222,27 @@ export default {
 
       return daily_classes;
     },
+    getDailyEvents (date) {
+      var daily_events = [];
+      var event_start_date;
+      var date_str = date.getFullYear() + "-" + this.padMonth(date.getMonth() + 1) + "-" + this.padMonth(date.getDate());
+      var mod_event;
+
+      for (var i = 0; i < this.myevents.length; i++) {
+        
+        event_start_date = this.myevents[i].startTime.split("T");
+
+        if (event_start_date[0] == date_str) {
+          
+          mod_event = this.myevents[i];
+          mod_event["type"] = "myevent";
+
+          daily_events.push(mod_event);
+        }
+      }
+
+      return daily_events;
+    },
     daysInMonth (month, year) {
       return new Date(year, month, 0).getDate();
     },
@@ -252,12 +304,28 @@ export default {
       else if (item.type == "class") {
         this.class_selection = item;
       }
+      else if (item.type == "myevent") {
+        this.event_selection = item;
+      }
+    },
+    unjoin_panel_on (item, event) {
+      var xpos = event.clientX - Math.floor(380 * window.innerWidth/1536);
+      var ypos = event.clientY - Math.floor(60 * window.innerWidth/1536);
+
+      document.getElementById("unjoin_panel").style = "display: block; left:" + xpos + "px; top:" + ypos + "px;";
+
+      this.event_selection = item;
     },
     controls_panels_off() {
       document.getElementById("controls_panel").style = "display: none;";
       this.task_selection = null;
       this.timeslot_selection = null;
       this.class_selection = null;
+      this.event_selection = null;
+    },
+    unjoin_panel_off() {
+      document.getElementById("unjoin_panel").style = "display: none;";
+      this.event_selection = null;
     },
     trigger_edit() {
       if (this.task_selection != null) {
@@ -271,6 +339,10 @@ export default {
       else if (this.class_selection != null) {
         // update class
         this.$parent.togglePopupEditClass(this.class_selection);
+      }
+      else if (this.event_selection != null) {
+        // update event
+        alert("To be implemented");
       }
       this.controls_panels_off();
     },
@@ -287,7 +359,15 @@ export default {
         // delete class
         this.$parent.togglePopupDeleteClass(this.class_selection);
       }
+      else if (this.event_selection != null) {
+        // delete event
+        alert("To be implemented");
+      }
       this.controls_panels_off();
+    },
+    trigger_unjoin () {
+      // unjoin event
+      alert("To be implemented");
     }
   },
   mounted () {
@@ -302,6 +382,9 @@ export default {
       tmp_date.setFullYear(parseInt(split[0]), parseInt(split[1]) - 1, 1);
 
       this.full_date = tmp_date;
+    },
+    myevents: function () {
+      //console.log(this.myevents);
     }
   }
 };
