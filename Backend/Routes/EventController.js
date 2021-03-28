@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Event = require("../Models/event");
 const route = express.Router();
 const verify = require("./VerifyToken");
+const { ObjectId } = require("mongodb");
 
 route.post("/createNewEvent", verify, async function (req, res) {
   const newEvent = new Event({
@@ -95,13 +96,25 @@ route.post("/unjoinEvent", verify, async function (req, res) {
   if (!req.body.attendeeID) {
     return res.status(400).send("Please provide an attendee ID");
   }
-
-  Event.find({ _id: req.body.eventID }, function (err, docs) {
+  let eventID;
+  console.log(req.body.eventID);
+  try {
+    eventID = ObjectId(req.body.eventID);
+  } catch (error) {
+    return res.status(400).send("Event ID is invalid");
+  }
+  Event.find({ _id: eventID }, function (err, docs) {
     if (err) {
       console.log(err);
-      assert.fail();
+      return res.status(400).send("Event Not Found");
     } else {
+      if (docs.length == 0) {
+        return res.status(400).send("Event Not Found");
+      }
       const index = docs[0].attendeesIDs.indexOf(req.body.attendeeID);
+      if (index == -1) {
+        return res.status(400).send("Please provide a valid attendee ID");
+      }
       docs[0].attendeesIDs.splice(index, 1);
       Event.updateOne(
         { _id: req.body.eventID },
@@ -111,7 +124,7 @@ route.post("/unjoinEvent", verify, async function (req, res) {
             console.log(err);
           } else {
             //console.log("Got in update");
-            res.send(docs[0].attendeesIDs);
+            res.status(200).send(docs[0].attendeesIDs);
           }
         }
       );
@@ -157,12 +170,6 @@ route.post("/updateEvent", verify, async function (req, res) {
   if (!req.body.eventID) {
     return res.status(400).send("Please provide an event ID");
   }
-  if (req.body.startTime > req.body.endTime) {
-    return res
-      .status(400)
-      .send("Start of an event cannot be after end of an event");
-  }
-
   const newEvent = new Event({
     title: req.body.title,
     description: req.body.description,
@@ -170,6 +177,11 @@ route.post("/updateEvent", verify, async function (req, res) {
     endTime: req.body.endTime,
     location: req.body.location,
   });
+  if (newEvent.startTime > newEvent.endTime) {
+    return res
+      .status(400)
+      .send("Start of an event cannot be after end of an event");
+  }
 
   await Event.find({ _id: req.body.eventID }, function (err, event) {
     if (!event) {
@@ -181,21 +193,22 @@ route.post("/updateEvent", verify, async function (req, res) {
         {
           title: newEvent.title,
           description: newEvent.description,
-          startTime: new Date(newEvent.startTime),
-          endTime: new Date(newEvent.endTime),
+          startTime: newEvent.startTime,
+          endTime: newEvent.endTime,
           location: newEvent.location,
         },
         function (err) {
           if (err) {
             console.log(err);
+            return res.status(500).send(err);
           } else {
             //console.log("Event updated");
-            res.send(event[0]);
+            res.status(200).send(newEvent);
           }
         }
       );
     } else {
-      res.status(500).send(err);
+      return res.status(500).send(err);
     }
   });
 });
