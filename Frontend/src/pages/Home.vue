@@ -1846,7 +1846,6 @@ export default {
                     "YYYY-MM-DDTkk:mm"
                   );
               }  
-              console.log(this.attendedevents)            
             })
             .catch((e) => {
               e = e.response.data ? e.response.data : e;
@@ -2996,7 +2995,6 @@ export default {
                     "YYYY-MM-DDTkk:mm"
                   );
               }  
-              console.log(this.attendedevents)            
             })
             .catch((e) => {
               e = e.response.data ? e.response.data : e;
