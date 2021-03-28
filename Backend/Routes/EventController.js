@@ -97,7 +97,6 @@ route.post("/unjoinEvent", verify, async function (req, res) {
     return res.status(400).send("Please provide an attendee ID");
   }
   let eventID;
-  console.log(req.body.eventID);
   try {
     eventID = ObjectId(req.body.eventID);
   } catch (error) {
