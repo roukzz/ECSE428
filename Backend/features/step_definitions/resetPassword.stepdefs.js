@@ -6,6 +6,7 @@ const app = require("../../server");
 const Student = require("../../Models/student");
 const { connect, clearDatabase, closeDatabase } = require("../../testdb");
 
+// reset password
 When(
   "I request password reset with username {string} and email {string}",
   async function (username, email) {
