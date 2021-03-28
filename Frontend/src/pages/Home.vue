@@ -2675,6 +2675,35 @@ export default {
           return;
         });
     },
+    unjoinEvent(event) {
+      // let eventid = this.eventlist.find(
+      //   (element) => element.title == this.eventSelected
+      // );
+      let params = {
+        eventID: event._id,
+        attendeeID: this.studentid,
+      };
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      AXIOS.post("/api/event/unjoinEvent", params)
+        .then((response) => {
+          this.errorUnjoinEvent = "";
+          this.successJoinEvent = "Successfully unjoined event";
+          this.updatePage();
+
+          // this.eventSelected = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorUnjoinEvent = e;
+          this.successUnjoinEvent = "";
+          console.log(e);
+          return;
+        });
+    },
     togglePopupCreate() {
       this.errorCreateTask = "";
       this.successCreateTask = "";
