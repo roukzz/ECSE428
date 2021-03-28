@@ -78,7 +78,7 @@ route.post("/joinEvent", verify, async function (req, res) {
           if (err) {
             console.log(err);
           } else {
-            console.log("Got in update");
+            // console.log("Got in update");
             res.send(docs[0].attendeesIDs);
           }
         }
