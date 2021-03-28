@@ -64,5 +64,28 @@ describe("Join New Event", () => {
       .set("auth-token", authToken);
     expect(res.statusCode).toEqual(200);
     expect(JSON.parse(res.text).length).toEqual(1);
+    expect(JSON.parse(res.text)[0].toString()).toEqual(
+      savedStudent._id.toString()
+    );
+    Event.findOne({ _id: eventID }, function (err, docs) {
+      if (err) {
+        console.log(err);
+        assert.fail();
+      } else {
+        expect(docs.attendeesIDs[0].toString()).toEqual(
+          savedStudent._id.toString()
+        );
+      }
+    });
+  });
+  it("Should fail to join the event due to invalid eventID", async () => {
+    const res = await request(app)
+      .post("/api/event/joinEvent")
+      .send({
+        eventID: 5,
+        attendeeID: savedStudent._id,
+      })
+      .set("auth-token", authToken);
+    expect(res.statusCode).toEqual(400);
   });
 });

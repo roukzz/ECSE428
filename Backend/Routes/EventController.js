@@ -15,7 +15,7 @@ route.post("/createNewEvent", verify, async function (req, res) {
     attendeesIDs: [],
   });
   if (newEvent.startTime > newEvent.endTime) {
-    return res.status(400).send("Start of class cannot be after end of class");
+    return res.status(400).send("Start of event cannot be after end of event");
   }
   if (!req.body.creatorID) {
     return res.status(400).send("Please provide a creator ID");
@@ -68,8 +68,7 @@ route.post("/getAllEvents", verify, async function (req, res) {
 route.post("/joinEvent", verify, async function (req, res) {
   Event.find({ _id: req.body.eventID }, function (err, docs) {
     if (err) {
-      console.log(err);
-      assert.fail();
+      return res.status(400).send("Event not found");
     } else {
       docs[0].attendeesIDs.push(req.body.attendeeID);
       Event.updateOne(
@@ -79,7 +78,7 @@ route.post("/joinEvent", verify, async function (req, res) {
           if (err) {
             console.log(err);
           } else {
-            console.log("Got in update");
+            // console.log("Got in update");
             res.send(docs[0].attendeesIDs);
           }
         }
@@ -89,7 +88,6 @@ route.post("/joinEvent", verify, async function (req, res) {
 });
 
 route.post("/unjoinEvent", verify, async function (req, res) {
-
   if (!req.body.eventID) {
     return res.status(400).send("Please provide an event ID");
   }
@@ -106,21 +104,20 @@ route.post("/unjoinEvent", verify, async function (req, res) {
       const index = docs[0].attendeesIDs.indexOf(req.body.attendeeID);
       docs[0].attendeesIDs.splice(index, 1);
       Event.updateOne(
-          { _id: req.body.eventID },
-          { attendeesIDs: docs[0].attendeesIDs },
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              //console.log("Got in update");
-              res.send(docs[0].attendeesIDs);
-            }
+        { _id: req.body.eventID },
+        { attendeesIDs: docs[0].attendeesIDs },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            //console.log("Got in update");
+            res.send(docs[0].attendeesIDs);
           }
+        }
       );
     }
   });
 });
-
 
 route.post("/getStudentEvents", verify, async function (req, res) {
   Event.find({ creatorID: req.body.creatorID }, function (err, docs) {
@@ -155,15 +152,15 @@ route.post("/getAttendedEvents", verify, async function (req, res) {
   });
 });
 
-
 //Update event
 route.post("/updateEvent", verify, async function (req, res) {
-
   if (!req.body.eventID) {
     return res.status(400).send("Please provide an event ID");
   }
   if (req.body.startTime > req.body.endTime) {
-    return res.status(400).send("Start of an event cannot be after end of an event");
+    return res
+      .status(400)
+      .send("Start of an event cannot be after end of an event");
   }
 
   const newEvent = new Event({
@@ -175,28 +172,29 @@ route.post("/updateEvent", verify, async function (req, res) {
   });
 
   await Event.find({ _id: req.body.eventID }, function (err, event) {
-    if(!event){
+    if (!event) {
       return res.status(400).send("Event does not exist");
     }
-    if(!err){
-        Event.updateOne(
-            {_id: req.body.eventID},
-            { title: newEvent.title,
-              description: newEvent.description,
-              startTime: new Date(newEvent.startTime),
-              endTime: new Date(newEvent.endTime),
-              location: newEvent.location,
-            },
-            function (err) {
-              if (err) {
-                console.log(err);
-              } else {
-                //console.log("Event updated");
-                res.send(event[0]);
-              }
-            }
-        );
-    }else {
+    if (!err) {
+      Event.updateOne(
+        { _id: req.body.eventID },
+        {
+          title: newEvent.title,
+          description: newEvent.description,
+          startTime: new Date(newEvent.startTime),
+          endTime: new Date(newEvent.endTime),
+          location: newEvent.location,
+        },
+        function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            //console.log("Event updated");
+            res.send(event[0]);
+          }
+        }
+      );
+    } else {
       res.status(500).send(err);
     }
   });
@@ -204,32 +202,27 @@ route.post("/updateEvent", verify, async function (req, res) {
 
 //Delete Event
 route.post("/deleteEvent", verify, async function (req, res) {
-
   if (!req.body.eventID) {
     return res.status(400).send("Please provide an event ID");
   }
 
   await Event.find({ _id: req.body.eventID }, function (err, event) {
-    if(!event){
+    if (!event) {
       return res.status(400).send("Event does not exist");
     }
-    if(!err){
-      Event.deleteOne(
-          {_id: req.body.eventID},
-          function (err) {
-            if (err) {
-              console.log(err);
-            } else {
-              //console.log("Event deleted");
-              res.send("Event has been deleted");
-            }
-          }
-      );
-    }else {
+    if (!err) {
+      Event.deleteOne({ _id: req.body.eventID }, function (err) {
+        if (err) {
+          console.log(err);
+        } else {
+          //console.log("Event deleted");
+          res.send("Event has been deleted");
+        }
+      });
+    } else {
       res.status(500).send(err);
     }
   });
 });
-
 
 module.exports = route;

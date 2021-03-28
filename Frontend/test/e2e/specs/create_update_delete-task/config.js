@@ -14,8 +14,6 @@ const config = {
       recovery: "#password_recovery",
       login: "#login_button",
       signup: "#create_account",
-    // },
-    // id: {
       createTask: "#createTaskButton",
       updateTask: "#editTaskButton",
       deleteTask: "#deleteTaskButton",
