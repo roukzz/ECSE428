@@ -30,6 +30,7 @@ afterAll(async (done) => {
 });
 
 describe("User Reset Password Test", () => {
+  // invalid username
   it("should fail due to username validation", async () => {
     const res = await request(app)
       .post("/api/authentication/forgotPassword")
@@ -41,6 +42,7 @@ describe("User Reset Password Test", () => {
     expect(res.statusCode).toEqual(400);
   });
 
+  // empty email
   it("should fail due to empty email", async () => {
     const res = await request(app)
       .post("/api/authentication/forgotPassword")
@@ -51,6 +53,7 @@ describe("User Reset Password Test", () => {
     expect(res.statusCode).toEqual(400);
   });
 
+  // empty username
   it("should fail due to empty username", async () => {
     const res = await request(app)
       .post("/api/authentication/forgotPassword")
@@ -61,6 +64,7 @@ describe("User Reset Password Test", () => {
     expect(res.statusCode).toEqual(400);
   });
 
+  // success
   it("should succeed receive reset link", async () => {
     const res = await request(app)
       .post("/api/authentication/forgotPassword")
