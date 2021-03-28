@@ -1242,6 +1242,16 @@
             max="3000-12-31"
             v-model="deadline"
           />
+          <div v-if="errorCreateReminder && !deadline" style="color: red">
+            * Required
+          </div>
+          <select v-model="priority" class="inpbox" id="priorityEditReminder" >
+            <option disabled value="">Please Select Priority Level</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+
           <button
             id="updateChangesReminder"
             class="inpbox"
@@ -2471,7 +2481,7 @@ export default {
       this.togglePopupCreateReminder();
     },
     editReminder() {
-      if (!this.title || !this.description || !this.deadline) {
+      if (!this.title || !this.description || !this.deadline || !this.priority) {
         this.errorCreateReminder =
           "Missing fields. Please fill in all required fields";
         this.successCreateReminder = "";
@@ -2488,6 +2498,7 @@ export default {
         title: this.title,
         description: this.description,
         reminderDate: this.deadline,
+        priority: this.priority,
       };
       AXIOS.post("/api/reminder/updateStudentReminder", params)
         .then((response) => {
@@ -2500,6 +2511,7 @@ export default {
           this.description = "";
           this.deadline = "";
           this.currentReminder = null;
+          this.priority = "";
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
