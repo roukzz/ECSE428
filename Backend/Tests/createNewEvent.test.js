@@ -109,7 +109,7 @@ describe("Create New Event", () => {
       .set("auth-token", authToken);
 
     expect(res.statusCode).toEqual(200);
-    console.log(res2.text);
+    // console.log(res2.text);
     expect(res2.statusCode).toEqual(400);
   });
 });
