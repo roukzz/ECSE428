@@ -1579,7 +1579,7 @@
     <div class="popup" id="popup-join-event">
       <div class="overlay"></div>
       <div class="content">
-        <div class="close-btn" @click="togglePopupJoinEvent()">&times;</div>
+        <div id="closeJoinEvent" class="close-btn" @click="togglePopupJoinEvent()">&times;</div>
         <div
           style="
             width: 100%;
