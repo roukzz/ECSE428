@@ -1354,12 +1354,9 @@
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="startdate-create-event"
-            placeHolder="YYYY-MM-DD"
-            maxlength="10"
-            min="2021-01-01"
-            max="3000-12-31"
+            placeHolder="Start time"
             v-model="startdate"
           />
           <div v-if="errorCreateEvent && !enddate" style="color: red">
@@ -1367,12 +1364,9 @@
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="enddate-create-event"
-            placeHolder="YYYY-MM-DD"
-            maxlength="10"
-            min="2021-01-01"
-            max="3000-12-31"
+            placeHolder="End time"
             v-model="enddate"
           />
           <div v-if="errorCreateEvent && !description" style="color: red">
@@ -1462,11 +1456,9 @@
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="startdate-edit-event"
             :placeHolder="[[startdate]]"
-            min="2021-01-01"
-            max="3000-12-31"
             v-model="startdate"
           />
           <div v-if="errorEditEvent && !enddate" style="color: red">
@@ -1474,11 +1466,9 @@
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="enddate-edit-event"
             :placeHolder="[[enddate]]"
-            min="2021-01-01"
-            max="3000-12-31"
             v-model="enddate"
           />
           <div v-if="errorEditEvent && !description" style="color: red">
@@ -1831,6 +1821,7 @@ export default {
         AXIOS.post("/api/event/getStudentEvents", params)
           .then((response) => {
             this.myevents = response.data;
+            //console.log(this.myevents);
           })
           .catch((e) => {
             e = e.response.data ? e.response.data : e;
