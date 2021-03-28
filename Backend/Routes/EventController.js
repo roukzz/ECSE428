@@ -15,7 +15,7 @@ route.post("/createNewEvent", verify, async function (req, res) {
     attendeesIDs: [],
   });
   if (newEvent.startTime > newEvent.endTime) {
-    return res.status(400).send("Start of class cannot be after end of class");
+    return res.status(400).send("Start of event cannot be after end of event");
   }
   if (!req.body.creatorID) {
     return res.status(400).send("Please provide a creator ID");
