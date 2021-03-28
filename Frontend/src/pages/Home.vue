@@ -2963,7 +2963,7 @@ export default {
               });
           }
           let params = {
-          attendeeID: this.studentid,
+            creatorID: this.studentid,
           };
           AXIOS.post("/api/event/getStudentEvents", params)
             .then((response) => {
@@ -2982,6 +2982,9 @@ export default {
               console.log(e);
               return;
             });
+          params = {
+            attendeeID: this.studentid,
+          };
           AXIOS.post("/api/event/getAttendedEvents", params)
             .then((response) => {
               this.attendedevents = response.data;
