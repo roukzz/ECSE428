@@ -241,6 +241,19 @@ export default {
         }
       }
 
+      for (var i = 0; i < this.attendedevents.length; i++) {
+        
+        event_start_date = this.attendedevents[i].startTime.split("T");
+
+        if (event_start_date[0] == date_str) {
+          
+          mod_event = this.attendedevents[i];
+          mod_event["type"] = "attendedevent";
+
+          daily_events.push(mod_event);
+        }
+      }
+
       return daily_events;
     },
     daysInMonth (month, year) {
@@ -342,7 +355,7 @@ export default {
       }
       else if (this.event_selection != null) {
         // update event
-        alert("To be implemented");
+        this.$parent.togglePopupEditEvent(this.event_selection);
       }
       this.controls_panels_off();
     },
@@ -361,13 +374,14 @@ export default {
       }
       else if (this.event_selection != null) {
         // delete event
-        alert("To be implemented");
+        this.$parent.togglePopupDeleteEvent(this.event_selection);
       }
       this.controls_panels_off();
     },
     trigger_unjoin () {
       // unjoin event
-      alert("To be implemented");
+      //this.$parent.unjoinEvent(this.event_selection);
+      this.unjoin_panel_off();
     }
   },
   mounted () {
@@ -399,7 +413,7 @@ export default {
   background-color: grey;
 }
 
-#controls_panel {
+#controls_panel, #unjoin_panel {
   position: absolute;
   width: 250px;
   height: 100px;
@@ -409,7 +423,7 @@ export default {
   padding-top: 10px;
 }
 
-#controls_panel button {
+#controls_panel button, #unjoin_panel button {
   position: relative;
   display: block;
   width: 100px;

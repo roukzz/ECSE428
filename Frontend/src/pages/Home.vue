@@ -1832,6 +1832,27 @@ export default {
             console.log(e);
             return;
           });
+        params = {
+          attendeeID: this.studentid,
+        };
+        AXIOS.post("/api/event/getAttendedEvents", params)
+            .then((response) => {
+              this.attendedevents = response.data;
+              for (let event of this.attendedevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }  
+              console.log(this.attendedevents)            
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
         AXIOS.post("/api/event/getAllEvents")
           .then((response) => {
             this.eventlist = response.data;
@@ -2942,7 +2963,7 @@ export default {
               });
           }
           let params = {
-          creatorID: this.studentid,
+          attendeeID: this.studentid,
           };
           AXIOS.post("/api/event/getStudentEvents", params)
             .then((response) => {
@@ -2955,6 +2976,24 @@ export default {
                     "YYYY-MM-DDTkk:mm"
                   );
               }              
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
+          AXIOS.post("/api/event/getAttendedEvents", params)
+            .then((response) => {
+              this.attendedevents = response.data;
+              for (let event of this.attendedevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }  
+              console.log(this.attendedevents)            
             })
             .catch((e) => {
               e = e.response.data ? e.response.data : e;
