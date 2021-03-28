@@ -16,7 +16,9 @@ module.exports = {
         description: "ReminderDescription",
         descriptionEditReminder: "EditReminderDescription",
         deadline : "2021\t04011100a",
-        deadlineEditReminder: "2022\t04011100a"
+        deadlineEditReminder: "2022\t04011100a",
+        priority: "High",
+        priorityEditReminder: "Low",
     },
     ];
 
@@ -49,6 +51,9 @@ module.exports = {
           .setValue(config.id.description, reminders[i].description)
           .pause(config.time.pause)
           .setValue(config.id.deadline, reminders[i].deadline)
+          .pause(config.time.pause)
+          .assert.visible("#priority")
+          .setValue("#priority", reminders[i].priority)
           .pause(config.time.pause)
           .click(config.id.create)
           .pause(config.time.pause)
@@ -88,6 +93,8 @@ module.exports = {
           .pause(config.time.pause)
           .setValue(config.id.deadlineEditReminder, reminders[i].deadlineEditReminder)
           .pause(config.time.pause)
+          .clearValue("#priorityEditReminder")
+          .setValue("#priorityEditReminder", reminders[i].priorityEditReminder)
           .click(config.id.update)
           .pause(config.time.pause)
           .waitForElementVisible('body', config.time.visible)
@@ -102,6 +109,7 @@ module.exports = {
         .useXpath()
         .assert.containsText("//*[contains(text(), " + reminders[i].titleEditReminder + ")]", reminders[i].titleEditReminder)
         .assert.containsText("//*[contains(text(), " + reminders[i].descriptionEditReminder + ")]", reminders[i].descriptionEditReminder)
+        .assert.containsText("//*[contains(text(), " + reminders[i].priorityEditReminder + ")]", reminders[i].priorityEditReminder)
         .useCss()
         .waitForElementVisible('body', config.time.visible)
         .pause(config.time.pause)
