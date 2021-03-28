@@ -2720,6 +2720,8 @@ export default {
       // let eventid = this.eventlist.find(
       //   (element) => element.title == this.eventSelected
       // );
+      console.log(this.myevents);
+      console.log(this.attendedevents);
       let params = {
         eventID: event._id,
         attendeeID: this.studentid,
@@ -2744,6 +2746,7 @@ export default {
           console.log(e);
           return;
         });
+      console.log(this.attendedevents);
     },
     togglePopupCreate() {
       this.errorCreateTask = "";
