@@ -30,11 +30,7 @@
     </div>
 
     <div id="calendarHolder">
-      <Calendar
-        :tasks="this.tasklist"
-        :timeslots="timeslotlist"
-        :classes="classeslist"
-      ></Calendar>
+      <Calendar :tasks="this.tasklist" :timeslots="timeslotlist" :classes="classeslist" :myevents="myevents" :attendedevents="attendedevents"></Calendar>
     </div>
 
     <div class="popup" id="popup-create">
@@ -1836,6 +1832,26 @@ export default {
             console.log(e);
             return;
           });
+        params = {
+          attendeeID: this.studentid,
+        };
+        AXIOS.post("/api/event/getAttendedEvents", params)
+            .then((response) => {
+              this.attendedevents = response.data;
+              for (let event of this.attendedevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }  
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
         AXIOS.post("/api/event/getAllEvents")
           .then((response) => {
             this.eventlist = response.data;
@@ -2946,7 +2962,7 @@ export default {
               });
           }
           let params = {
-          creatorID: this.studentid,
+            creatorID: this.studentid,
           };
           AXIOS.post("/api/event/getStudentEvents", params)
             .then((response) => {
@@ -2959,6 +2975,26 @@ export default {
                     "YYYY-MM-DDTkk:mm"
                   );
               }              
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
+          params = {
+            attendeeID: this.studentid,
+          };
+          AXIOS.post("/api/event/getAttendedEvents", params)
+            .then((response) => {
+              this.attendedevents = response.data;
+              for (let event of this.attendedevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }  
             })
             .catch((e) => {
               e = e.response.data ? e.response.data : e;
