@@ -1091,6 +1091,15 @@
             max="3000-12-31"
             v-model="deadline"
           />
+          <div v-if="errorCreateReminder && !deadline" style="color: red">
+            * Required
+          </div>
+          <select v-model="priority" class="inpbox" id="priority" >
+            <option disabled value="">Please Select Priority Level</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
 
           <button
             class="inpbox"
@@ -1130,6 +1139,9 @@
               </td>
               <td>
                 {{ reminder.reminderDate }}
+              </td>
+              <td>
+                {{ reminder.priority }}
               </td>
               <td>
                 <button
@@ -1729,6 +1741,7 @@ export default {
       currentTimeSlot: null,
       curClass: null,
       curEvent: null,
+      priority: ""
     };
   },
 
@@ -2431,6 +2444,7 @@ export default {
         title: this.title,
         description: this.description,
         reminderDate: this.deadline,
+        priority: this.priority
       };
 
       AXIOS.post("/api/reminder/addReminderToStudent", params)
@@ -2443,6 +2457,7 @@ export default {
           this.title = "";
           this.description = "";
           this.deadline = "";
+          this.priority = "";
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
