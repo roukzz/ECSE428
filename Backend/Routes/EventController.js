@@ -66,6 +66,9 @@ route.post("/getAllEvents", verify, async function (req, res) {
   });
 });
 route.post("/joinEvent", verify, async function (req, res) {
+  if (req.body.eventID === null) {
+    return res.status(400).send();
+  }
   Event.find({ _id: req.body.eventID }, function (err, docs) {
     if (err) {
       console.log(err);
