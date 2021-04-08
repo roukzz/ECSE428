@@ -380,7 +380,7 @@ export default {
     },
     trigger_unjoin () {
       // unjoin event
-      //this.$parent.unjoinEvent(this.event_selection);
+      this.$parent.unjoinEvent(this.event_selection);
       this.unjoin_panel_off();
     }
   },

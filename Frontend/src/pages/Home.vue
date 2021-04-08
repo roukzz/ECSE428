@@ -1579,7 +1579,7 @@
     <div class="popup" id="popup-join-event">
       <div class="overlay"></div>
       <div class="content">
-        <div class="close-btn" @click="togglePopupJoinEvent()">&times;</div>
+        <div id="closeJoinEvent" class="close-btn" @click="togglePopupJoinEvent()">&times;</div>
         <div
           style="
             width: 100%;
@@ -2712,6 +2712,35 @@ export default {
           e = e.response.data ? e.response.data : e;
           this.errorJoinEvent = e;
           this.successJoinEvent = "";
+          console.log(e);
+          return;
+        });
+    },
+    unjoinEvent(event) {
+      // let eventid = this.eventlist.find(
+      //   (element) => element.title == this.eventSelected
+      // );
+      let params = {
+        eventID: event._id,
+        attendeeID: this.studentid,
+      };
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      AXIOS.post("/api/event/unjoinEvent", params)
+        .then((response) => {
+          this.errorUnjoinEvent = "";
+          this.successJoinEvent = "Successfully unjoined event";
+          this.updatePage();
+
+          // this.eventSelected = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorUnjoinEvent = e;
+          this.successUnjoinEvent = "";
           console.log(e);
           return;
         });
