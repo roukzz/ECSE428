@@ -15,16 +15,22 @@
       <button id="createClassButton" v-on:click="togglePopupCreateClass()">
         Create Class
       </button>
-      <button id="createReminderButton" v-on:click="togglePopupCreateReminder()">
+      <button
+        id="createReminderButton"
+        v-on:click="togglePopupCreateReminder()"
+      >
         Create Reminder
       </button>
       <button id="createEventButton" v-on:click="togglePopupCreateEvent()">
         Create Event
       </button>
+      <button id="joinEventButton" v-on:click="togglePopupJoinEvent()">
+        Join Event
+      </button>
     </div>
 
     <div id="calendarHolder">
-      <Calendar :tasks="this.tasklist" :timeslots="timeslotlist" :classes="classeslist"></Calendar>
+      <Calendar :tasks="this.tasklist" :timeslots="timeslotlist" :classes="classeslist" :myevents="myevents" :attendedevents="attendedevents"></Calendar>
     </div>
 
     <div class="popup" id="popup-create">
@@ -381,8 +387,8 @@
         <div class="close-btn" @click="togglePopupProfile()">&times;</div>
         Profile
         <br /><br />
-        
-                <!-- Messages -->
+
+        <!-- Messages -->
         <div id="messages">
           <div
             v-if="errorEditCredentials"
@@ -1014,7 +1020,9 @@
     <div class="popup" id="popup-create-reminder">
       <div class="overlay"></div>
       <div class="content" style="text-align: center">
-        <div class="close-btn" @click="togglePopupCreateReminder()">&times;</div>
+        <div class="close-btn" @click="togglePopupCreateReminder()">
+          &times;
+        </div>
         <div
           style="
             width: 100%;
@@ -1083,6 +1091,16 @@
             max="3000-12-31"
             v-model="deadline"
           />
+          <div v-if="errorCreateReminder && !deadline" style="color: red">
+            * Required
+          </div>
+          <select v-model="priority" class="inpbox" id="priority" >
+            <option disabled value="">Please Select Priority Level</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+
 
           <button
             class="inpbox"
@@ -1103,50 +1121,56 @@
         Reminders
         <br />
 
-      <div id="Reminders" style="height: 250px; width: 650px; overflow-y:auto">
-      <table>
-        <tr
-          class="tasklistitems"
-          v-for="reminder in reminderlist"
-          v-bind:id="reminder._id"
-          v-bind:key="reminder._id"
+        <div
+          id="Reminders"
+          style="height: 250px; width: 650px; overflow-y: auto"
         >
-          <td>
-            {{ reminder.title }}
-          </td>
-          <td>
-            {{ reminder.description }}
-          </td>
-          <td>
-            {{ reminder.reminderDate }}
-          </td>
-          <td>
-            <button
-              id="eReminderButton"
-              type="button"
-              class="editbutton"
-              @click="togglePopupEditReminder(reminder)"
+          <table>
+            <tr
+              class="tasklistitems"
+              v-for="reminder in reminderlist"
+              v-bind:id="reminder._id"
+              v-bind:key="reminder._id"
             >
-              Edit
-            </button>
-          </td>
-          <td>
-            <button
-              id="deleteReminderButton"
-              type="button"
-              class="btn btn-danger"
-              @click="togglePopupDeleteReminder(reminder)"
-            >
-              Delete Reminder
-            </button>
-          </td>
-        </tr>
-      </table>
-    </div>
+              <td>
+                {{ reminder.title }}
+              </td>
+              <td>
+                {{ reminder.description }}
+              </td>
+              <td>
+                {{ reminder.reminderDate }}
+              </td>
+              <td>
+                {{ reminder.priority }}
+              </td>
+              <td>
+                <button
+                  id="eReminderButton"
+                  type="button"
+                  class="editbutton"
+                  @click="togglePopupEditReminder(reminder)"
+                >
+                  Edit
+                </button>
+              </td>
+              <td>
+                <button
+                  id="deleteReminderButton"
+                  type="button"
+                  class="btn btn-danger"
+                  @click="togglePopupDeleteReminder(reminder)"
+                >
+                  Delete Reminder
+                </button>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
 
-        <div class="popup" id="popup-edit-reminder">
+    <div class="popup" id="popup-edit-reminder">
       <div class="overlay"></div>
       <div class="content">
         <div class="close-btn" @click="togglePopupEditReminder()">&times;</div>
@@ -1218,6 +1242,16 @@
             max="3000-12-31"
             v-model="deadline"
           />
+          <div v-if="errorCreateReminder && !deadline" style="color: red">
+            * Required
+          </div>
+          <select v-model="priority" class="inpbox" id="priorityEditReminder" >
+            <option disabled value="">Please Select Priority Level</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+
           <button
             id="updateChangesReminder"
             class="inpbox"
@@ -1233,7 +1267,9 @@
     <div class="popup" id="popup-delete-reminder">
       <div class="overlay"></div>
       <div class="content">
-        <div class="close-btn" @click="togglePopupDeleteReminder()">&times;</div>
+        <div class="close-btn" @click="togglePopupDeleteReminder()">
+          &times;
+        </div>
         <div
           style="
             width: 100%;
@@ -1332,31 +1368,25 @@
             placeholder="Event Title"
             v-model="title"
           />
-          <div v-if="errorCreateEvent && !startdate" style="color: red">
+          <div v-if="errorCreateEvent && !startTime" style="color: red">
             * Required
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="startdate-create-event"
-            placeHolder="YYYY-MM-DD"
-            maxlength="10"
-            min="2021-01-01"
-            max="3000-12-31"
-            v-model="startdate"
+            placeHolder="Start time"
+            v-model="startTime"
           />
-          <div v-if="errorCreateEvent && !enddate" style="color: red">
+          <div v-if="errorCreateEvent && !endTime" style="color: red">
             * Required
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="enddate-create-event"
-            placeHolder="YYYY-MM-DD"
-            maxlength="10"
-            min="2021-01-01"
-            max="3000-12-31"
-            v-model="enddate"
+            placeHolder="End time"
+            v-model="endTime"
           />
           <div v-if="errorCreateEvent && !description" style="color: red">
             * Required
@@ -1440,29 +1470,25 @@
             :placeholder="[[title]]"
             v-model="title"
           />
-          <div v-if="errorEditEvent && !startdate" style="color: red">
+          <div v-if="errorEditEvent && !startTime" style="color: red">
             * Required
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="startdate-edit-event"
-            :placeHolder="[[startdate]]"
-            min="2021-01-01"
-            max="3000-12-31"
-            v-model="startdate"
+            :placeHolder="[[startTime]]"
+            v-model="startTime"
           />
-          <div v-if="errorEditEvent && !enddate" style="color: red">
+          <div v-if="errorEditEvent && !endTime" style="color: red">
             * Required
           </div>
           <input
             class="inpbox"
-            type="date"
+            type="datetime-local"
             id="enddate-edit-event"
-            :placeHolder="[[enddate]]"
-            min="2021-01-01"
-            max="3000-12-31"
-            v-model="enddate"
+            :placeHolder="[[endTime]]"
+            v-model="endTime"
           />
           <div v-if="errorEditEvent && !description" style="color: red">
             * Required
@@ -1550,6 +1576,86 @@
       </div>
     </div>
 
+    <div class="popup" id="popup-join-event">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="close-btn" @click="togglePopupJoinEvent()">&times;</div>
+        <div
+          style="
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+          "
+        >
+          Join Event
+        </div>
+        <!-- Messages -->
+        <div id="messages-join-event">
+          <div
+            v-if="errorJoinEvent"
+            style="width: 100%; color: red; text-align: center; margin: 0 auto"
+            id="error-join-event"
+          >
+            {{ errorJoinEvent }}
+          </div>
+          <div
+            v-if="successJoinEvent"
+            style="
+              width: 100%;
+              color: green;
+              text-align: center;
+              margin: 0 auto;
+            "
+            id="success-join-event"
+          >
+            {{ successJoinEvent }}
+          </div>
+        </div>
+
+        <!-- Fields -->
+        <div id="create_fields-join-event">
+          <div
+            class="row"
+            v-for="(event, i) in eventlist"
+            v-bind:key="`event-${i}`"
+          >
+            <div class="col">
+              {{ event.title }}
+            </div>
+            <div class="col">
+              {{ event.description }}
+            </div>
+            <div class="col">
+              {{ event.startTime }}
+            </div>
+            <div class="col">
+              {{ event.endTime }}
+            </div>
+          </div>
+
+          <select id="event" v-model="eventSelected">
+            <option disabled value="">Please select one</option>
+            <option
+              v-for="(eventSelected, i) in eventlist"
+              v-bind:key="`event-${i}`"
+            >
+              {{ eventSelected.title }}
+            </option>
+          </select>
+          <button
+            v-if="eventSelected"
+            class="inpbox"
+            type="button"
+            id="btnjoinevent"
+            @click="joinEvent()"
+          >
+            Confirm Join
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1557,7 +1663,7 @@
 import NavBar from "@/components/NavBar";
 import axios from "axios";
 import moment from "moment";
-import Calendar from '@/components/Calendar.vue';
+import Calendar from "@/components/Calendar.vue";
 
 let config = require("../../config");
 
@@ -1584,8 +1690,8 @@ export default {
   data() {
     return {
       studentid: "",
-      email : "",
-      password : "",
+      email: "",
+      password: "",
       title: "",
       tasklist: [],
       timeslotlist: [],
@@ -1593,6 +1699,7 @@ export default {
       reminderlist: [],
       myevents: [],
       attendedevents: [],
+      eventlist: [],
       tasktype: "",
       description: "",
       reminderDate: "",
@@ -1605,6 +1712,7 @@ export default {
       endTime: "",
       taskSelected: "",
       classSelected: "",
+      eventSelected: "",
       taskOrClass: "",
       errorCreateTask: "",
       successCreateTask: "",
@@ -1638,10 +1746,13 @@ export default {
       errorDeleteEvent: "",
       successEditCredentials: "",
       errorEditCredentials: "",
+      successJoinEvent: "",
+      errorJoinEvent: "",
       currentTask: null,
       currentTimeSlot: null,
       curClass: null,
       curEvent: null,
+      priority: ""
     };
   },
 
@@ -1657,15 +1768,13 @@ export default {
     AXIOS.post("/api/student/getStudentByUsername", params)
       .then((response) => {
         this.studentid = response.data._id;
-        console.log(this.studentid);
         this.email = response.data.email;
-        console.log(this.email);
         this.password = "password";
         // console.log(this.password);
         this.tasklist = response.data.tasks;
         this.classeslist = response.data.classes;
         this.reminderlist = response.data.reminders;
-        for(let reminder of this.reminderlist){
+        for (let reminder of this.reminderlist) {
           reminder.reminderDate = moment(reminder.reminderDate).format(
             "YYYY-MM-DDTkk:mm"
           );
@@ -1676,9 +1785,7 @@ export default {
             username: localStorage.getItem("username"),
             taskID: task._id,
           };
-          task.dueDate = moment(task.dueDate).format(
-            "YYYY-MM-DDTkk:mm"
-          );
+          task.dueDate = moment(task.dueDate).format("YYYY-MM-DDTkk:mm");
           AXIOS.post("/api/student/getTaskTimeslots", params)
             .then((response) => {
               var timeslots = response.data;
@@ -1707,9 +1814,7 @@ export default {
           classe.startTime = moment(classe.startTime).format(
             "YYYY-MM-DDTkk:mm"
           );
-          classe.endTime = moment(classe.endTime).format(
-            "YYYY-MM-DDTkk:mm"
-          );
+          classe.endTime = moment(classe.endTime).format("YYYY-MM-DDTkk:mm");
           AXIOS.post("/api/class/getClassTimeslots", params)
             .then((response) => {
               var timeslots = response.data;
@@ -1731,19 +1836,55 @@ export default {
             });
         }
         let params = {
-          creatorID: this.studentid
-        }
+          creatorID: this.studentid,
+        };
         AXIOS.post("/api/event/getStudentEvents", params)
           .then((response) => {
             this.myevents = response.data;
-            // To be removed, for debugging
-            console.log(this.myevents);
+            for (let event of this.myevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }
+            //console.log(this.myevents);
           })
           .catch((e) => {
             e = e.response.data ? e.response.data : e;
             console.log(e);
             return;
+          });
+        params = {
+          attendeeID: this.studentid,
+        };
+        AXIOS.post("/api/event/getAttendedEvents", params)
+            .then((response) => {
+              this.attendedevents = response.data;
+              for (let event of this.attendedevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }  
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
+        AXIOS.post("/api/event/getAllEvents")
+          .then((response) => {
+            this.eventlist = response.data;
           })
+          .catch((e) => {
+            e = e.response.data ? e.response.data : e;
+            console.log(e);
+            return;
+          });
       })
       .catch((e) => {
         e = e.response.data ? e.response.data : e;
@@ -1974,12 +2115,12 @@ export default {
         headers: { "auth-token": localStorage.getItem("auth_key") },
         // headers: {'Access-Control-Allow-Origin': frontendUrl}
       });
-      
+
       let params = {
         username: localStorage.getItem("username"),
         classID: this.curClass._id,
       };
-      
+
       AXIOS.post("/api/Class/deleteClass", params)
         .then((response) => {
           this.errorDeleteTask = "";
@@ -2008,14 +2149,13 @@ export default {
       let params = {
         username: localStorage.getItem("username"),
       };
-        AXIOS.post("/api/student/deleteStudentAccount", params)
-          .then((response) => {
-          })
-          .catch((e) => {
-            e = e.response.data ? e.response.data : e;
-            console.log(e);
-            return;
-          });
+      AXIOS.post("/api/student/deleteStudentAccount", params)
+        .then((response) => {})
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          console.log(e);
+          return;
+        });
       localStorage.clear();
       this.$router.push("/Login");
     },
@@ -2299,7 +2439,7 @@ export default {
       }
     },
     addNewReminder() {
-      if (!this.title || !this.description || !this.deadline) {
+      if (!this.title || !this.description || !this.deadline|| !this.priority) {
         this.errorCreateReminder =
           "Missing fields. Please fill in all required fields";
         this.successCreateReminder = "";
@@ -2315,6 +2455,7 @@ export default {
         title: this.title,
         description: this.description,
         reminderDate: this.deadline,
+        priority: this.priority
       };
 
       AXIOS.post("/api/reminder/addReminderToStudent", params)
@@ -2327,6 +2468,7 @@ export default {
           this.title = "";
           this.description = "";
           this.deadline = "";
+          this.priority = "";
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -2339,7 +2481,7 @@ export default {
       this.togglePopupCreateReminder();
     },
     editReminder() {
-      if (!this.title || !this.description || !this.deadline) {
+      if (!this.title || !this.description || !this.deadline || !this.priority) {
         this.errorCreateReminder =
           "Missing fields. Please fill in all required fields";
         this.successCreateReminder = "";
@@ -2356,6 +2498,7 @@ export default {
         title: this.title,
         description: this.description,
         reminderDate: this.deadline,
+        priority: this.priority,
       };
       AXIOS.post("/api/reminder/updateStudentReminder", params)
         .then((response) => {
@@ -2368,6 +2511,7 @@ export default {
           this.description = "";
           this.deadline = "";
           this.currentReminder = null;
+          this.priority = "";
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -2417,8 +2561,8 @@ export default {
         !this.title ||
         !this.description ||
         !this.location ||
-        !this.startdate ||
-        !this.enddate
+        !this.startTime ||
+        !this.endTime
       ) {
         this.errorCreateEvent =
           "Missing fields. Please fill in all required fields";
@@ -2434,9 +2578,9 @@ export default {
         creatorID: this.studentid,
         title: this.title,
         description: this.description,
-        startTime: this.startdate,
-        endTime: this.enddate,
-        location: this.location
+        startTime: this.startTime,
+        endTime: this.endTime,
+        location: this.location,
       };
 
       AXIOS.post("/api/event/createNewEvent", params)
@@ -2463,87 +2607,114 @@ export default {
       this.togglePopupCreateEvent();
     },
     editEvent() {
-      // if (
-      //   !this.title ||
-      //   !this.description ||
-      //   !this.location ||
-      //   !this.startdate ||
-      //   !this.enddate
-      // ) {
-      //   this.errorEditEvent =
-      //     "Missing fields. Please fill in all required fields";
-      //   this.successEditEvent = "";
-      //   return;
-      // }
-      // let AXIOS = axios.create({
-      //   baseURL: backendUrl,
-      //   headers: { "auth-token": localStorage.getItem("auth_key") },
-      //   // headers: {'Access-Control-Allow-Origin': frontendUrl}
-      // });
-      // let params = {
-      //   creatorID: this.studentid,
-      //   title: this.title,
-      //   description: this.description,
-      //   startTime: this.startdate,
-      //   endTime: this.enddate,
-      //   location: this.location
-      // };
-      // AXIOS.post("/api/event/updateEvent", params)
-      //   .then((response) => {
-      //     this.errorEditEvent = "";
-      //     this.successEditEvent = "Successful update event";
+      if (
+        !this.title ||
+        !this.description ||
+        !this.location ||
+        !this.startTime ||
+        !this.endTime
+      ) {
+        this.errorEditEvent =
+          "Missing fields. Please fill in all required fields";
+        this.successEditEvent = "";
+        return;
+      }
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        creatorID: this.studentid,
+        title: this.title,
+        description: this.description,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        location: this.location,
+        eventID: this.curEvent._id
+      };
+      AXIOS.post("/api/event/updateEvent", params)
+        .then((response) => {
+          this.errorEditEvent = "";
+          this.successEditEvent = "Successful update event";
 
-      //     this.updatePage();
+          this.updatePage();
 
-      //     this.title = "";
-      //     this.description = "";
-      //     this.startTime = "";
-      //     this.endTime = "";
-      //     this.location = "";
-      //   })
-      //   .catch((e) => {
-      //     e = e.response.data ? e.response.data : e;
-      //     this.errorEditTask = e;
-      //     this.successEditTask = "";
-      //     console.log(e);
-      //     return;
-      //   });
+          this.title = "";
+          this.description = "";
+          this.startTime = "";
+          this.endTime = "";
+          this.location = "";
+          this.eventID = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorEditTask = e;
+          this.successEditTask = "";
+          console.log(e);
+          return;
+        });
 
-      // this.togglePopupEditEvent();
-      console.log("Edit event feature not yet implemented in backend");
+      this.togglePopupEditEvent();
+      
     },
     deleteEvent() {
-      // let AXIOS = axios.create({
-      //   baseURL: backendUrl,
-      //   headers: { "auth-token": localStorage.getItem("auth_key") },
-      //   // headers: {'Access-Control-Allow-Origin': frontendUrl}
-      // });
-      // let params = {
-      //   username: localStorage.getItem("username"),
-      //   taskId: this.currentTask._id,
-      // };
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      let params = {
+        eventID: this.curEvent._id,
+      };
 
-      // AXIOS.post("/api/student/deleteStudentTask", params)
-      //   .then((response) => {
-      //     this.errorCreateTask = "";
-      //     this.successCreateTask = "Successful deletion of task";
+      AXIOS.post("/api/event/deleteEvent", params)
+        .then((response) => {
+          this.errorDeleteEvent = "";
+          this.successDeleteEvent = "Successful deletion of event";
 
-      //     this.updatePage();
+          this.updatePage();
 
-      //     this.title = "";
-      //     this.description = "";
-      //     this.currentTask = null;
-      //   })
-      //   .catch((e) => {
-      //     e = e.response.data ? e.response.data : e;
-      //     this.errorCreateTask = e;
-      //     this.successCreateTask = "";
-      //     console.log(e);
-      //     return;
-      //   });
+          this.curEvent = null;
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorDeleteEvent = e;
+          this.successDeleteEvent = "";
+          console.log(e);
+          return;
+        });
 
-      // this.togglePopupDeleteTask();
-      console.log("Delete event feature not yet implemented in backend");
+      this.togglePopupDeleteEvent();
+    },
+    joinEvent() {
+      let eventid = this.eventlist.find(
+        (element) => element.title == this.eventSelected
+      );
+      let params = {
+        eventID: eventid,
+        attendeeID: this.studentid,
+      };
+      let AXIOS = axios.create({
+        baseURL: backendUrl,
+        headers: { "auth-token": localStorage.getItem("auth_key") },
+        // headers: {'Access-Control-Allow-Origin': frontendUrl}
+      });
+      AXIOS.post("/api/event/joinEvent", params)
+        .then((response) => {
+          this.errorJoinEvent = "";
+          this.successJoinEvent = "Successfully joined event";
+          this.updatePage();
+
+          this.eventSelected = "";
+        })
+        .catch((e) => {
+          e = e.response.data ? e.response.data : e;
+          this.errorJoinEvent = e;
+          this.successJoinEvent = "";
+          console.log(e);
+          return;
+        });
     },
     togglePopupCreate() {
       this.errorCreateTask = "";
@@ -2637,24 +2808,23 @@ export default {
     togglePopupEditClass(curClass) {
       this.errorEditClass = "";
       this.successEditClass = "";
-      
+
       this.curClass = curClass;
 
-      if(curClass) {
+      if (curClass) {
         this.classname = curClass.title;
         this.startdate = moment(curClass.startTime).format("YYYY-MM-DD");
         this.enddate = moment(curClass.endTime).format("YYYY-MM-DD");
         this.description = curClass.description;
         this.location = curClass.location;
-      }
-      else {
+      } else {
         this.classname = "";
         this.startdate = "";
         this.enddate = "";
         this.description = "";
         this.location = "";
       }
-      
+
       document.getElementById("popup-edit-class").classList.toggle("active");
     },
     togglePopupDeleteClass(curClass) {
@@ -2662,13 +2832,12 @@ export default {
       this.successDeleteClass = "";
       this.curClass = curClass;
 
-      if(curClass) {
+      if (curClass) {
         this.classname = curClass.title;
-      }
-      else {
+      } else {
         this.classname = "";
       }
-      
+
       document.getElementById("popup-delete-class").classList.toggle("active");
     },
     togglePopupCreateReminder() {
@@ -2704,14 +2873,14 @@ export default {
         this.title = reminder.title;
         this.currentReminder = reminder;
       }
-      document.getElementById("popup-delete-reminder").classList.toggle("active");
+      document
+        .getElementById("popup-delete-reminder")
+        .classList.toggle("active");
     },
     togglePopupCreateEvent() {
       this.errorCreateEvent = "";
       this.successCreateEvent = "";
-      document
-        .getElementById("popup-create-event")
-        .classList.toggle("active");
+      document.getElementById("popup-create-event").classList.toggle("active");
     },
     togglePopupEditEvent(event) {
       this.errorCreateEvent = "";
@@ -2720,18 +2889,18 @@ export default {
         this.title = event.title;
         this.curEvent = event;
         this.description = event.description;
-        this.startdate = event.startTime;
-        this.enddate = event.endTime;
+        this.startTime = event.startTime;
+        this.endTime = event.endTime;
         this.location = event.location;
       } else {
         this.title = "";
         this.curEvent = null;
         this.description = "";
-        this.startdate = "";
-        this.enddate = "";
+        this.startTime = "";
+        this.endTime = "";
         this.location = "";
       }
-       document.getElementById("popup-edit-event").classList.toggle("active");
+      document.getElementById("popup-edit-event").classList.toggle("active");
     },
     togglePopupDeleteEvent(event) {
       this.errorDeleteEvent = "";
@@ -2741,6 +2910,9 @@ export default {
         this.curEvent = event;
       }
       document.getElementById("popup-delete-event").classList.toggle("active");
+    },
+    togglePopupJoinEvent() {
+      document.getElementById("popup-join-event").classList.toggle("active");
     },
     updatePage() {
       let AXIOS = axios.create({
@@ -2756,20 +2928,18 @@ export default {
           this.tasklist = response.data.tasks;
           this.classeslist = response.data.classes;
           this.reminderlist = response.data.reminders;
-          for(let reminder of this.reminderlist){
-          reminder.reminderDate = moment(reminder.reminderDate).format(
-            "YYYY-MM-DDTkk:mm"
-          );
-        }
+          for (let reminder of this.reminderlist) {
+            reminder.reminderDate = moment(reminder.reminderDate).format(
+              "YYYY-MM-DDTkk:mm"
+            );
+          }
           this.timeslotlist = [];
           for (let task of this.tasklist) {
             let params = {
               username: localStorage.getItem("username"),
               taskID: task._id,
             };
-            task.dueDate = moment(task.dueDate).format(
-              "YYYY-MM-DDTkk:mm"
-            );
+            task.dueDate = moment(task.dueDate).format("YYYY-MM-DDTkk:mm");
             AXIOS.post("/api/student/getTaskTimeslots", params)
               .then((response) => {
                 var timeslots = response.data;
@@ -2798,9 +2968,7 @@ export default {
             classe.startTime = moment(classe.startTime).format(
               "YYYY-MM-DDTkk:mm"
             );
-            classe.endTime = moment(classe.endTime).format(
-              "YYYY-MM-DDTkk:mm"
-            );
+            classe.endTime = moment(classe.endTime).format("YYYY-MM-DDTkk:mm");
             AXIOS.post("/api/class/getClassTimeslots", params)
               .then((response) => {
                 var timeslots = response.data;
@@ -2821,17 +2989,55 @@ export default {
                 return;
               });
           }
+          let params = {
+            creatorID: this.studentid,
+          };
           AXIOS.post("/api/event/getStudentEvents", params)
-          .then((response) => {
-            this.myevents = response.data;
-            // To be removed, for debugging
-            console.log(this.myevents);
-          })
-          .catch((e) => {
-            e = e.response.data ? e.response.data : e;
-            console.log(e);
-            return;
-          })
+            .then((response) => {
+              this.myevents = response.data;
+              for (let event of this.myevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }              
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
+          params = {
+            attendeeID: this.studentid,
+          };
+          AXIOS.post("/api/event/getAttendedEvents", params)
+            .then((response) => {
+              this.attendedevents = response.data;
+              for (let event of this.attendedevents) {
+                  event.startTime = moment(event.startTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+                  event.endTime = moment(event.endTime).format(
+                    "YYYY-MM-DDTkk:mm"
+                  );
+              }  
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
+          AXIOS.post("/api/event/getAllEvents")
+            .then((response) => {
+              this.eventlist = response.data;
+            })
+            .catch((e) => {
+              e = e.response.data ? e.response.data : e;
+              console.log(e);
+              return;
+            });
         })
         .catch((e) => {
           e = e.response.data ? e.response.data : e;
@@ -2958,5 +3164,4 @@ export default {
 #tasklistitemholder {
   float: left;
 }
-
 </style>

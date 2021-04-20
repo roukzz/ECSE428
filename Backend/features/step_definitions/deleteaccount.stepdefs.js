@@ -17,7 +17,8 @@ Given(
       username,
       password,
     });
-    await student.save();
+    let savedStudent = await student.save();
+    this.id = savedStudent._id;
   }
 );
 

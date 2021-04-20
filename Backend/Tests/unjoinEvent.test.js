@@ -37,6 +37,14 @@ beforeEach(async (done) => {
     })
     .set("auth-token", authToken);
   eventID = JSON.parse(res2.text)._id;
+  const res3 = await request(app)
+    .post("/api/event/joinEvent")
+    .send({
+      eventID: eventID,
+      attendeeID: savedStudent._id,
+    })
+    .set("auth-token", authToken);
+
   done();
 });
 
@@ -52,38 +60,33 @@ afterAll(async (done) => {
   done();
 });
 
-describe("Join New Event", () => {
+describe("Unjoin New Event", () => {
   //Normal task that should succeed
-  it("Should succeed to get join the event", async () => {
+  it("Should succeed to get unjoin the event", async () => {
     const res = await request(app)
-      .post("/api/event/joinEvent")
+      .post("/api/event/unjoinEvent")
       .send({
         eventID: eventID,
         attendeeID: savedStudent._id,
       })
       .set("auth-token", authToken);
     expect(res.statusCode).toEqual(200);
-    expect(JSON.parse(res.text).length).toEqual(1);
-    expect(JSON.parse(res.text)[0].toString()).toEqual(
-      savedStudent._id.toString()
-    );
+    expect(JSON.parse(res.text).length).toEqual(0);
     Event.findOne({ _id: eventID }, function (err, docs) {
       if (err) {
         console.log(err);
         assert.fail();
       } else {
-        expect(docs.attendeesIDs[0].toString()).toEqual(
-          savedStudent._id.toString()
-        );
+        expect(docs.attendeesIDs.length).toEqual(0);
       }
     });
   });
-  it("Should fail to join the event due to invalid eventID", async () => {
+  it("Should fail to unjoin the event due to invalid attendeeID", async () => {
     const res = await request(app)
-      .post("/api/event/joinEvent")
+      .post("/api/event/unjoinEvent")
       .send({
-        eventID: 5,
-        attendeeID: savedStudent._id,
+        eventID: eventID,
+        attendeeID: 5,
       })
       .set("auth-token", authToken);
     expect(res.statusCode).toEqual(400);
